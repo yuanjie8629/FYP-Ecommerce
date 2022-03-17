@@ -1,0 +1,234 @@
+@ant-prefix: shrf;
+
+// Colours
+@body-background: #eef0f4;
+
+// Green
+@green-900: #014737;
+@green-800: #03543f;
+@green-700: #046c4e;
+@green-600: #057a55;
+@green-500: #0e9f6e;
+@green-400: #31c48d;
+@green-300: #84e1bc;
+@green-200: #bcf0da;
+@green-100: #def7ec;
+@green-50: #f3faf7;
+
+@primary-color: @green-500;
+@success-color: @green-400;
+
+//Blue
+@blue-900: #0b5a9a;
+@blue-800: #117abc;
+@blue-700: #138bd0;
+@blue-600: #179ee4;
+@blue-500: #1bacf3;
+@blue-400: #33b8f5;
+@blue-300: #54c5f6;
+@blue-200: #84d6f9;
+@blue-100: #b4e6fb;
+@blue-50: #e1f5fe;
+
+@info-color: @blue-700;
+
+// Yellow
+@yellow-900: #ff6f00;
+@yellow-800: #ff8f00;
+@yellow-700: #ffa000;
+@yellow-600: #ffb300;
+@yellow-500: #ffc107;
+@yellow-400: #ffca28;
+@yellow-300: #ffd54f;
+@yellow-200: #ffe082;
+@yellow-100: #ffecb3;
+@yellow-50: #fff8e1;
+
+@warning-color: @yellow-500;
+
+// Red
+@red-900: #771d1d;
+@red-800: #9b1c1c;
+@red-700: #c81e1e;
+@red-600: #e02424;
+@red-500: #f05252;
+@red-400: #f98080;
+@red-300: #f8b4b4;
+@red-200: #fbd5d5;
+@red-100: #fde8e8;
+@red-50: #fdf2f2;
+
+@error-color: @red-500;
+
+// Grey
+@grey-900: #111827;
+@grey-800: #1f2937;
+@grey-700: #374151;
+@grey-600: #4b5563;
+@grey-500: #858b9c;
+@grey-400: #9ca3af;
+@grey-300: #d1d5db;
+@grey-200: #e5e7eb;
+@grey-100: #f3f4f6;
+@grey-50: #f9fafb;
+
+@grey: @grey-500;
+
+@primary-color-outline: @info-color;
+@primary-5: #2bab7c;
+@hover-color: @primary-5;
+@border-color-base: hsv(0, 0, 85%);
+@text-selection-bg: #1890ff;
+@text-color: fade(@black, 85%);
+@text-color-secondary: @grey;
+@unselected-color: #7aa997;
+@white: #fff;
+@black: #000;
+@component-background: @white;
+@item-hover-bg: #f5f5f5;
+
+// Height
+@height-base: 36px;
+@height-lg: 40px;
+@height-sm: 32px;
+
+// Border
+@border-radius-base: 6px;
+
+// Font
+@font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+@font-size-base: 14px;
+@font-size-lg: 16px;
+@font-size-sm: 12px;
+@font-size-xs: 10px;
+@heading-1-size: 48px;
+@heading-2-size: 40px;
+@heading-3-size: 32px;
+@heading-4-size: 24px;
+@heading-5-size: 20px;
+@typography-title-font-weight: 600;
+@typography-title-margin-top: 0;
+@typography-title-margin-bottom: 0;
+
+// Padding
+@padding-lg: 24px; // containers
+@padding-md: 16px; // small containers and buttons
+@padding-sm: 12px; // Form controls and items
+@padding-xs: 8px; // small items
+@padding-xss: 4px; // more small
+
+// Button
+@btn-font-weight: 600;
+
+//Layout
+@layout-sider-background: @white;
+@layout-sider-width: 220px;
+// For setting avatar-dropdown to two rows (to display name and role)
+@layout-header-background: @white;
+@layout-header-padding: 0 25px;
+@layout-body-background: #eef0f4;
+
+// Form
+@form-item-trailing-colon: false;
+@form-item-margin-bottom: 10px;
+@form-vertical-label-padding: 0 0 5px;
+
+// Menu
+@menu-collapsed-width: 80px;
+@menu-item-color: @grey;
+@menu-item-height: 36px;
+@menu-icon-size: 20px;
+@menu-item-boundary-margin: 0;
+@menu-item-padding-horizontal: 0;
+@menu-item-vertical-margin: 0;
+@menu-bg: @component-background;
+@menu-popup-bg: @component-background;
+@menu-inline-submenu-bg: @component-background;
+@menu-item-active-bg: transparent;
+
+// Divider
+@divider-color: @grey-200;
+
+// Dropdown
+@dropdown-edge-child-vertical-padding: 0;
+
+// Breadcrumb
+@breadcrumb-link-color: @grey;
+@breadcrumb-separator-color: @grey;
+@breadcrumb-font-size: @heading-5-size;
+@breadcrumb-icon-font-size: 16px;
+
+// Radio
+@radio-button-color: @white;
+@radio-focus-shadow: none;
+
+// Select
+@select-item-selected-bg: @green-100;
+
+// Table
+@table-header-bg: @grey-50;
+@table-header-color: #999999;
+@table-row-hover-bg: @grey-100;
+@table-bg: #fdfdfd;
+@radio-wrapper-margin-right: 0;
+@table-selected-row-bg: @green-100;
+
+// List
+@list-item-meta-title-margin-bottom: 0;
+@list-item-meta-margin-bottom: 0;
+
+// Tabs
+@tabs-card-horizontal-padding: 0;
+@tabs-horizontal-gutter: 0;
+
+// Progress
+@progress-default-color: @primary-color;
+
+// Anchor
+@anchor-border-color: #c4c4c4;
+@anchor-link-top: 5px;
+
+// Calender
+@calendar-item-active-bg: @primary-color;
+
+// Media queries breakpoints
+// @screen-xs and @screen-xs-min is not used in Grid
+// smallest break point is @screen-md
+
+// Extra small screen / phone
+@screen-xs: 480px;
+@screen-xs-min: @screen-xs;
+@screen-xs-max: (@screen-sm-min - 1px);
+
+// Small screen / tablet
+@screen-sm: 576px;
+@screen-sm-min: @screen-sm;
+@screen-sm-max: (@screen-md-min - 1px);
+
+// Medium screen / tablet landscape
+@screen-md: 768px;
+@screen-md-min: @screen-md;
+@screen-md-max: (@screen-lg-min - 1px);
+
+// Large screen / desktop
+@screen-lg: 992px;
+@screen-lg-min: @screen-lg;
+@screen-lg-max: (@screen-xl-min - 1px);
+
+// Extra large screen / full hd
+@screen-xl: 1200px;
+@screen-xl-min: @screen-xl;
+@screen-xl-max: (@screen-xxl-min - 1px);
+
+// Extra extra large screen / large desktop
+@screen-xxl: 1600px;
+@screen-xxl-min: @screen-xxl;
+
+@desktop-xxl: ~'only screen and (min-width: @{screen-xxl-min})';
+@desktop-xl: ~'only screen and (min-width: @{screen-xl-min}) and (max-width: @{screen-xl-max})';
+@desktop-lg: ~'only screen and (min-width: @{screen-lg-min}) and (max-width: @{screen-lg-max})';
+@tablet-md: ~'only screen and (min-width: @{screen-md-min}) and (max-width: @{screen-md-max})';
+@tablet-sm: ~'only screen and (min-width: @{screen-sm-min}) and (max-width: @{screen-sm-max})';
+@mobile-xs: ~'only screen and (min-width: @{screen-xs}) and (max-width: @{screen-xs-max})';

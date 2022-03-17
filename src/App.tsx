@@ -1,25 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import ConfigProvider from 'antd/es/config-provider';
+import './App.less';
+import Routes from '@routes/AppRoutes';
+import { IconContext } from 'react-icons/lib';
+import { message } from 'antd';
 
 function App() {
+  message.config({ top: 80 });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ConfigProvider prefixCls='shrf'>
+      <IconContext.Provider
+        value={{ style: { verticalAlign: 'middle', textAlign: 'center' } }}
+      >
+        <Routes />
+      </IconContext.Provider>
+    </ConfigProvider>
   );
 }
 

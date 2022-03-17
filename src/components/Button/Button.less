@@ -1,0 +1,130 @@
+@btn-prefix-cls: ~'@{ant-prefix}-btn';
+
+.btn-color-selection(@color-selected) {
+  @color: @color-selected;
+  @color-hover: fade(@color, 80%);
+  @color-hover-border: fade(@color, 10%);
+  @color-active: darken(@color, 5%);
+
+  .btn-hover-cbo {
+    &:hover {
+      color: @color-hover;
+      border-color: @color-hover;
+    }
+  }
+
+  .btn-active-cbo {
+    &:active,
+    &:focus {
+      color: @color-active;
+      border-color: @color-active;
+    }
+  }
+
+  .btn-hover-active-cbo {
+    .btn-hover-cbo;
+    .btn-active-cbo;
+  }
+
+  &.@{btn-prefix-cls} {
+    &:active {
+      transform: scale(0.99);
+      transition-duration: 0.1s;
+    }
+
+    &,
+    &.@{btn-prefix-cls}-dashed {
+      .btn-hover-active-cbo;
+    }
+    &.@{btn-prefix-cls}-primary {
+      color: white;
+      background-color: @color;
+      border-color: @color;
+      &:not(.@{btn-prefix-cls}-background-ghost):not(:disabled) {
+        &:hover {
+          background-color: @color-hover;
+          border-color: @color-hover;
+        }
+        &:active,
+        &:focus {
+          background-color: @color-active;
+          border-color: @color-active !important;
+        }
+      }
+
+      &.@{btn-prefix-cls}-background-ghost {
+        color: @color;
+        background: transparent;
+        border-color: @color;
+        text-shadow: none;
+      }
+    }
+
+    &.@{btn-prefix-cls}-link {
+      border: none;
+      background: none;
+      padding: 0;
+      height: fit-content;
+      & {
+        color: @color;
+      }
+      &:hover {
+        color: @color-hover;
+      }
+      &:active,
+      &:focus {
+        color: @color-active;
+      }
+    }
+
+    &.@{btn-prefix-cls}-text {
+      border: none;
+      &:hover {
+        color: @color-hover;
+      }
+      &:active,
+      &:focus {
+        color: @color-active;
+      }
+    }
+
+    &.@{btn-prefix-cls}-dashed {
+      &.@{btn-prefix-cls}-background-ghost {
+        color: white;
+        background: transparent;
+        border-color: white;
+        text-shadow: none;
+      }
+    }
+
+    &,
+    &.@{btn-prefix-cls}-dashed {
+      &.@{btn-prefix-cls}-background-ghost {
+        background: transparent;
+        .btn-hover-active-cbo;
+      }
+    }
+  }
+}
+
+.btn-success {
+  .btn-color-selection(@success-color);
+}
+
+.btn-warning {
+  .btn-color-selection(@warning-color);
+}
+
+.btn-info {
+  .btn-color-selection(@info-color);
+}
+
+.btn-error {
+  .btn-color-selection(@error-color);
+}
+
+.btn-grey {
+  .btn-color-selection(@grey);
+}
+
+.btn-color-selection(@primary-color);
