@@ -1,7 +1,6 @@
 import { Row, Image, Typography, Space } from 'antd';
 import Button from '@components/Button';
 import { useNavigate } from 'react-router-dom';
-import { findRoutePath } from '@utils/routingUtils';
 import Img404 from '@assets/404.svg';
 import './NotFound.less';
 import { BoldTitle } from '@components/Title';
@@ -37,7 +36,7 @@ const NotFound = () => {
           <Button
             type='primary'
             className='not-found-btn'
-            onClick={() => navigate(findRoutePath('root'))}
+            onClick={() => navigate(-1)}
           >
             Go Back
           </Button>
