@@ -1,0 +1,46 @@
+.item-details-skeleton-wrapper {
+  max-width: 700px;
+  margin: 50px auto;
+
+  @media (max-width: 767px) {
+    margin: 0 auto;
+  }
+
+  .item-details-skeleton-image {
+    @media (max-width: 700px) {
+      width: 100%;
+    }
+    .@{ant-prefix}-skeleton-header {
+      padding-right: 0;
+      .@{ant-prefix}-skeleton-avatar {
+        height: 100%;
+        width: 100%;
+        min-height: 350px;
+      }
+    }
+  }
+  .item-details-skeleton-description {
+    padding-left: 25px;
+    @media (max-width: 700px) {
+      width: 100%;
+      padding-right: 25px;
+    }
+    .@{ant-prefix}-skeleton-title {
+      height: 40px;
+      margin-bottom: 35px;
+    }
+    .@{ant-prefix}-skeleton-paragraph {
+      & > li:nth-child(1) {
+        height: 30px;
+        margin-bottom: 30px;
+      }
+      & > li:nth-child(2) {
+        height: 20px;
+      }
+    }
+    .@{ant-prefix}-skeleton-button {
+      width: 100px;
+      margin-top: 20px;
+    }
+  }
+}

@@ -28,9 +28,7 @@ class CookieTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token["name"] = user.name
-        token["role"] = "Super Admin" if user.is_superuser else "Admin"
-        token['gender']= user.gender
+        token["email"] = user.email
 
         return token
 

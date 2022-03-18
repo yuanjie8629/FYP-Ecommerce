@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 from customer.choices import GENDER_CHOICES
 
+
 class CustAcc(AbstractUser):
     id = models.AutoField(primary_key=True)
     email = models.CharField(unique=True, max_length=255)
@@ -12,14 +13,20 @@ class CustAcc(AbstractUser):
     pos_reg = models.ForeignKey(
         "CustPosReg", on_delete=models.DO_NOTHING, blank=True, null=True
     )
+    first_name = None
+    last_name = None
+    username = None
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = []
-    
+
     class Meta:
         db_table = "cust_acc"
 
+    def __init__(self, *args, **kwargs):
+        super(CustAcc, self).__init__(*args, **kwargs)
+        self.cust_type = CustType.objects.get(type="cust")
 
 
 class CustPosDeclar(models.Model):
@@ -30,7 +37,6 @@ class CustPosDeclar(models.Model):
 
     class Meta:
         db_table = "cust_pos_declar"
-        managed=False
 
 
 class CustPosDeclarQues(models.Model):
@@ -39,7 +45,6 @@ class CustPosDeclarQues(models.Model):
 
     class Meta:
         db_table = "cust_pos_declar_ques"
-        managed=False
 
 
 class CustPosReg(models.Model):
@@ -61,7 +66,6 @@ class CustPosReg(models.Model):
 
     class Meta:
         db_table = "cust_pos_reg"
-        managed=False
 
 
 class CustProfile(models.Model):
@@ -82,4 +86,3 @@ class CustType(models.Model):
 
     class Meta:
         db_table = "cust_type"
-        managed=False

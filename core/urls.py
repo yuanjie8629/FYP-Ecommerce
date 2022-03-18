@@ -1,4 +1,6 @@
 from django.urls import include, path
+
+from customer.views import RegisterView
 from .views import (
     BlacklistToken,
     CookieTokenObtainPairView,
@@ -8,6 +10,7 @@ from .views import (
 
 
 urlpatterns = [
+    path("register/", RegisterView.as_view(), name="register"),
     path("login/", CookieTokenObtainPairView.as_view(), name="login"),
     path("token/refresh/", CookieTokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", MyTokenVerifyView.as_view(), name="token_verify"),
@@ -16,6 +19,5 @@ urlpatterns = [
         "password_reset/",
         include("django_rest_passwordreset.urls", namespace="password_reset"),
     ),
-    path("", include("image.urls")),
     path("item/", include("item.urls")),
 ]

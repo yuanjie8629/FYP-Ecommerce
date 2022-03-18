@@ -1,10 +1,7 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
-
-from image.views import ImageViewSet
+# from django.urls import include, path
+# from image.views import ImageView
 
 
-router = DefaultRouter()
-router.register(r"image", ImageViewSet)
-
-urlpatterns = router.urls
+# urlpatterns = [
+#     path(r"image", ImageView.as_view(), name="image"),
+# ]

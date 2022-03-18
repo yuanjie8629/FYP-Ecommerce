@@ -2,19 +2,13 @@ from datetime import date
 from django.db import models
 from django.core.validators import MinValueValidator
 from polymorphic.models import PolymorphicModel
-from core.models import BaseModel
+from core.models import PolySoftDeleteModel
 from image.models import Image
 from item.choices import ITEM_STATUS, ITEM_TYPE, PROD_CAT
-from uuid import uuid4
 from cloudinary.models import CloudinaryField
 
 
-def upload_to(instance, filename):
-    # upload_to = "{}/{}".format(instance.type, instance.name)
-    return "thumbnails/{}.{}".format(uuid4().hex, filename.split(".")[-1])
-
-
-class Item(BaseModel, PolymorphicModel):
+class Item(PolySoftDeleteModel, PolymorphicModel):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
     type = models.CharField(max_length=20, choices=ITEM_TYPE)
@@ -56,6 +50,8 @@ class Item(BaseModel, PolymorphicModel):
 
     class Meta:
         db_table = "item"
+        managed=False
+
 
     def __str__(self):
         return "{}: {}".format(self.type, self.name)
@@ -90,6 +86,7 @@ class Product(Item):
 
     class Meta:
         db_table = "product"
+        managed = False
 
 
 class Package(Item):
@@ -105,6 +102,7 @@ class Package(Item):
 
     class Meta:
         db_table = "package"
+        managed = False
 
     def save(self, *args, **kwargs):
         if (
@@ -136,6 +134,7 @@ class PackageItem(models.Model):
 
     class Meta:
         db_table = "package_item"
+        managed = False
 
 
 class ImageItemLine(models.Model):
@@ -145,3 +144,4 @@ class ImageItemLine(models.Model):
 
     class Meta:
         db_table = "image_item_line"
+        managed = False

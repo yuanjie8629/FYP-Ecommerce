@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
 
 const localBaseURL = 'http://127.0.0.1:8000/api/';
-const serverBaseURL = 'https://fyp-shrf.herokuapp.com/api/';
+const serverBaseURL = 'https://fyp-shrf-ecommerce.herokuapp.com/api/';
 
 export const baseURL =
   process.env.NODE_ENV === 'production' ? serverBaseURL : localBaseURL;

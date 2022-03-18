@@ -1,0 +1,21 @@
+.item-details {
+  max-width: 700px;
+  margin: 50px auto 0 auto;
+  @media (max-width: 767px) {
+    margin: 0 auto;
+  }
+  .item-image {
+    img {
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &-list-info {
+    list-style-type: square;
+    color: @grey;
+    li {
+      margin-bottom: 10px;
+    }
+  }
+}

@@ -1,8 +1,5 @@
 @ant-prefix: shrf;
 
-// Colours
-@body-background: #eef0f4;
-
 // Green
 @green-900: #014737;
 @green-800: #03543f;
@@ -125,11 +122,10 @@
 //Layout
 @layout-sider-background: @white;
 @layout-sider-width: 220px;
-// For setting avatar-dropdown to two rows (to display name and role)
 @layout-header-background: @white;
-@layout-header-padding: 0 25px;
-@layout-body-background: #eef0f4;
-
+@layout-header-padding: 0;
+@layout-body-background: @white;
+@layout-header-height: 80px;
 // Form
 @form-item-trailing-colon: false;
 @form-item-margin-bottom: 10px;
@@ -198,7 +194,7 @@
 // smallest break point is @screen-md
 
 // Extra small screen / phone
-@screen-xs: 480px;
+@screen-xs: 0;
 @screen-xs-min: @screen-xs;
 @screen-xs-max: (@screen-sm-min - 1px);
 

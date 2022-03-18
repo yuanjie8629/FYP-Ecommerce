@@ -1,10 +1,6 @@
 import React, { Suspense } from 'react';
-import { Layout as AntdLayout, Row, RowProps } from 'antd';
-import { Helmet } from 'react-helmet';
+import { Layout as AntdLayout, RowProps } from 'antd';
 import Header from './Header';
-
-import Footer from './Footer';
-import './Layout.less';
 import PageLoad from '@components/Loading/PageLoad';
 
 export interface CustomLayoutProps extends RowProps {
@@ -15,21 +11,20 @@ export interface CustomLayoutProps extends RowProps {
 const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
   const { Content } = AntdLayout;
   return (
-    <AntdLayout hasSider>
-      <Helmet>
-        <meta name='viewport' content='width=1600' />
-      </Helmet>
-      <AntdLayout>
-        <Header />
-        <Suspense fallback={<PageLoad />}>
-          <Content className='content' style={{ minWidth: 1280 }}>
-            <Row justify={justify} {...props}>
-              {props.children}
-            </Row>
-          </Content>
-          <Footer />
-        </Suspense>
-      </AntdLayout>
+    <AntdLayout>
+      <Header />
+      <Suspense fallback={<PageLoad />}>
+        <Content
+          className='content'
+          style={{
+            width: '100%',
+            margin: ' 0 auto',
+            maxWidth: 1280,
+          }}
+        >
+          {props.children}
+        </Content>
+      </Suspense>
     </AntdLayout>
   );
 };

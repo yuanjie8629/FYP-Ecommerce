@@ -3,9 +3,19 @@ import Cookies from 'js-cookie';
 import axios from '../axiosInstance';
 
 interface LoginDetailsProps {
-  username: string;
+  email: string;
   password: string;
 }
+
+interface RegisterDetailsProps {
+  email: string;
+  password: string;
+  password2: string;
+}
+
+export const registerAPI = (registerDetails: RegisterDetailsProps) => {
+  return axios.post(`register/`, registerDetails);
+};
 
 export const loginAPI = (loginDetails: LoginDetailsProps) => {
   return axios

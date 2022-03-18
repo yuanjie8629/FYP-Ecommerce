@@ -1,6 +1,7 @@
-import Home from "@pages/Home";
-import Login from "@pages/Login/Login";
-import NotFound from "@pages/NotFound/NotFound";
+import Home from '@pages/Home';
+import NotFound from '@pages/NotFound/NotFound';
+import ItemDetails from '@pages/Item/ItemDetails';
+import SearchItem from '@pages/Item/SearchItem';
 
 const routeList: {
   label: string;
@@ -11,17 +12,22 @@ const routeList: {
     label: 'notFound',
     path: '/404',
     component: <NotFound />,
-  },{
-    label: 'login',
-    path: '/login',
-    component: <Login />,
-    },
-    {
-      label: 'home',
-      path: '/home',
-      component: <Home />,
-    },
-  
+  },
+  {
+    label: 'home',
+    path: '/home',
+    component: <Home />,
+  },
+  {
+    label: 'item',
+    path: '/item/:id',
+    component: <ItemDetails />,
+  },
+  {
+    label: 'searchItem',
+    path: '/item/search',
+    component: <SearchItem />,
+  },
 ];
 
 export default routeList;
