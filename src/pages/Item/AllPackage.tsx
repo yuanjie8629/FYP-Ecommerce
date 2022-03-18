@@ -49,15 +49,15 @@ const AllPackage = ({ onChange = () => null, ...props }: AllPackageProps) => {
     <div style={{ margin: 10 }}>
       {contextHolder}
       <Row gutter={[40, 40]} className='item-list'>
-      {loading ? (
-              <SkeletonItem total={12} />
-            ) : list.length > 0 ? (
-              list.map((data) => <ItemCard info={data} />)
-            ) : (
-              <Row justify='center' className='full-width'>
-                <Empty />
-              </Row>
-            )}
+        {loading ? (
+          <SkeletonItem total={12} />
+        ) : list.length > 0 ? (
+          list.map((data) => <ItemCard key={data.id} info={data} />)
+        ) : (
+          <Row justify='center' className='full-width'>
+            <Empty />
+          </Row>
+        )}
       </Row>
     </div>
   );

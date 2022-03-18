@@ -71,7 +71,7 @@ const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
         {loading ? (
           <SkeletonItem total={12} />
         ) : list.length > 0 ? (
-          list.map((data) => <ItemCard info={data} />)
+          list.map((data) => <ItemCard key={data.id} info={data} />)
         ) : (
           <Row justify='center' className='full-width' style={{ padding: 20 }}>
             <Empty />

@@ -10,6 +10,7 @@ import {
   Grid,
   Image,
   message,
+  notification,
   Row,
   Space,
   Table,
@@ -33,8 +34,19 @@ const ItemDetails = () => {
   const [images, setImages] = useState([]);
   const { useBreakpoint } = Grid;
   const [tabKey, setTabKey] = useState('description');
+  const [notiApi, notiContextHolder] = notification.useNotification();
 
   const screens = useBreakpoint();
+
+  const addToCart = () => {
+    notiApi.success({
+      message: 'Item added to cart',
+      description:
+        'You have successfully added an item to your cart. Please click the button below to checkout.',
+      top: 50,
+      duration: 2,
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -122,6 +134,7 @@ const ItemDetails = () => {
   return (
     <Layout>
       {contextHolder}
+      {notiContextHolder}
       {loading ? (
         <ItemDetailsSkeleton active={active} />
       ) : (
@@ -221,7 +234,11 @@ const ItemDetails = () => {
                   </li>
                 </ul>
 
-                <Button type='primary' disabled={data.stock <= 0}>
+                <Button
+                  type='primary'
+                  disabled={data.stock <= 0}
+                  onClick={addToCart}
+                >
                   Add To Cart
                 </Button>
               </Space>
@@ -312,7 +329,12 @@ const ItemDetails = () => {
           </Col>
           {!screens.md && (
             <div style={{ padding: 20 }} className='full-width'>
-              <Button type='primary' block disabled={data.stock <= 0}>
+              <Button
+                type='primary'
+                block
+                disabled={data.stock <= 0}
+                onClick={addToCart}
+              >
                 Add To Cart
               </Button>
             </div>

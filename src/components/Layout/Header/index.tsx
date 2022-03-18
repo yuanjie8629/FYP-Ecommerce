@@ -18,6 +18,7 @@ import { removeSearchParams } from '@utils/urlUtls';
 import LoginRegModal from '@components/Modal/LoginRegModal';
 import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
+import { logoutAPI } from '@api/services/authAPI';
 const Header = () => {
   const { Header } = Layout;
   const navigate = useNavigate();
@@ -107,13 +108,14 @@ const Header = () => {
         onMenuClick={(route) => {
           setShowDrawer(false);
           if (route === 'login') {
-            LoginRegModal.show('login');
+            navigate(findRoutePath('login'));
           }
           if (route === 'register') {
             LoginRegModal.show('register');
           }
 
           if (route === 'logout') {
+            logoutAPI();
           }
         }}
       />

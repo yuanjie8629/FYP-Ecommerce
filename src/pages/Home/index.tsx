@@ -3,7 +3,7 @@ import AllItem from '@pages/Item/AllItem';
 import AllPackage from '@pages/Item/AllPackage';
 import AllProduct from '@pages/Item/AllProduct';
 import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
-import { Tabs, Pagination, Space, Row, Col, Modal } from 'antd';
+import { Tabs, Pagination, Space, Row, Col } from 'antd';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -15,7 +15,6 @@ const Home = () => {
   return (
     <Layout>
       <Space direction='vertical' size={20} className='full-width'>
-        <Modal visible={true}>Test</Modal>
         <Tabs
           defaultActiveKey='all'
           centered

@@ -15,6 +15,7 @@ const SkeletonItem = ({ total }: SkeletonItemProps) => {
           sm={{ span: 12 }}
           md={{ span: 6 }}
           style={{ textAlign: 'center' }}
+          key={`skeleton-col-${i}`}
         >
           <Skeleton
             loading={true}
@@ -22,6 +23,7 @@ const SkeletonItem = ({ total }: SkeletonItemProps) => {
             avatar={{ shape: 'square' }}
             paragraph={false}
             title={false}
+            key={`skeleton-${i}`}
           />
         </Col>
       );
