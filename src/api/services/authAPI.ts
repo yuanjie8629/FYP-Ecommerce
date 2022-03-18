@@ -25,7 +25,6 @@ export const loginAPI = (loginDetails: LoginDetailsProps) => {
         'access_token'
       )}`;
       setExp(res.data.exp);
-      window.location.href = '';
       return Promise.resolve(res);
     })
     .catch((error) => Promise.reject(error));

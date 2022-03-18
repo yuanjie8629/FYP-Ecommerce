@@ -61,25 +61,29 @@ const SearchItem = () => {
             )}
           </Row>
         </div>
-        <Row justify='end'>
-          <Col>
-            <Pagination
-              defaultCurrent={1}
-              total={itemCount}
-              onChange={(page) => {
-                if (page > 1) {
-                  setSearchParams(
-                    addSearchParams(searchParams, {
-                      offset: (page - 1) * 12,
-                    })
-                  );
-                } else {
-                  setSearchParams(removeSearchParams(searchParams, 'offset'));
-                }
-              }}
-            />
-          </Col>
-        </Row>
+        {itemCount > 0 && (
+          <Row justify='end'>
+            <Col>
+              (
+              <Pagination
+                defaultCurrent={1}
+                total={itemCount}
+                onChange={(page) => {
+                  if (page > 1) {
+                    setSearchParams(
+                      addSearchParams(searchParams, {
+                        offset: (page - 1) * 12,
+                      })
+                    );
+                  } else {
+                    setSearchParams(removeSearchParams(searchParams, 'offset'));
+                  }
+                }}
+              />
+              )
+            </Col>
+          </Row>
+        )}
       </Space>
     </Layout>
   );

@@ -20,4 +20,5 @@ urlpatterns = [
         include("django_rest_passwordreset.urls", namespace="password_reset"),
     ),
     path("item/", include("item.urls")),
+    path("", include("cart.urls")),
 ]

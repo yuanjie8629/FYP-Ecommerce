@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { Col, Form, Input, message, Row, Space, Typography } from 'antd';
+import { Alert, Col, Form, Input, message, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { LoginRegModalContentProps } from '.';
 import { useForm } from 'antd/lib/form/Form';
@@ -27,6 +27,7 @@ const RegisterModal = memo(
     const [hasSymbol, setHasSymbol] = useState(false);
     const [passInRange, setPassInRange] = useState(false);
     const [errMsg, setErrMsg] = useState([]);
+    const [sameEmailMsg, setSameEmailMsg] = useState('');
 
     const passValidation = [
       {
@@ -89,7 +90,7 @@ const RegisterModal = memo(
       await registerAPI({
         email: values.email,
         password: values.password,
-        password2: values.password2,
+        password2: values.confirmPass,
       })
         .then((res) => {
           onSubmit(true);
@@ -102,7 +103,12 @@ const RegisterModal = memo(
         .catch((err) => {
           onSubmit(false);
           if (err.response?.status === 400) {
-            setErrMsg(err.response?.data.password);
+            if (err.response?.data?.email)
+              setSameEmailMsg(
+                'The email already exists. Please log in with the email.'
+              );
+            if (err.response?.data?.password)
+              setErrMsg(err.response?.data?.password);
           } else {
             messageApi.open({
               key: 'err',
@@ -133,6 +139,14 @@ const RegisterModal = memo(
           <Title level={4} className='color-primary'>
             Registration
           </Title>
+          {sameEmailMsg && (
+            <Alert
+              message={<Text type='danger'>{sameEmailMsg}</Text>}
+              type='error'
+              showIcon
+              style={{ textAlign: 'start' }}
+            />
+          )}
           <ColorCard
             backgroundColor='grey'
             bodyStyle={{ padding: 15, textAlign: 'start' }}
@@ -164,7 +178,7 @@ const RegisterModal = memo(
                   },
                 ]}
               >
-                <Input size='large' placeholder='Email' type='email' />
+                <Input placeholder='Email' type='email' />
               </Form.Item>
               <Form.Item
                 name='password'
@@ -247,6 +261,7 @@ const RegisterModal = memo(
               </Form.Item>
             </Space>
           </div>
+          
           <Button htmlType='submit' type='primary' block loading={loading}>
             Register
           </Button>

@@ -16,9 +16,9 @@ import {
 } from 'react-icons/hi';
 import { removeSearchParams } from '@utils/urlUtls';
 import LoginRegModal from '@components/Modal/LoginRegModal';
-import jwtDecode from 'jwt-decode';
-import Cookies from 'js-cookie';
 import { logoutAPI } from '@api/services/authAPI';
+import { getUserEmail } from '@utils/userUtils';
+import Cart from '@pages/Cart';
 const Header = () => {
   const { Header } = Layout;
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const Header = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
+  const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
     if (searchParams.has('name')) {
@@ -35,8 +36,6 @@ const Header = () => {
     }
   }, [searchParams]);
 
-  let tkn: any =
-    Cookies.get('access_token') && jwtDecode(Cookies.get('access_token'));
   return (
     <Header className='header-container'>
       <Row justify='space-between' align='middle' className='header'>
@@ -49,7 +48,7 @@ const Header = () => {
               src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
               alt='Logo'
               preview={false}
-              width={120}
+              width={screens.sm ? 120 : 80}
             />
           </div>
         </Col>
@@ -74,19 +73,21 @@ const Header = () => {
           </Col>
         )}
         <Col style={{ textAlign: 'right' }}>
-          <Space size={40} align='center'>
+          <Space size={screens.sm ? 40 : 20} align='center'>
             <Space size={30}>
               {screens.md && (
                 <HiOutlineUser
                   style={{ fontSize: 25, cursor: 'pointer' }}
-                  className={tkn?.email && 'color-primary'}
+                  className={getUserEmail() && 'color-primary'}
                 />
               )}
-              {screens.sm && (
-                <HiOutlineShoppingCart
-                  style={{ fontSize: 25, cursor: 'pointer' }}
-                />
-              )}
+
+              <HiOutlineShoppingCart
+                style={{ fontSize: 25, cursor: 'pointer' }}
+                onClick={() => {
+                  setShowCart(true);
+                }}
+              />
             </Space>
             <HiOutlineMenuAlt3
               style={{ fontSize: 25, cursor: 'pointer' }}
@@ -101,14 +102,13 @@ const Header = () => {
       <Drawer
         visible={showDrawer}
         maskClosable
-        user={{ email: tkn?.email }}
         onClose={() => {
           setShowDrawer(false);
         }}
         onMenuClick={(route) => {
           setShowDrawer(false);
           if (route === 'login') {
-            navigate(findRoutePath('login'));
+            LoginRegModal.show('login');
           }
           if (route === 'register') {
             LoginRegModal.show('register');
@@ -117,6 +117,13 @@ const Header = () => {
           if (route === 'logout') {
             logoutAPI();
           }
+        }}
+      />
+      <Cart
+        visible={showCart}
+        maskClosable
+        onClose={() => {
+          setShowCart(false);
         }}
       />
       <LoginRegModal />

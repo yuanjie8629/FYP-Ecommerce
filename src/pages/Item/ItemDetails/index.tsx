@@ -3,6 +3,7 @@ import Button from '@components/Button';
 import Layout from '@components/Layout';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
+import { getUserId } from '@utils/userUtils';
 import {
   Carousel,
   Col,
@@ -35,14 +36,15 @@ const ItemDetails = () => {
   const { useBreakpoint } = Grid;
   const [tabKey, setTabKey] = useState('description');
   const [notiApi, notiContextHolder] = notification.useNotification();
-
   const screens = useBreakpoint();
 
   const addToCart = () => {
+    if (getUserId()) {
+      console.log(getUserId());
+    }
     notiApi.success({
       message: 'Item added to cart',
-      description:
-        'You have successfully added an item to your cart. Please click the button below to checkout.',
+      description: 'You have successfully added an item to your cart.',
     });
   };
 
