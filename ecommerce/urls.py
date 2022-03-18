@@ -23,8 +23,7 @@ urlpatterns = [
     re_path("admin_django/", admin.site.urls),
     path("api/", include("core.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
-    re_path("", index),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += (re_path("", index),)
+urlpatterns += (re_path(".*", index),)
