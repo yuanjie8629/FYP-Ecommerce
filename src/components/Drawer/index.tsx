@@ -68,8 +68,6 @@ const Drawer = ({ onMenuClick = () => null, user, ...props }: DrawerProps) => {
                     if (['login', 'register'].includes(item.route)) {
                       return;
                     }
-
-                    navigate(findRoutePath(item.route));
                   }}
                 >
                   {item.label}

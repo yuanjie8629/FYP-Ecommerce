@@ -2,7 +2,7 @@ import ConfigProvider from 'antd/es/config-provider';
 import './App.less';
 import Routes from '@routes/AppRoutes';
 import { IconContext } from 'react-icons/lib';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
@@ -14,6 +14,8 @@ function App() {
   const idleTimer = useIdleTimer({
     timeout: 10000,
   });
+
+  notification.config({ maxCount: 1, placement: 'bottomRight', duration: 5 });
 
   const timer = useTimer({
     expiryTimestamp:

@@ -43,8 +43,6 @@ const ItemDetails = () => {
       message: 'Item added to cart',
       description:
         'You have successfully added an item to your cart. Please click the button below to checkout.',
-      top: 50,
-      duration: 2,
     });
   };
 
