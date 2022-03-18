@@ -68,6 +68,8 @@ const Drawer = ({ onMenuClick = () => null, user, ...props }: DrawerProps) => {
                     if (['login', 'register'].includes(item.route)) {
                       return;
                     }
+
+                    navigate(findRoutePath(item.route));
                   }}
                 >
                   {item.label}
@@ -77,6 +79,9 @@ const Drawer = ({ onMenuClick = () => null, user, ...props }: DrawerProps) => {
                   strong
                   className='text-button text-sm'
                   onClick={() => {
+                    if (['login', 'register'].includes(item.route)) {
+                      return;
+                    }
                     navigate(findRoutePath(item.route));
                   }}
                 >
