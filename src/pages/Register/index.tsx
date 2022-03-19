@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Alert, Col, Form, Input, message, Row, Space, Typography } from 'antd';
+import { Alert, Col, Form, Input, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
 import { registerAPI } from '@api/services/authAPI';
@@ -135,9 +135,7 @@ const Register = () => {
               style={{ textAlign: 'center' }}
               className='full-width'
             >
-              <Title level={4} className='color-primary'>
-                Registration
-              </Title>
+              <Title level={4}>Registration</Title>
               {sameEmailMsg && (
                 <Alert
                   message={<Text type='danger'>{sameEmailMsg}</Text>}

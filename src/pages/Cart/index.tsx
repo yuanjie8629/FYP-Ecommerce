@@ -10,6 +10,7 @@ import {
 import {
   Col,
   ConfigProvider,
+  Divider,
   Drawer,
   DrawerProps,
   Grid,
@@ -22,16 +23,24 @@ import {
   Typography,
 } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
-import { addItemToCart } from '@utils/storageUtils';
+import { useContext, useEffect, useState } from 'react';
+import {
+  addItemToCart,
+  getCartItem,
+  getCartItemCount,
+  getUserId,
+  removeItemFromCart,
+  setQuantityToCart,
+} from '@utils/storageUtils';
 import {
   cartAddAPI,
   cartRemoveAPI,
   cartSetQuantityAPI,
 } from '@api/services/cartAPI';
 import { serverErrMsg } from '@utils/messageUtils';
-import { AppContext } from '@contexts/AppContext';
+import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
+import { moneyFormatter } from '@utils/numUtils';
 
 interface CartProps extends DrawerProps {
   onDrawerHide?: () => void;
@@ -43,10 +52,32 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const location = useLocation();
-  const [cart, setCart] = useContext(AppContext);
-  const [cartLoading, setCartLoading] = useState<number>();
+  const [cart, setCart] = useContext(CartContext);
+  const [cartLoading, setCartLoading] = useState([]);
   const [messageApi] = useContext(MessageContext);
   const [cartValue, setCartValue] = useState<number>();
+  const itemCount = cart.length || getCartItemCount();
+  const user = getUserId();
+  const totalPrice = () => {
+    let sum = 0;
+    if (user) {
+      cart.forEach((cartItem) => {
+        let { special_price, price, quantity } = cartItem;
+        sum += special_price ? special_price * quantity : price * quantity;
+      });
+    } else {
+      if (getCartItem())
+        getCartItem().forEach((cartItem) => {
+          let { special_price, price, quantity } = cartItem;
+          if (special_price)
+            special_price = moneyFormatter(parseFloat(special_price), true);
+          price = moneyFormatter(parseFloat(price), true);
+          quantity = parseInt(quantity);
+          sum += special_price ? special_price * quantity : price * quantity;
+        });
+    }
+    return sum;
+  };
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
@@ -54,54 +85,69 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
   };
 
   const handleCartAdd = (item) => {
-    setCartLoading(item.id);
-    cartAddAPI(item.id, 1)
-      .then((res) => {
-        setCart(res.data.items);
-        setCartLoading(undefined);
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          showServerErrMsg();
-          setCartLoading(undefined);
-        }
-      });
+    setCartLoading([...cartLoading, item.id]);
+    if (user) {
+      cartAddAPI(item.id, 1)
+        .then((res) => {
+          setCart(res.data.items);
+          setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+            setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+          }
+        });
+    } else {
+      addItemToCart(item);
+      setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+    }
   };
 
   const handleCartSet = (item, value) => {
-    setCartLoading(item.id);
-    cartSetQuantityAPI(item.id, value)
-      .then((res) => {
-        setCart(res.data.items);
-        setCartLoading(undefined);
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          showServerErrMsg();
-          setCartLoading(undefined);
-        }
-      });
+    setCartLoading([...cartLoading, item.id]);
+    if (user) {
+      cartSetQuantityAPI(item.id, value)
+        .then((res) => {
+          setCart(res.data.items);
+          setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+            setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+          }
+        });
+    } else {
+      setQuantityToCart(item.id, value);
+      setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+    }
   };
 
   const handleCartMinus = (item) => {
-    setCartLoading(item.id);
-    cartRemoveAPI(item.id, 1)
-      .then((res) => {
-        setCart(res.data.items);
-        setCartLoading(undefined);
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          showServerErrMsg();
-          setCartLoading(undefined);
-        }
-      });
+    setCartLoading([...cartLoading, item.id]);
+    if (user) {
+      cartRemoveAPI(item.id, 1)
+        .then((res) => {
+          setCart(res.data.items);
+          setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+            setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+          }
+        });
+    } else {
+      removeItemFromCart(item.id);
+      setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+    }
   };
 
   const ListItem = (item) => (
     <List.Item>
       <Spin
-        spinning={item.id === cartLoading}
+        spinning={cartLoading.includes(item.id)}
         indicator={<LoadingOutlined style={{ fontSize: 24 }} />}
       >
         <Row gutter={15}>
@@ -190,8 +236,12 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                 </Col>
                 <Col>
                   {item.special_price && (
-                    <Text strong className='text-lg color-primary'>
-                      RM {item.price}
+                    <Text
+                      strong
+                      className='text-lg color-primary'
+                      style={{ marginRight: 10 }}
+                    >
+                      RM {item.special_price}
                     </Text>
                   )}
                   <Text strong className='text-lg' delete={item.special_price}>
@@ -205,11 +255,12 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
       </Spin>
     </List.Item>
   );
+
   return (
     <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' className='full-width'>
         <Row
-          align='bottom'
+          align='top'
           style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
         >
           <Col span={1}>
@@ -232,10 +283,15 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
             </Text>
           )}
         >
-          <List dataSource={cart} renderItem={ListItem} />
+          <List
+            dataSource={user ? cart : getCartItem()}
+            renderItem={ListItem}
+          />
         </ConfigProvider>
 
-        {cart.length < 1 ? (
+        {itemCount === undefined ||
+        itemCount === null ||
+        itemCount.length < 1 ? (
           <Button
             type='primary'
             block
@@ -247,6 +303,19 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
           </Button>
         ) : (
           <>
+            <Divider dashed style={{ marginBottom: 5 }} />
+            <Row justify='space-between' style={{ margin: '15px 0' }}>
+              <Col>
+                <Text className='text-lg'>
+                  Total ({itemCount} {itemCount === 1 ? 'Item' : 'Items'}):{' '}
+                </Text>
+              </Col>
+              <Col>
+                <Text strong className='text-lg'>
+                  RM {totalPrice()}
+                </Text>
+              </Col>
+            </Row>
             <Button type='primary' block>
               Checkout
             </Button>

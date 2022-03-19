@@ -17,9 +17,10 @@ import {
 import { removeSearchParams } from '@utils/urlUtls';
 import LoginRegModal from '@components/Modal/LoginRegModal';
 import { logoutAPI } from '@api/services/authAPI';
-import { getUserEmail } from '@utils/storageUtils';
+import { getCartItemCount, getUserEmail } from '@utils/storageUtils';
 import Cart from '@pages/Cart';
-import { AppContext } from '@contexts/AppContext';
+import { CartContext } from '@contexts/CartContext';
+import { MessageContext } from '@contexts/MessageContext';
 
 const Header = () => {
   const { Header } = Layout;
@@ -31,13 +32,14 @@ const Header = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [showCart, setShowCart] = useState(false);
-  const [cartItem] = useContext(AppContext);
+  const [cart, setCart] = useContext(CartContext);
+  const [messageAPI] = useContext(MessageContext);
+
   useEffect(() => {
     if (searchParams.has('name')) {
       setSearch(searchParams.get('name'));
     }
   }, [searchParams]);
-
   return (
     <Header className='header-container'>
       <Row justify='space-between' align='middle' className='header'>
@@ -84,7 +86,7 @@ const Header = () => {
                 />
               )}
               <Badge
-                count={cartItem.length}
+                count={cart.length || getCartItemCount()}
                 style={{
                   backgroundColor: '#0e9f6e',
                   color: 'white',
@@ -125,6 +127,13 @@ const Header = () => {
 
           if (route === 'logout') {
             logoutAPI();
+            setCart([]);
+            messageAPI.open({
+              key: 'successLogout',
+              type: 'success',
+              content: 'You have logout successfully',
+            });
+            setTimeout(() => messageAPI.destroy('successLogout'), 3000);
           }
         }}
       />
@@ -137,7 +146,6 @@ const Header = () => {
         onDrawerHide={() => {
           setShowCart(false);
         }}
-
       />
       <LoginRegModal />
     </Header>

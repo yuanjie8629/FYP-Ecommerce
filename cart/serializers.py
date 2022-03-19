@@ -59,6 +59,9 @@ class CartSerializer(serializers.ModelSerializer):
         slug_field="email", queryset=CustAcc.objects.all(), required=False
     )
     items = CartItemSerializer(many=True, source="cart_item")
+    total_price = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
+    )
 
     class Meta:
         model = Cart

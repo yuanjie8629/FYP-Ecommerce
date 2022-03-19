@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Alert, Form, Input, message, Row, Space, Typography } from 'antd';
+import { Alert, Form, Input, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
 import { loginAPI } from '@api/services/authAPI';
@@ -8,6 +8,7 @@ import './Login.less';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MessageContext } from '@contexts/MessageContext';
+import { clearCart } from '@utils/storageUtils';
 
 const Login = () => {
   const { Text, Title } = Typography;
@@ -28,6 +29,7 @@ const Login = () => {
           type: 'success',
           content: 'You have successfully login.',
         });
+        clearCart();
         navigate(findRoutePath('home'));
       })
       .catch((e) => {

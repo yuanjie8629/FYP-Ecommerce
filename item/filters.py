@@ -4,6 +4,7 @@ from .models import Item, Package, Product
 
 
 class ItemFilter(filters.FilterSet):
+    id = filters.NumberFilter(field_name="id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     sku = filters.CharFilter(field_name="sku", lookup_expr="icontains")
     status = filters.CharFilter(field_name="status")
@@ -12,18 +13,11 @@ class ItemFilter(filters.FilterSet):
     min_stock = filters.NumberFilter(field_name="stock", lookup_expr="gte")
     max_stock = filters.NumberFilter(field_name="stock", lookup_expr="lte")
 
-    ordering = filters.OrderingFilter(
-        fields=(
-            "name",
-            "sku",
-            "price",
-            "stock",
-        )
-    )
+    ordering = filters.OrderingFilter(fields=("name", "sku", "price", "stock"))
 
     class Meta:
         model = Item
-        fields = ["name", "sku", "status", "price", "stock"]
+        fields = ["name", "sku", "status", "price", "stock", "id"]
 
 
 class ProductFilter(filters.FilterSet):

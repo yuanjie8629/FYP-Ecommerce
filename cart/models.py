@@ -1,21 +1,18 @@
 from django.db import models
 from core.models import SoftDeleteModel
 from customer.models import CustAcc
-
+from django.db.models import F, Sum
 from item.models import Item
 
 
 class Cart(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
-    cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE, related_name='cart')
-    items = models.ManyToManyField(Item, through="CartItem", related_name='cart')
+    cust = models.ForeignKey(CustAcc, on_delete=models.CASCADE, related_name="cart")
+    items = models.ManyToManyField(Item, through="CartItem", related_name="cart")
 
     class Meta:
         db_table = "cart"
         managed = False
-    
-    
-
 
 class CartItem(models.Model):
     id = models.AutoField(primary_key=True)
@@ -26,4 +23,3 @@ class CartItem(models.Model):
     class Meta:
         db_table = "cart_item"
         managed = False
-    

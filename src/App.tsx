@@ -6,9 +6,9 @@ import { Grid, message, notification } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
-import { getSessionExp, getUserId } from '@utils/storageUtils';
+import {  getSessionExp, getUserId } from '@utils/storageUtils';
 import moment from 'moment';
-import { AppContext } from '@contexts/AppContext';
+import { CartContext } from '@contexts/CartContext';
 import { useEffect, useState } from 'react';
 import { cartDetailsAPI } from '@api/services/cartAPI';
 import { MessageContext } from '@contexts/MessageContext';
@@ -17,7 +17,7 @@ import { NotificationContext } from '@contexts/NotificationContext';
 function App() {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
-  const [cartItem, setCartItem] = useState([]);
+  const [cart, setCart] = useState([]);
   const [messageAPI, messageContext] = message.useMessage();
   const [notificationAPI, notiContext] = notification.useNotification();
   const idleTimer = useIdleTimer({
@@ -52,11 +52,12 @@ function App() {
   useEffect(() => {
     if (getUserId()) {
       cartDetailsAPI().then((res) => {
-        setCartItem(res.data.items);
+        setCart(res.data.items);
       });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getUserId()]);
 
   return (
     <ConfigProvider prefixCls='shrf'>
@@ -66,9 +67,10 @@ function App() {
         <MessageContext.Provider value={[messageAPI, messageContext]}>
           {messageContext}
           <NotificationContext.Provider value={[notificationAPI, notiContext]}>
-            <AppContext.Provider value={[cartItem, setCartItem]}>
+            {notiContext}
+            <CartContext.Provider value={[cart, setCart]}>
               <Routes />
-            </AppContext.Provider>
+            </CartContext.Provider>
           </NotificationContext.Provider>
         </MessageContext.Provider>
       </IconContext.Provider>

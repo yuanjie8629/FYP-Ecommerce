@@ -1,16 +1,13 @@
-from operator import ge
-from django import views
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, generics
-from rest_framework.decorators import api_view
+from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 from cart.models import Cart, CartItem
 from cart.serializers import CartItemSerializer, CartSerializer
 from core.utils import get_request_user
-from customer.models import CustType
 from item.models import Item
 from django.db.models import Prefetch
+from django.db.models import F, Sum
 
 
 class CartRetrieveView(generics.RetrieveAPIView):

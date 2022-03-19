@@ -16,8 +16,9 @@ class ItemSerializer(serializers.ModelSerializer):
             "created_at",
             "last_update",
             "is_deleted",
-            "status"
+            "status",
         ]
+
 
 class ProductSerializer(serializers.ModelSerializer):
     image = ImageSerializer(many=True, required=False)
@@ -32,7 +33,11 @@ class ProductSerializer(serializers.ModelSerializer):
             "created_at",
             "last_update",
             "is_deleted",
-            "status"
+            "status",
+            "ordering_cost",
+            "holding_cost",
+            "max_lead_tm",
+            "avg_lead_tm"
         ]
         extra_kwargs = {
             "sku": {"validators": []},
@@ -97,7 +102,7 @@ class PackageSerializer(serializers.ModelSerializer):
             "created_at",
             "last_update",
             "is_deleted",
-            "status"
+            "status",
         ]
         extra_kwargs = {
             "sku": {"validators": []},

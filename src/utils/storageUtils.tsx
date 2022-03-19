@@ -34,27 +34,52 @@ export const removeStorageItem = (key: string) => {
   window.localStorage.removeItem(key);
 };
 
-export const addItemToCart = (id, quantity) => {
+export const addItemToCart = (data) => {
   if (localStorage.getItem('cart')) {
     let cart = JSON.parse(localStorage.getItem('cart'));
-    let matchedItem = cart.find((cartItem) => cartItem.id === id);
+    let matchedItem = cart.find((cartItem) => cartItem.id === data.id);
     if (matchedItem) {
-      cart = cart.filter((cartItem) => cartItem.id !== id);
-      cart = [...cart, { id: id, quantity: quantity + matchedItem.quantity }];
+      cart = cart.filter((cartItem) => cartItem.id !== matchedItem.id);
+      cart = [...cart, { ...data, quantity: matchedItem.quantity + 1 }];
     } else {
-      cart = [...cart, { id: id, quantity: quantity }];
+      cart = [...cart, { ...data, quantity: 1 }];
     }
     localStorage.setItem('cart', JSON.stringify(cart));
   } else {
-    localStorage.setItem(
-      'cart',
-      JSON.stringify([{ id: id, quantity: quantity }])
-    );
+    localStorage.setItem('cart', JSON.stringify([{ ...data, quantity: 1 }]));
   }
 };
 
-export const addQuantityToCart = (id, quantity) => {
-  let cart = JSON.parse(localStorage.getItem('cart'));
-  cart = [...cart, { id: id, quantity: quantity }];
-  localStorage.setItem(cart, JSON.stringify(cart));
+export const setQuantityToCart = (id, quantity) => {
+  if (localStorage.getItem('cart')) {
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    let matchedItem = cart.find((cartItem) => cartItem.id === id);
+    cart = cart.filter((cartItem) => cartItem.id !== matchedItem.id);
+    cart = [...cart, { ...matchedItem, quantity: quantity }];
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
 };
+
+export const removeItemFromCart = (id) => {
+  if (localStorage.getItem('cart')) {
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    let matchedItem = cart.find((cartItem) => cartItem.id === id);
+    cart = cart.filter((cartItem) => cartItem.id !== matchedItem.id);
+    if (matchedItem.quantity > 1)
+      cart = [...cart, { ...matchedItem, quantity: matchedItem.quantity - 1 }];
+    if (cart.length < 1) localStorage.removeItem('cart');
+    else localStorage.setItem('cart', JSON.stringify(cart));
+  }
+};
+
+export const clearCart = () => localStorage.removeItem('cart');
+
+export const getCartItemCount = () =>
+  localStorage.getItem('cart')
+    ? JSON.parse(localStorage.getItem('cart')).length
+    : undefined;
+
+export const getCartItem = () =>
+  localStorage.getItem('cart')
+    ? JSON.parse(localStorage.getItem('cart'))
+    : undefined;

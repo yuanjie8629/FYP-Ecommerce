@@ -2,12 +2,12 @@ import { cartAddAPI } from '@api/services/cartAPI';
 import { itemDetailsAPI } from '@api/services/productAPI';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import { AppContext } from '@contexts/AppContext';
+import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { NotificationContext } from '@contexts/NotificationContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
-import { addItemToCart, getUserId } from '@utils/storageUtils';
+import { addItemToCart, getCartItem, getUserId } from '@utils/storageUtils';
 import {
   Carousel,
   Col,
@@ -15,7 +15,6 @@ import {
   Grid,
   Image,
   message,
-  notification,
   Row,
   Space,
   Table,
@@ -43,7 +42,7 @@ const ItemDetails = () => {
   const [notiApi] = useContext(NotificationContext);
   const screens = useBreakpoint();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cart, setCart] = useContext(AppContext);
+  const [cart, setCart] = useContext(CartContext);
 
   const addCartSuccessMsg = () =>
     notiApi.success({
@@ -77,7 +76,19 @@ const ItemDetails = () => {
           }
         });
     } else {
-      addItemToCart(id, 1);
+      if (getCartItem()) {
+        let matchedItem = getCartItem().find((item) => item.id === data.id);
+        if (data.stock <= matchedItem.quantity) {
+          messageApi.open({
+            key: 'no_stock',
+            type: 'warning',
+            content: 'The item has reached the maximum stock in your cart',
+          });
+          setTimeout(() => message.destroy('no_stock'), 3000);
+          return;
+        }
+      }
+      addItemToCart(data);
       setCartLoading(false);
       addCartSuccessMsg();
     }

@@ -3,14 +3,18 @@ import { findRoutePath } from '@utils/routingUtils';
 import { removeSearchParams } from '@utils/urlUtls';
 import { getUserEmail } from '@utils/storageUtils';
 import {
+  Col,
   Drawer as AntdDrawer,
   DrawerProps as AntdDrawerProps,
   Grid,
   Input,
   List,
+  Row,
   Space,
+  Image,
   Typography,
 } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import {
   createSearchParams,
   useLocation,
@@ -19,7 +23,7 @@ import {
 } from 'react-router-dom';
 
 interface DrawerProps extends AntdDrawerProps {
-  onMenuClick?: (route) => void;
+  onMenuClick?: (route?) => void;
   onSearch?: (search: string) => void;
 }
 const Drawer = ({
@@ -52,71 +56,98 @@ const Drawer = ({
   ];
 
   return (
-    <AntdDrawer width={screens.md ? 500 : '100%'} {...props}>
+    <AntdDrawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' size={30} className='full-width'>
-        {!screens.md && (
-          <Input.Search
-            placeholder='Search items'
-            onSearch={(value) => {
-              if (value) {
-                navigate({
-                  pathname: findRoutePath('searchItem'),
-                  search: createSearchParams({ name: value }).toString(),
-                });
-              } else {
-                setSearchParams(removeSearchParams(searchParams, 'name'));
-                if (location.pathname === '/item/search')
-                  navigate(findRoutePath('home'));
-              }
-            }}
-          />
-        )}
-        <List
-          dataSource={
-            getUserEmail()
-              ? loginRoutes.map((route) => route)
-              : routes.map((route) => route)
-          }
-          renderItem={(item) => (
-            <List.Item className='text-button-wrapper'>
-              {screens.sm ? (
-                <Title
-                  level={5}
-                  className='text-button '
-                  onClick={() => {
-                    onMenuClick(item.route);
-                    if (
-                      ['login', 'register', 'logout'].includes(item.route) &&
-                      screens.md
-                    ) {
-                      return;
-                    }
-                    navigate(findRoutePath(item.route));
-                  }}
-                >
-                  {item.label}
-                </Title>
-              ) : (
-                <Text
-                  strong
-                  className='text-button text-sm'
-                  onClick={() => {
-                    onMenuClick(item.route);
-                    if (
-                      ['login', 'register', 'logout'].includes(item.route) &&
-                      screens.md
-                    ) {
-                      return;
-                    }
-                    navigate(findRoutePath(item.route));
-                  }}
-                >
-                  {item.label}
-                </Text>
-              )}
-            </List.Item>
+        <Row align='top'>
+          <Col span={1}>
+            <CloseOutlined
+              className='color-grey'
+              size={30}
+              onClick={() => {
+                onMenuClick();
+              }}
+            />
+          </Col>
+          <Col span={23} style={{ textAlign: 'center' }}>
+            <div
+              className='header-logo'
+              onClick={() => navigate(findRoutePath('home'))}
+            >
+              <Image
+                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
+                alt='Logo'
+                preview={false}
+                width={screens.sm ? 120 : 80}
+              />
+            </div>
+          </Col>
+        </Row>
+
+        <Space direction='vertical' size={30} className='full-width'>
+          {!screens.md && (
+            <Input.Search
+              placeholder='Search items'
+              onSearch={(value) => {
+                if (value) {
+                  navigate({
+                    pathname: findRoutePath('searchItem'),
+                    search: createSearchParams({ name: value }).toString(),
+                  });
+                } else {
+                  setSearchParams(removeSearchParams(searchParams, 'name'));
+                  if (location.pathname === '/item/search')
+                    navigate(findRoutePath('home'));
+                }
+              }}
+            />
           )}
-        />
+          <List
+            dataSource={
+              getUserEmail()
+                ? loginRoutes.map((route) => route)
+                : routes.map((route) => route)
+            }
+            renderItem={(item) => (
+              <List.Item className='text-button-wrapper'>
+                {screens.sm ? (
+                  <Title
+                    level={5}
+                    className='text-button '
+                    onClick={() => {
+                      onMenuClick(item.route);
+                      if (
+                        ['login', 'register', 'logout'].includes(item.route) &&
+                        screens.md
+                      ) {
+                        return;
+                      }
+                      navigate(findRoutePath(item.route));
+                    }}
+                  >
+                    {item.label}
+                  </Title>
+                ) : (
+                  <Text
+                    strong
+                    className='text-button text-sm'
+                    onClick={() => {
+                      onMenuClick(item.route);
+                      if (
+                        ['login', 'register', 'logout'].includes(item.route) &&
+                        screens.md
+                      ) {
+                        return;
+                      }
+                      navigate(findRoutePath(item.route));
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+                )}
+              </List.Item>
+            )}
+          />
+        </Space>
       </Space>
       <LoginRegModal />
     </AntdDrawer>

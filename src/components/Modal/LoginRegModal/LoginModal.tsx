@@ -6,6 +6,7 @@ import { useForm } from 'antd/lib/form/Form';
 import { loginAPI } from '@api/services/authAPI';
 import AuthModal from '../AuthModal';
 import { MessageContext } from '@contexts/MessageContext';
+import { clearCart } from '@utils/storageUtils';
 
 const LoginModal = memo(
   ({ onOk, onCancel, onSubmit, ...props }: LoginRegModalContentProps, _ref) => {
@@ -13,7 +14,7 @@ const LoginModal = memo(
     const [loginForm] = useForm();
     const [loading, setLoading] = useState(false);
     const [loginErr, setLoginErr] = useState<React.ReactNode>();
-    const [messageApi] = useContext(MessageContext)
+    const [messageApi] = useContext(MessageContext);
 
     const handleLogin = async (values) => {
       setLoading(true);
@@ -27,6 +28,7 @@ const LoginModal = memo(
             type: 'success',
             content: 'You have successfully login.',
           });
+          clearCart();
           onSubmit(true);
         })
         .catch((e) => {
@@ -60,6 +62,13 @@ const LoginModal = memo(
           className='full-width'
         >
           <Title level={4}>Login</Title>
+          {loginErr && (
+            <Alert
+              message={<Text type='danger'>{loginErr}</Text>}
+              type='error'
+              showIcon
+            />
+          )}
           <div>
             <Space
               direction='vertical'
@@ -91,13 +100,7 @@ const LoginModal = memo(
               </Form.Item>
             </Space>
           </div>
-          {loginErr && (
-            <Alert
-              message={<Text type='danger'>{loginErr}</Text>}
-              type='error'
-              showIcon
-            />
-          )}
+
           <Button htmlType='submit' type='primary' block loading={loading}>
             Login
           </Button>
