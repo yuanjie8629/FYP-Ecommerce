@@ -77,7 +77,7 @@ const Header = () => {
           </Col>
         )}
         <Col style={{ textAlign: 'right' }}>
-          <Space size={screens.sm ? 40 : 20} align='center'>
+          <Space size={screens.sm ? 40 : 30} align='center'>
             <Space size={30}>
               {screens.sm && (
                 <HiOutlineUser

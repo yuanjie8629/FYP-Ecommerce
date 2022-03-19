@@ -150,8 +150,8 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
         spinning={cartLoading.includes(item.id)}
         indicator={<LoadingOutlined style={{ fontSize: 24 }} />}
       >
-        <Row gutter={15}>
-          <Col xs={6} md={7}>
+        <Row gutter={15} align='middle'>
+          <Col xs={8} md={7}>
             <img
               src={item.thumbnail}
               alt={item.id}
@@ -159,29 +159,40 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
               style={{ border: '1px solid #e5e7eb' }}
             />
           </Col>
-          <Col xs={18} md={17}>
+          <Col xs={16} md={17}>
             <Space direction='vertical' size={10} className='full-width'>
               <Title level={5}>{item.name}</Title>
-              {item.stock > 10 ? (
-                <Text strong className='color-primary'>
-                  In Stock
-                </Text>
-              ) : item.stock < 10 && item.stock > 0 ? (
-                <Text strong type='warning'>
-                  Low Stock
-                </Text>
-              ) : (
-                <Text strong type='danger'>
-                  Out of Stock
-                </Text>
-              )}
+              <Row justify='space-between'>
+                <Col>
+                  {item.stock > 10 ? (
+                    <Text strong className='color-primary'>
+                      In Stock
+                    </Text>
+                  ) : item.stock < 10 && item.stock > 0 ? (
+                    <Text strong type='warning'>
+                      Low Stock
+                    </Text>
+                  ) : (
+                    <Text strong type='danger'>
+                      Out of Stock
+                    </Text>
+                  )}
+                </Col>
+                <Col>
+                  {item.special_price && (
+                    <Text strong className='text-lg color-primary'>
+                      RM {item.special_price}
+                    </Text>
+                  )}
+                </Col>
+              </Row>
               <Row
                 justify='space-between'
                 align='middle'
                 className='full-width'
               >
                 <Col>
-                  <Space size={10}>
+                  <Space size={5}>
                     {item.quantity > 1 ? (
                       <Button
                         icon={
@@ -195,6 +206,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                       />
                     ) : (
                       <Button
+                        size='small'
                         color='error'
                         icon={
                           <DeleteOutlined
@@ -209,7 +221,8 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                     )}
 
                     <InputNumber
-                      style={{ width: 50 }}
+                      size='small'
+                      style={{ width: screens.md ? 50 : 40 }}
                       value={
                         cartValue !== undefined ? cartValue : item.quantity
                       }
@@ -222,6 +235,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                     />
 
                     <Button
+                      size='small'
                       disabled={item.quantity >= item.stock}
                       icon={
                         <PlusOutlined
@@ -235,15 +249,6 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                   </Space>
                 </Col>
                 <Col>
-                  {item.special_price && (
-                    <Text
-                      strong
-                      className='text-lg color-primary'
-                      style={{ marginRight: 10 }}
-                    >
-                      RM {item.special_price}
-                    </Text>
-                  )}
                   <Text strong className='text-lg' delete={item.special_price}>
                     RM {item.price}
                   </Text>
@@ -312,7 +317,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
               </Col>
               <Col>
                 <Text strong className='text-lg'>
-                  RM {totalPrice()}
+                  {moneyFormatter(totalPrice())}
                 </Text>
               </Col>
             </Row>

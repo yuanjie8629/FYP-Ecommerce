@@ -127,9 +127,9 @@ const Drawer = ({
                     {item.label}
                   </Title>
                 ) : (
-                  <Text
-                    strong
-                    className='text-button text-sm'
+                  <Title
+                    level={5}
+                    className='text-button'
                     onClick={() => {
                       onMenuClick(item.route);
                       if (
@@ -142,7 +142,7 @@ const Drawer = ({
                     }}
                   >
                     {item.label}
-                  </Text>
+                  </Title>
                 )}
               </List.Item>
             )}

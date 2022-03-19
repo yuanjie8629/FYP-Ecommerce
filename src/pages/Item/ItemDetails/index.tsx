@@ -78,7 +78,7 @@ const ItemDetails = () => {
     } else {
       if (getCartItem()) {
         let matchedItem = getCartItem().find((item) => item.id === data.id);
-        if (data.stock <= matchedItem.quantity) {
+        if (matchedItem && data.stock <= matchedItem.quantity) {
           messageApi.open({
             key: 'no_stock',
             type: 'warning',
