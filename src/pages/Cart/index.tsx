@@ -23,7 +23,7 @@ import {
   Typography,
 } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   addItemToCart,
   getCartItem,
