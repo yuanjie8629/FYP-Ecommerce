@@ -1,0 +1,7 @@
+Hi {{user.email}}, 
+You're receiving this e-mail because you have registered your account in Sharifah Food
+Ecommerce.
+Please tap the link below to verify your email.
+{{ link }}
+
+If you have any questions or concerns, we're here to help. Contact us via our email, fyp.shrf@gmail.com

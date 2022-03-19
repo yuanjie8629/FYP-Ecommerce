@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, Col, Form, Input, message, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
@@ -14,12 +14,16 @@ import {
   hasUpperCaseLetter,
 } from '@utils/strUtils';
 import Layout from '@components/Layout';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const Register = () => {
   const { Text, Title } = Typography;
   const [registerForm] = useForm();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [hasNumberic, setHasNumeric] = useState(false);
   const [hasLowerCase, setHasLowerCase] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
@@ -89,10 +93,9 @@ const Register = () => {
       password2: values.confirmPass,
     })
       .then((res) => {
-        messageApi.open({
-          key: 'successRegister',
-          type: 'success',
-          content: 'You have successfully register.',
+        navigate({
+          pathname: findRoutePath('registerSuccess'),
+          search: createSearchParams({ email: values.email }).toString(),
         });
       })
       .catch((err) => {
@@ -126,7 +129,6 @@ const Register = () => {
             layout='vertical'
             onFinish={handleRegister}
           >
-            {contextHolder}
             <Space
               direction='vertical'
               size={20}

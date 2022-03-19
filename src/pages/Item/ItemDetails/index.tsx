@@ -1,9 +1,13 @@
+import { cartAddAPI } from '@api/services/cartAPI';
 import { itemDetailsAPI } from '@api/services/productAPI';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
+import { AppContext } from '@contexts/AppContext';
+import { MessageContext } from '@contexts/MessageContext';
+import { NotificationContext } from '@contexts/NotificationContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
-import { getUserId } from '@utils/userUtils';
+import { addItemToCart, getUserId } from '@utils/storageUtils';
 import {
   Carousel,
   Col,
@@ -18,7 +22,7 @@ import {
   Tabs,
   Typography,
 } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import './ItemDetails.less';
@@ -27,25 +31,56 @@ import ItemDetailsSkeleton from './Skeleton/ItemDetailsSkeleton';
 const ItemDetails = () => {
   const { TabPane } = Tabs;
   const { id } = useParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const { Text, Title } = Typography;
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
   const [data, setData] = useState<any>({});
   const [images, setImages] = useState([]);
   const { useBreakpoint } = Grid;
   const [tabKey, setTabKey] = useState('description');
-  const [notiApi, notiContextHolder] = notification.useNotification();
+  const [notiApi] = useContext(NotificationContext);
   const screens = useBreakpoint();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cart, setCart] = useContext(AppContext);
 
-  const addToCart = () => {
-    if (getUserId()) {
-      console.log(getUserId());
-    }
+  const addCartSuccessMsg = () =>
     notiApi.success({
       message: 'Item added to cart',
       description: 'You have successfully added an item to your cart.',
     });
+
+  const addToCart = () => {
+    if (getUserId()) {
+      setCartLoading(true);
+      cartAddAPI(id, 1)
+        .then((res) => {
+          setCart(res.data.items);
+          setCartLoading(false);
+          addCartSuccessMsg();
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            if (err.response?.data?.error === 'no_stock') {
+              messageApi.open({
+                key: 'no_stock',
+                type: 'warning',
+                content: 'The item has reached the maximum stock in your cart',
+              });
+              setTimeout(() => message.destroy('no_stock'), 3000);
+              setCartLoading(false);
+              return;
+            }
+            showServerErrMsg();
+            setCartLoading(false);
+          }
+        });
+    } else {
+      addItemToCart(id, 1);
+      setCartLoading(false);
+      addCartSuccessMsg();
+    }
   };
 
   useEffect(() => {
@@ -55,18 +90,15 @@ const ItemDetails = () => {
       itemDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
-            console.log(res.data);
             setData(res.data);
             let thumbnail = res.data?.thumbnail;
             let images = res.data?.image;
-            console.log(images);
             setImages([thumbnail, ...images]);
             setLoading(false);
           }
         })
         .catch((err) => {
           if (err.response?.status !== 401) {
-            console.log(err.response.status);
             showServerErrMsg();
             setActive(false);
           }
@@ -85,6 +117,7 @@ const ItemDetails = () => {
       setTabKey('description');
     }
   }, [screens]);
+
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
     setTimeout(() => message.destroy('serverErr'), 3000);
@@ -133,8 +166,6 @@ const ItemDetails = () => {
 
   return (
     <Layout>
-      {contextHolder}
-      {notiContextHolder}
       {loading ? (
         <ItemDetailsSkeleton active={active} />
       ) : (
@@ -147,6 +178,7 @@ const ItemDetails = () => {
                     <Image
                       src={img}
                       alt={`img-${index}`}
+                      key={`img-${index}`}
                       style={{
                         width: screens.md ? '100%' : '100vw',
                         border: '1px solid #e5e7eb',
@@ -196,7 +228,7 @@ const ItemDetails = () => {
                           In Stock
                         </Text>
                       ) : data.stock < 10 && data.stock > 0 ? (
-                        <Text strong className='color-primary'>
+                        <Text strong type='warning'>
                           Low Stock
                         </Text>
                       ) : (
@@ -238,6 +270,7 @@ const ItemDetails = () => {
                   type='primary'
                   disabled={data.stock <= 0}
                   onClick={addToCart}
+                  loading={cartLoading}
                 >
                   Add To Cart
                 </Button>
@@ -278,7 +311,7 @@ const ItemDetails = () => {
                             In Stock
                           </Text>
                         ) : data.stock < 10 && data.stock > 0 ? (
-                          <Text strong className='color-primary'>
+                          <Text strong type='warning'>
                             Low Stock
                           </Text>
                         ) : (
@@ -334,6 +367,7 @@ const ItemDetails = () => {
                 block
                 disabled={data.stock <= 0}
                 onClick={addToCart}
+                loading={cartLoading}
               >
                 Add To Cart
               </Button>

@@ -2,6 +2,8 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from customer.models import CustAcc
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
 from customer.serializers import RegisterSerializer
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives

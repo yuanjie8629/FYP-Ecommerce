@@ -1,17 +1,18 @@
 import { itemPrevAPI } from '@api/services/productAPI';
 import { serverErrMsg } from '@utils/messageUtils';
 import { Empty, message, Row } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import SkeletonItem from './SkeletonItem';
 import './ItemCard.less';
+import { MessageContext } from '@contexts/MessageContext';
 interface AllItemProps {
   onChange?: (total: number) => void;
 }
 
 const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const location = useLocation();
@@ -22,7 +23,6 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
     itemPrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          console.log(res.data.results);
           setList(res.data.results);
           onChange(res.data.count);
           setLoading(false);
@@ -47,7 +47,6 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
 
   return (
     <div style={{ margin: 15 }}>
-      {contextHolder}
       <Row gutter={[40, 40]} className='item-list'>
         {loading ? (
           <SkeletonItem total={12} />

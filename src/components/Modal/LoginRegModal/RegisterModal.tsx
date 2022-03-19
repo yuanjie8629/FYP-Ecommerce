@@ -1,5 +1,5 @@
-import React, { memo, useState } from 'react';
-import { Alert, Col, Form, Input, message, Row, Space, Typography } from 'antd';
+import React, { memo, useContext, useState } from 'react';
+import { Alert, Col, Form, Input, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { LoginRegModalContentProps } from '.';
 import { useForm } from 'antd/lib/form/Form';
@@ -14,13 +14,14 @@ import {
   hasSymbolLetter,
   hasUpperCaseLetter,
 } from '@utils/strUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const RegisterModal = memo(
   ({ onOk, onCancel, onSubmit, ...props }: LoginRegModalContentProps, _ref) => {
     const { Text, Title } = Typography;
     const [registerForm] = useForm();
     const [loading, setLoading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi] = useContext(MessageContext);
     const [hasNumberic, setHasNumeric] = useState(false);
     const [hasLowerCase, setHasLowerCase] = useState(false);
     const [hasUpperCase, setHasUpperCase] = useState(false);
@@ -129,16 +130,13 @@ const RegisterModal = memo(
         layout='vertical'
         onFinish={handleRegister}
       >
-        {contextHolder}
         <Space
           direction='vertical'
           size={20}
           style={{ textAlign: 'center' }}
           className='full-width'
         >
-          <Title level={4} className='color-primary'>
-            Registration
-          </Title>
+          <Title level={4}>Registration</Title>
           {sameEmailMsg && (
             <Alert
               message={<Text type='danger'>{sameEmailMsg}</Text>}
@@ -261,7 +259,7 @@ const RegisterModal = memo(
               </Form.Item>
             </Space>
           </div>
-          
+
           <Button htmlType='submit' type='primary' block loading={loading}>
             Register
           </Button>

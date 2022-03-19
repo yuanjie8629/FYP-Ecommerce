@@ -8,8 +8,7 @@ class CustAcc(AbstractUser):
     id = models.AutoField(primary_key=True)
     email = models.CharField(unique=True, max_length=255)
     password = models.CharField(max_length=255)
-    status = models.CharField(max_length=20)
-    cust_type = models.ForeignKey("CustType", on_delete=models.DO_NOTHING)
+    cust_type = models.ForeignKey("CustType", on_delete=models.DO_NOTHING, related_name='cust')
     pos_reg = models.ForeignKey(
         "CustPosReg", on_delete=models.DO_NOTHING, blank=True, null=True
     )
@@ -23,28 +22,11 @@ class CustAcc(AbstractUser):
 
     class Meta:
         db_table = "cust_acc"
+        managed = False
 
     def __init__(self, *args, **kwargs):
         super(CustAcc, self).__init__(*args, **kwargs)
         self.cust_type = CustType.objects.get(type="cust")
-
-
-class CustPosDeclar(models.Model):
-    id = models.AutoField(primary_key=True)
-    answer = models.CharField(max_length=300)
-    pos_reg = models.ForeignKey("CustPosReg", on_delete=models.CASCADE)
-    pos_declar_ques = models.ForeignKey("CustPosDeclarQues", on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "cust_pos_declar"
-
-
-class CustPosDeclarQues(models.Model):
-    id = models.AutoField(primary_key=True)
-    ques = models.CharField(max_length=300)
-
-    class Meta:
-        db_table = "cust_pos_declar_ques"
 
 
 class CustPosReg(models.Model):
@@ -66,6 +48,7 @@ class CustPosReg(models.Model):
 
     class Meta:
         db_table = "cust_pos_reg"
+        managed = False
 
 
 class CustProfile(models.Model):
@@ -78,6 +61,7 @@ class CustProfile(models.Model):
 
     class Meta:
         db_table = "cust_profile"
+        managed = False
 
 
 class CustType(models.Model):
@@ -86,3 +70,4 @@ class CustType(models.Model):
 
     class Meta:
         db_table = "cust_type"
+        managed = False

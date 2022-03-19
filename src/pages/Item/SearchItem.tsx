@@ -1,10 +1,11 @@
 import { itemPrevAPI } from '@api/services/productAPI';
 import Layout from '@components/Layout';
+import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 
 import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
 import { Pagination, Space, Row, Col, message, Empty } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import SkeletonItem from './SkeletonItem';
@@ -12,7 +13,7 @@ import SkeletonItem from './SkeletonItem';
 const SearchItem = () => {
   const [itemCount, setItemCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   useEffect(() => {
@@ -21,7 +22,6 @@ const SearchItem = () => {
     itemPrevAPI(`?name=${searchParams.get('name')}`)
       .then((res) => {
         if (isMounted) {
-          console.log(res.data.results);
           setList(res.data.results);
           setItemCount(res.data.count);
           setLoading(false);
@@ -45,8 +45,6 @@ const SearchItem = () => {
   };
   return (
     <Layout>
-      {contextHolder}
-
       <Space direction='vertical' size={20} className='full-width'>
         <div style={{ margin: 15 }}>
           <Row gutter={[40, 40]} className='item-list'>

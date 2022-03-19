@@ -9,6 +9,8 @@ import ForgotPass from '@pages/Login/ForgotPass';
 import CheckEmail from '@pages/Login/CheckEmail';
 import AboutUs from '@pages/AboutUs';
 import ContactUs from '@pages/ContactUs';
+import ResetPass from '@pages/Login/ResetPass';
+import RegisterSuccess from '@pages/Register/RegisterSuccess';
 
 const routeList: {
   label: string;
@@ -32,19 +34,29 @@ const routeList: {
   },
   {
     label: 'forgotPass',
-    path: '/forgotPass',
+    path: '/forgot_pass',
     component: <ForgotPass />,
   },
   {
     label: 'checkEmail',
-    path: '/checkEmail',
+    path: '/check_email',
     component: <CheckEmail />,
+  },
+  {
+    label: 'resetPass',
+    path: '/pass_reset',
+    component: <ResetPass />,
   },
   {
     label: 'register',
     path: '/register',
     component: <Register />,
-  },
+    },
+    {
+      label: 'registerSuccess',
+      path: '/register/success',
+      component: <RegisterSuccess />,
+    },
   {
     label: 'item',
     path: '/item/:id',

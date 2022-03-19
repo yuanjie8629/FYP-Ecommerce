@@ -3,7 +3,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from customer.models import CustAcc, CustType
 
-
 class CustTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustType
@@ -41,5 +40,4 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data["password"])
         user.save()
-
         return user

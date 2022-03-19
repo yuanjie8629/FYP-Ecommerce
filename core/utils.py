@@ -1,10 +1,15 @@
 from urllib import request
 from wsgiref.util import request_uri
+from django.conf import settings
+import jwt
 from rest_framework.views import exception_handler
 from django.dispatch import receiver
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions
+
+from customer.models import CustAcc
+
 
 def enforce_csrf(request):
     check = CSRFCheck(request)
@@ -43,3 +48,12 @@ def update_request_data(request, data):
 
 def split_date(date):
     return date.split("-")
+
+
+def get_request_user(request):
+    refresh = jwt.decode(
+        request.COOKIES.get('refresh_token'),
+        settings.SIMPLE_JWT["SIGNING_KEY"],
+        algorithms=[settings.SIMPLE_JWT["ALGORITHM"]],
+    )
+    return CustAcc.objects.get(pk=refresh.get('user_id'))

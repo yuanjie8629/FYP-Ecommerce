@@ -1,26 +1,65 @@
 from rest_framework import serializers
-
+from django.shortcuts import get_object_or_404
 from cart.models import Cart, CartItem
 from customer.models import CustAcc
 from item.models import Item
 
+# class CartItemSerializer(serializers.ModelSerializer):
+#     cart = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#     item = ItemSerializer()
 
-class CartSerializer(serializers.ModelSerializer):
-    cust = serializers.PrimaryKeyRelatedField(
-        queryset=CustAcc.objects.all(), required=False
+#     class Meta:
+#         model = Cart
+#         fields = "__all__"
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+
+    id = serializers.SlugRelatedField(slug_field="id", source="item", read_only=True)
+    name = serializers.SlugRelatedField(
+        slug_field="name", source="item", read_only=True
+    )
+    sku = serializers.SlugRelatedField(slug_field="sku", source="item", read_only=True)
+    price = serializers.DecimalField(
+        source="item.price", read_only=True, decimal_places=2, max_digits=10
+    )
+    special_price = serializers.DecimalField(
+        source="item.special_price", read_only=True, decimal_places=2, max_digits=10
+    )
+    thumbnail = serializers.ImageField(source="item.thumbnail", read_only=True)
+    stock = serializers.SlugRelatedField(
+        slug_field="stock", source="item", read_only=True
     )
     quantity = serializers.IntegerField()
-    items = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Item.objects.all(), source="cart_item.item"
+    item = serializers.PrimaryKeyRelatedField(
+        queryset=Item.objects.all(), write_only=True
+    )
+    cust = serializers.PrimaryKeyRelatedField(
+        queryset=CustAcc.objects.all(), write_only=True
     )
 
     class Meta:
-        model = Cart
-        fields = "__all__"
+        model = CartItem
+        fields = [
+            "id",
+            "name",
+            "sku",
+            "price",
+            "special_price",
+            "thumbnail",
+            "stock",
+            "quantity",
+            "item",
+            "cust",
+        ]
 
-    def create(self, validated_data):
-        cust = validated_data.pop("cust", None)
-        cart_item = validated_data.pop("cart_item", None)
-        cart = Cart.objects.create(cust=cust)
-        cart.items.set(cart_item)
-        return cart
+
+class CartSerializer(serializers.ModelSerializer):
+    cust = serializers.SlugRelatedField(
+        slug_field="email", queryset=CustAcc.objects.all(), required=False
+    )
+    items = CartItemSerializer(many=True, source="cart_item")
+
+    class Meta:
+        model = Cart
+        exclude = ["created_at", "last_update", "is_deleted"]

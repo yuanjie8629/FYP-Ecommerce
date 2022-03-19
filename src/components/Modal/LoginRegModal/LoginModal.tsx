@@ -1,10 +1,11 @@
-import React, { memo, useState } from 'react';
-import { Alert, Form, Input, message, Space, Typography } from 'antd';
+import React, { memo, useContext, useState } from 'react';
+import { Alert, Form, Input, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { LoginRegModalContentProps } from '.';
 import { useForm } from 'antd/lib/form/Form';
 import { loginAPI } from '@api/services/authAPI';
 import AuthModal from '../AuthModal';
+import { MessageContext } from '@contexts/MessageContext';
 
 const LoginModal = memo(
   ({ onOk, onCancel, onSubmit, ...props }: LoginRegModalContentProps, _ref) => {
@@ -12,7 +13,7 @@ const LoginModal = memo(
     const [loginForm] = useForm();
     const [loading, setLoading] = useState(false);
     const [loginErr, setLoginErr] = useState<React.ReactNode>();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi] = useContext(MessageContext)
 
     const handleLogin = async (values) => {
       setLoading(true);
@@ -52,16 +53,13 @@ const LoginModal = memo(
         layout='vertical'
         onFinish={handleLogin}
       >
-        {contextHolder}
         <Space
           direction='vertical'
           size={20}
           style={{ textAlign: 'center' }}
           className='full-width'
         >
-          <Title level={4} className='color-primary'>
-            Login
-          </Title>
+          <Title level={4}>Login</Title>
           <div>
             <Space
               direction='vertical'

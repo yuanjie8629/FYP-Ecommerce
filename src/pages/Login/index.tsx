@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, Form, Input, message, Row, Space, Typography } from 'antd';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
@@ -7,13 +7,14 @@ import Layout from '@components/Layout';
 import './Login.less';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { MessageContext } from '@contexts/MessageContext';
 
 const Login = () => {
   const { Text, Title } = Typography;
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   const [loginErr, setLoginErr] = useState<React.ReactNode>();
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext);
   const navigate = useNavigate();
   const handleLogin = async (values) => {
     setLoading(true);
@@ -27,6 +28,7 @@ const Login = () => {
           type: 'success',
           content: 'You have successfully login.',
         });
+        navigate(findRoutePath('home'));
       })
       .catch((e) => {
         if (e.response?.status === 401) {
@@ -54,7 +56,6 @@ const Login = () => {
             layout='vertical'
             onFinish={handleLogin}
           >
-            {contextHolder}
             <Space
               direction='vertical'
               size={20}

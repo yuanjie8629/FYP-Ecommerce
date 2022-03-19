@@ -21,6 +21,7 @@
     "js-cookie": "^3.0.1",
     "jwt-decode": "^3.1.2",
     "ncp": "^2.0.0",
+    "rc-virtual-list": "^3.4.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",

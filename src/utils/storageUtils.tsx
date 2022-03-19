@@ -1,24 +1,18 @@
 import Cookies from 'js-cookie';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
-interface AdminType {
-  id: string;
-  name: string;
-  role: string;
-}
-
-export const decodedJWT = () =>
-  Cookies.get('access_token') !== undefined
-    ? jwt_decode<JwtPayload & AdminType>(Cookies.get('access_token'))
+export const getUserId = () => {
+  let tkn: any = Cookies.get('access_token')
+    ? jwtDecode(Cookies.get('access_token'))
     : null;
+  return tkn?.user_id;
+};
 
-export const getAdminInfo = (): AdminType => {
-  const jwt = decodedJWT();
-  return {
-    id: jwt.id,
-    name: jwt.name,
-    role: jwt.role,
-  };
+export const getUserEmail = () => {
+  let tkn: any = Cookies.get('access_token')
+    ? jwtDecode(Cookies.get('access_token'))
+    : null;
+  return tkn?.email;
 };
 
 export const setExp = (exp: number) => {
@@ -38,4 +32,29 @@ export const addStorageItem = (key: string, value: string) => {
 
 export const removeStorageItem = (key: string) => {
   window.localStorage.removeItem(key);
+};
+
+export const addItemToCart = (id, quantity) => {
+  if (localStorage.getItem('cart')) {
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    let matchedItem = cart.find((cartItem) => cartItem.id === id);
+    if (matchedItem) {
+      cart = cart.filter((cartItem) => cartItem.id !== id);
+      cart = [...cart, { id: id, quantity: quantity + matchedItem.quantity }];
+    } else {
+      cart = [...cart, { id: id, quantity: quantity }];
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+  } else {
+    localStorage.setItem(
+      'cart',
+      JSON.stringify([{ id: id, quantity: quantity }])
+    );
+  }
+};
+
+export const addQuantityToCart = (id, quantity) => {
+  let cart = JSON.parse(localStorage.getItem('cart'));
+  cart = [...cart, { id: id, quantity: quantity }];
+  localStorage.setItem(cart, JSON.stringify(cart));
 };

@@ -13,13 +13,18 @@ from item.serializers import (
 
 
 class ItemListView(generics.ListAPIView):
-    queryset = Item.objects.all().prefetch_related("image").order_by(("-last_update"))
+    queryset = (
+        Item.objects.all()
+        .prefetch_related("image")
+        .filter(status="active")
+        .order_by(("-last_update"))
+    )
     serializer_class = ItemSerializer
     filterset_class = ItemFilter
 
 
 class ItemView(generics.RetrieveAPIView):
-    queryset = Item.objects.all().prefetch_related("image")
+    queryset = Item.objects.all().filter(status="active").prefetch_related("image")
     serializer_class = ItemSerializer
 
     def get(self, request, *args, **kwargs):
@@ -38,19 +43,22 @@ class ItemView(generics.RetrieveAPIView):
 
 class ProductPrevView(generics.ListAPIView):
     queryset = (
-        Product.objects.all().prefetch_related("image").order_by(("-last_update"))
+        Product.objects.all()
+        .filter(status="active")
+        .prefetch_related("image")
+        .order_by(("-last_update"))
     )
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 
 
 class ProductView(generics.RetrieveAPIView):
-    queryset = Product.objects.all().prefetch_related("image")
+    queryset = Product.objects.all().filter(status="active").prefetch_related("image")
     serializer_class = ProductSerializer
 
 
 class ProdPrevAllView(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().filter(status="active")
     serializer_class = ProductPrevSerializer
     pagination_class = None
 
@@ -58,6 +66,7 @@ class ProdPrevAllView(generics.ListAPIView):
 class PackagePrevView(generics.ListAPIView):
     queryset = (
         Package.objects.all()
+        .filter(status="active")
         .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
         .order_by("-last_update")
     )
@@ -66,7 +75,9 @@ class PackagePrevView(generics.ListAPIView):
 
 
 class PackageView(generics.RetrieveAPIView):
-    queryset = Package.objects.all().prefetch_related(
-        "image", "pack_item", Prefetch("pack_item__prod")
+    queryset = (
+        Package.objects.all()
+        .filter(status="active")
+        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
     )
     serializer_class = PackageSerializer

@@ -1,4 +1,4 @@
-import { Layout, Row, Col, Image, Space, Grid, Input } from 'antd';
+import { Layout, Row, Col, Image, Space, Grid, Input, Badge } from 'antd';
 import { findRoutePath } from '@utils/routingUtils';
 import {
   createSearchParams,
@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import './Header.less';
 import Drawer from '@components/Drawer';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   HiOutlineMenuAlt3,
   HiOutlineShoppingCart,
@@ -17,8 +17,10 @@ import {
 import { removeSearchParams } from '@utils/urlUtls';
 import LoginRegModal from '@components/Modal/LoginRegModal';
 import { logoutAPI } from '@api/services/authAPI';
-import { getUserEmail } from '@utils/userUtils';
+import { getUserEmail } from '@utils/storageUtils';
 import Cart from '@pages/Cart';
+import { AppContext } from '@contexts/AppContext';
+
 const Header = () => {
   const { Header } = Layout;
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const Header = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [showCart, setShowCart] = useState(false);
-
+  const [cartItem] = useContext(AppContext);
   useEffect(() => {
     if (searchParams.has('name')) {
       setSearch(searchParams.get('name'));
@@ -75,19 +77,26 @@ const Header = () => {
         <Col style={{ textAlign: 'right' }}>
           <Space size={screens.sm ? 40 : 20} align='center'>
             <Space size={30}>
-              {screens.md && (
+              {screens.sm && (
                 <HiOutlineUser
                   style={{ fontSize: 25, cursor: 'pointer' }}
                   className={getUserEmail() && 'color-primary'}
                 />
               )}
-
-              <HiOutlineShoppingCart
-                style={{ fontSize: 25, cursor: 'pointer' }}
-                onClick={() => {
-                  setShowCart(true);
+              <Badge
+                count={cartItem.length}
+                style={{
+                  backgroundColor: '#0e9f6e',
+                  color: 'white',
                 }}
-              />
+              >
+                <HiOutlineShoppingCart
+                  style={{ fontSize: 25, cursor: 'pointer' }}
+                  onClick={() => {
+                    setShowCart(true);
+                  }}
+                />
+              </Badge>
             </Space>
             <HiOutlineMenuAlt3
               style={{ fontSize: 25, cursor: 'pointer' }}
@@ -125,6 +134,10 @@ const Header = () => {
         onClose={() => {
           setShowCart(false);
         }}
+        onDrawerHide={() => {
+          setShowCart(false);
+        }}
+
       />
       <LoginRegModal />
     </Header>

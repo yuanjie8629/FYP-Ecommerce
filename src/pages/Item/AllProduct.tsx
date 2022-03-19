@@ -1,13 +1,14 @@
 import { productPrevAPI } from '@api/services/productAPI';
 import { serverErrMsg } from '@utils/messageUtils';
 import { Empty, message, Row, Tabs } from 'antd';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import SkeletonItem from './SkeletonItem';
 import './ItemCard.less';
 import { prodCat } from '@utils/optionUtils';
 import { removeSearchParams } from '@utils/urlUtls';
+import { MessageContext } from '@contexts/MessageContext';
 
 interface AllProductProps {
   onChange?: (total: number) => void;
@@ -15,7 +16,7 @@ interface AllProductProps {
 
 const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
   const { TabPane } = Tabs;
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = useContext(MessageContext)
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const location = useLocation();
@@ -28,7 +29,6 @@ const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
     productPrevAPI(location.search)
       .then((res) => {
         if (isMounted) {
-          console.log(res.data.results);
           setList(res.data.results);
           onChange(res.data.count);
           setLoading(false);
@@ -53,7 +53,7 @@ const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
 
   return (
     <div style={{ margin: 10 }}>
-      {contextHolder}
+   
       <Tabs
         defaultActiveKey='all'
         onChange={(activeKey) => {

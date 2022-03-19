@@ -1,5 +1,4 @@
 from django.urls import include, path
-
 from customer.views import RegisterView
 from .views import (
     BlacklistToken,

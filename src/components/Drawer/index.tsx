@@ -1,8 +1,7 @@
-import { logoutAPI } from '@api/services/authAPI';
 import LoginRegModal from '@components/Modal/LoginRegModal';
 import { findRoutePath } from '@utils/routingUtils';
 import { removeSearchParams } from '@utils/urlUtls';
-import { getUserEmail } from '@utils/userUtils';
+import { getUserEmail } from '@utils/storageUtils';
 import {
   Drawer as AntdDrawer,
   DrawerProps as AntdDrawerProps,
@@ -53,7 +52,7 @@ const Drawer = ({
   ];
 
   return (
-    <AntdDrawer width={screens.sm ? 378 : '80%'} {...props}>
+    <AntdDrawer width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' size={30} className='full-width'>
         {!screens.md && (
           <Input.Search
@@ -85,15 +84,12 @@ const Drawer = ({
                   level={5}
                   className='text-button '
                   onClick={() => {
+                    onMenuClick(item.route);
                     if (
                       ['login', 'register', 'logout'].includes(item.route) &&
                       screens.md
                     ) {
-                      onMenuClick(item.route);
                       return;
-                    }
-                    if (item.route === 'logout') {
-                      logoutAPI();
                     }
                     navigate(findRoutePath(item.route));
                   }}
@@ -105,14 +101,13 @@ const Drawer = ({
                   strong
                   className='text-button text-sm'
                   onClick={() => {
+                    onMenuClick(item.route);
                     if (
                       ['login', 'register', 'logout'].includes(item.route) &&
                       screens.md
                     ) {
-                      onMenuClick(item.route);
                       return;
                     }
-
                     navigate(findRoutePath(item.route));
                   }}
                 >

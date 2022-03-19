@@ -1,3 +1,4 @@
+import Button from '@components/Button';
 import Layout from '@components/Layout';
 import { Descriptions, Row, Space, Typography } from 'antd';
 
@@ -20,7 +21,9 @@ const ContactUs = () => {
           />
           <Descriptions bordered column={1}>
             <Descriptions.Item label='Email'>
-              support@shrf.com
+              <Button type='link' href='mailto:fyp.shrf@gmail.com'>
+                fyp.shrf@gmail.com
+              </Button>
             </Descriptions.Item>
             <Descriptions.Item label='Phone'>+60 1234 56789</Descriptions.Item>
             <Descriptions.Item label='Address'>
