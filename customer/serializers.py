@@ -1,7 +1,8 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from customer.models import CustAcc, CustType
+from customer.models import Cust, CustType
+
 
 class CustTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,9 +10,21 @@ class CustTypeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CustSerializer(serializers.ModelSerializer):
+    type = serializers.SlugRelatedField(
+        slug_field="type", source="cust_type", read_only=True
+    )
+
+    class Meta:
+        model = Cust
+        fields = ["email", "name", "phone_num", "gender", "birthdate", "type"]
+
+
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-        required=True, validators=[UniqueValidator(queryset=CustAcc.objects.all())]
+        required=True, validators=[UniqueValidator(queryset=Cust.objects.all())]
     )
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
@@ -19,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
-        model = CustAcc
+        model = Cust
         fields = (
             "password",
             "password2",
@@ -35,8 +48,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = CustAcc.objects.create(
-            email=validated_data["email"],
+        user = Cust.objects.create(
+            email=validated_data["email"], username=validated_data["email"]
         )
         user.set_password(validated_data["password"])
         user.save()

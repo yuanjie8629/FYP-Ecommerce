@@ -6,7 +6,7 @@ import { Grid, message, notification } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
-import {  getSessionExp, getUserId } from '@utils/storageUtils';
+import { getSessionExp, getUserId } from '@utils/storageUtils';
 import moment from 'moment';
 import { CartContext } from '@contexts/CartContext';
 import { useEffect, useState } from 'react';
@@ -38,7 +38,7 @@ function App() {
   const timer = useTimer({
     expiryTimestamp: getSessionExp()
       ? moment.unix(getSessionExp()).subtract(15, 'second').toDate()
-      : null,
+      : new Date(null),
     onExpire: () => {
       if (!idleTimer.isIdle())
         refreshTknAPI().then((res) => {

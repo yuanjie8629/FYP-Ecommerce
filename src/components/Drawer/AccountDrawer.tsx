@@ -11,17 +11,13 @@ import {
   Typography,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import {
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 interface DrawerProps extends AntdDrawerProps {
   onMenuClick?: (route?) => void;
   onSearch?: (search: string) => void;
 }
-const Drawer = ({
+const AccountDrawer = ({
   onMenuClick = () => null,
   onSearch = () => null,
   ...props
@@ -34,16 +30,14 @@ const Drawer = ({
   const location = useLocation();
   const routes = [
     { label: 'Order History', route: 'orderHistory' },
-    { label: 'AddressBook', route: 'addressBook' },
+    { label: 'Address Book', route: 'addressBook' },
     { label: 'Account Information', route: 'accountInfo' },
-    { label: 'Become Agent/Dropshipepr', route: 'posReg' },
     { label: 'Logout', route: 'logout' },
   ];
 
   return (
     <AntdDrawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' size={30} className='full-width'>
-   
         <Row
           align='top'
           style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
@@ -84,9 +78,9 @@ const Drawer = ({
                     {item.label}
                   </Title>
                 ) : (
-                  <Text
-                    strong
-                    className='text-button text-sm'
+                  <Title
+                    level={5}
+                    className='text-button'
                     onClick={() => {
                       onMenuClick(item.route);
                       if (
@@ -99,7 +93,7 @@ const Drawer = ({
                     }}
                   >
                     {item.label}
-                  </Text>
+                  </Title>
                 )}
               </List.Item>
             )}
@@ -111,4 +105,4 @@ const Drawer = ({
   );
 };
 
-export default Drawer;
+export default AccountDrawer;

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import axios from '../axiosInstance';
 
 interface LoginDetailsProps {
-  email: string;
+  username: string;
   password: string;
 }
 

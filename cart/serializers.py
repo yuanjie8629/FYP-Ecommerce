@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from cart.models import Cart, CartItem
-from customer.models import CustAcc
+from customer.models import Cust
 from item.models import Item
 
 # class CartItemSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         queryset=Item.objects.all(), write_only=True
     )
     cust = serializers.PrimaryKeyRelatedField(
-        queryset=CustAcc.objects.all(), write_only=True
+        queryset=Cust.objects.all(), write_only=True
     )
 
     class Meta:
@@ -56,7 +56,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     cust = serializers.SlugRelatedField(
-        slug_field="email", queryset=CustAcc.objects.all(), required=False
+        slug_field="email", queryset=Cust.objects.all(), required=False
     )
     items = CartItemSerializer(many=True, source="cart_item")
     total_price = serializers.DecimalField(

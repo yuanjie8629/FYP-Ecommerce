@@ -36,7 +36,7 @@ const NotFound = () => {
           <Button
             type='primary'
             className='not-found-btn'
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
           >
             Go Back
           </Button>

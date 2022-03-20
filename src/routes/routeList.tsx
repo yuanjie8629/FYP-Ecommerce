@@ -11,6 +11,7 @@ import AboutUs from '@pages/AboutUs';
 import ContactUs from '@pages/ContactUs';
 import ResetPass from '@pages/Login/ResetPass';
 import RegisterSuccess from '@pages/Register/RegisterSuccess';
+import AccountInfo from '@pages/Account/AccountInfo';
 
 const routeList: {
   label: string;
@@ -51,12 +52,12 @@ const routeList: {
     label: 'register',
     path: '/register',
     component: <Register />,
-    },
-    {
-      label: 'registerSuccess',
-      path: '/register/success',
-      component: <RegisterSuccess />,
-    },
+  },
+  {
+    label: 'registerSuccess',
+    path: '/register/success',
+    component: <RegisterSuccess />,
+  },
   {
     label: 'item',
     path: '/item/:id',
@@ -81,6 +82,11 @@ const routeList: {
     label: 'contact',
     path: '/contact',
     component: <ContactUs />,
+  },
+  {
+    label: 'accountInfo',
+    path: '/account',
+    component: <AccountInfo />,
   },
   {
     label: 'logout',

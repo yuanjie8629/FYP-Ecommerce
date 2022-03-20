@@ -35,12 +35,12 @@ const ResetPass = () => {
 
   useEffect(() => {
     if (!searchParams.has('token')) {
-      navigate('/');
+      navigate('home');
     } else {
       setPageLoading(true);
       validateForgotPassTknAPI(searchParams.get('token'))
         .catch(() => {
-          navigate('/');
+          navigate('home');
         })
         .finally(() => {
           setPageLoading(false);
@@ -260,8 +260,8 @@ const ResetPass = () => {
         title='Reset Password Successful'
         subTitle='You can now use the new password to login your account.'
         extra={[
-          <Button type='primary' onClick={() => navigate('')}>
-            Go to Login
+          <Button type='primary' onClick={() => navigate('/')}>
+            Got it
           </Button>,
         ]}
       />

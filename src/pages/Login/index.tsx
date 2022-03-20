@@ -20,7 +20,7 @@ const Login = () => {
   const handleLogin = async (values) => {
     setLoading(true);
     await loginAPI({
-      email: values.email,
+      username: values.email,
       password: values.password,
     })
       .then((res) => {

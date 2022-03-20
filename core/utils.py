@@ -8,7 +8,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.authentication import CSRFCheck
 from rest_framework import exceptions
 
-from customer.models import CustAcc
+from customer.models import Cust
 
 
 def enforce_csrf(request):
@@ -50,10 +50,10 @@ def split_date(date):
     return date.split("-")
 
 
-def get_request_user(request):
+def get_request_cust(request):
     refresh = jwt.decode(
-        request.COOKIES.get('refresh_token'),
+        request.COOKIES.get("refresh_token"),
         settings.SIMPLE_JWT["SIGNING_KEY"],
         algorithms=[settings.SIMPLE_JWT["ALGORITHM"]],
     )
-    return CustAcc.objects.get(pk=refresh.get('user_id'))
+    return Cust.objects.get(pk=refresh.get("user_id"))

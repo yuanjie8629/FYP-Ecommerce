@@ -62,7 +62,6 @@ const SearchItem = () => {
         {itemCount > 0 && (
           <Row justify='end'>
             <Col>
-              (
               <Pagination
                 defaultCurrent={1}
                 total={itemCount}
@@ -78,7 +77,6 @@ const SearchItem = () => {
                   }
                 }}
               />
-              )
             </Col>
           </Row>
         )}

@@ -19,7 +19,6 @@ import {
   message,
   Row,
   Space,
-  Spin,
   Typography,
 } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -41,6 +40,7 @@ import { serverErrMsg } from '@utils/messageUtils';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { moneyFormatter } from '@utils/numUtils';
+import SpinCircle from '@components/Spin/SpinCircle';
 
 interface CartProps extends DrawerProps {
   onDrawerHide?: () => void;
@@ -111,6 +111,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
         .then((res) => {
           setCart(res.data.items);
           setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+          setCartValue(undefined);
         })
         .catch((err) => {
           if (err.response?.status !== 401) {
@@ -121,6 +122,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
     } else {
       setQuantityToCart(item.id, value);
       setCartLoading(cartLoading.filter((cart) => cart !== item.id));
+      setCartValue(undefined);
     }
   };
 
@@ -146,9 +148,9 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
 
   const ListItem = (item) => (
     <List.Item>
-      <Spin
+      <SpinCircle
         spinning={cartLoading.includes(item.id)}
-        indicator={<LoadingOutlined style={{ fontSize: 24 }} />}
+   
       >
         <Row gutter={15} align='middle'>
           <Col xs={8} md={7}>
@@ -227,9 +229,13 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                         cartValue !== undefined ? cartValue : item.quantity
                       }
                       onChange={(value) => {
+                        setCartValue(item.stock);
                         setCartValue(value);
                       }}
                       onBlur={() => {
+                        if (cartValue > item.stock) {
+                          setCartValue(item.stock);
+                        }
                         handleCartSet(item, cartValue);
                       }}
                     />
@@ -249,7 +255,12 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
                   </Space>
                 </Col>
                 <Col>
-                  <Text strong className='text-lg' delete={item.special_price}>
+                  <Text
+                    type={item.special_price ? 'secondary' : undefined}
+                    strong
+                    className='text-lg'
+                    delete={item.special_price}
+                  >
                     RM {item.price}
                   </Text>
                 </Col>
@@ -257,7 +268,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
             </Space>
           </Col>
         </Row>
-      </Spin>
+      </SpinCircle>
     </List.Item>
   );
 
@@ -317,7 +328,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
               </Col>
               <Col>
                 <Text strong className='text-lg'>
-                  {moneyFormatter(totalPrice())}
+                  RM {totalPrice().toFixed(2)}
                 </Text>
               </Col>
             </Row>

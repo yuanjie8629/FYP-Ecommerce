@@ -1,18 +1,21 @@
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from customer.models import CustAcc
+from customer.models import Cust
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from customer.serializers import RegisterSerializer
+from customer.serializers import CustSerializer, RegisterSerializer
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
 
 
 class RegisterView(generics.CreateAPIView):
-    queryset = CustAcc.objects.all()
+    queryset = Cust.objects.all()
     serializer_class = RegisterSerializer
 
+class CustDetails(generics.RetrieveAPIView):
+    queryset = Cust.objects.all()
+    serializer_class = CustSerializer
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(

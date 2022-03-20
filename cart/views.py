@@ -4,11 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from cart.models import Cart, CartItem
 from cart.serializers import CartItemSerializer, CartSerializer
-from core.utils import get_request_user
+from core.utils import get_request_cust
 from item.models import Item
 from django.db.models import Prefetch
-from django.db.models import F, Sum
-
+from rest_framework import permissions
 
 class CartRetrieveView(generics.RetrieveAPIView):
     lookup_field = "cust__id"
@@ -22,9 +21,12 @@ class CartAddItemView(generics.CreateAPIView):
     lookup_field = "cust__id"
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
     def create(self, request, *args, **kwargs):
-        if get_request_user(request) == request.user:
+        print(get_request_cust(request) == request.user.cust)
+        if get_request_cust(request) == request.user.cust:
             item = get_object_or_404(Item, pk=request.data.get("item"))
 
             quantity = request.data.get("quantity")
@@ -33,10 +35,10 @@ class CartAddItemView(generics.CreateAPIView):
                     data={"error": "no_quantity"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-            cart = Cart.objects.filter(cust=request.user).first()
-            print(cart)
+            cart = Cart.objects.filter(cust=request.user.cust).first()
+
             if cart is None:
-                cart = Cart.objects.create(cust=request.user)
+                cart = Cart.objects.create(cust=request.user.cust)
 
             existing_item = CartItem.objects.filter(cart=cart, item=item).first()
 
@@ -69,9 +71,10 @@ class CartRemoveItemView(generics.CreateAPIView):
     lookup_field = "cust__id"
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        if get_request_user(request) == request.user:
+        if get_request_cust(request) == request.user.cust:
             item = get_object_or_404(Item, pk=request.data.get("item"))
 
             quantity = request.data.get("quantity")
@@ -85,10 +88,10 @@ class CartRemoveItemView(generics.CreateAPIView):
                     data={"error": "no_stock"}, status=status.HTTP_406_NOT_ACCEPTABLE
                 )
 
-            cart = Cart.objects.filter(cust=request.user).first()
+            cart = Cart.objects.filter(cust=request.user.cust).first()
             print(cart)
             if cart is None:
-                cart = Cart.objects.create(cust=request.user)
+                cart = Cart.objects.create(cust=request.user.cust)
 
             existing_item = get_object_or_404(
                 CartItem.objects.filter(cart=cart, item=item)
@@ -113,9 +116,10 @@ class CartSetItemView(generics.CreateAPIView):
     lookup_field = "cust__id"
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        if get_request_user(request) == request.user:
+        if get_request_cust(request) == request.user.cust:
             item = get_object_or_404(Item, pk=request.data.get("item"))
 
             quantity = request.data.get("quantity")
@@ -129,10 +133,10 @@ class CartSetItemView(generics.CreateAPIView):
                     data={"error": "no_stock"}, status=status.HTTP_406_NOT_ACCEPTABLE
                 )
 
-            cart = Cart.objects.filter(cust=request.user).first()
+            cart = Cart.objects.filter(cust=request.user.cust).first()
 
             if cart is None:
-                cart = Cart.objects.create(cust=request.user)
+                cart = Cart.objects.create(cust=request.user.cust)
 
             existing_item = get_object_or_404(
                 CartItem.objects.filter(cart=cart, item=item)

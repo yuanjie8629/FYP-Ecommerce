@@ -34,7 +34,11 @@ const ItemCard = ({ info, ...props }: ItemCardProps) => {
             {`RM ${price}`}
           </Text>
           {special_price && (
-            <Text style={{ marginLeft: 15 }}>{`RM ${special_price}`}</Text>
+            <Text
+              strong
+              style={{ marginLeft: 15 }}
+              className='color-primary'
+            >{`RM ${special_price}`}</Text>
           )}
         </Row>
       </Card>

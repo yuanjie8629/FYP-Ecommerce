@@ -17,10 +17,11 @@ import {
 import { removeSearchParams } from '@utils/urlUtls';
 import LoginRegModal from '@components/Modal/LoginRegModal';
 import { logoutAPI } from '@api/services/authAPI';
-import { getCartItemCount, getUserEmail } from '@utils/storageUtils';
+import { getCartItemCount, getUserEmail, getUserId } from '@utils/storageUtils';
 import Cart from '@pages/Cart';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
+import AccountDrawer from '@components/Drawer/AccountDrawer';
 
 const Header = () => {
   const { Header } = Layout;
@@ -34,12 +35,25 @@ const Header = () => {
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useContext(CartContext);
   const [messageAPI] = useContext(MessageContext);
+  const [showAcc, setShowAcc] = useState(false);
 
   useEffect(() => {
     if (searchParams.has('name')) {
       setSearch(searchParams.get('name'));
     }
   }, [searchParams]);
+
+  const handleLogout = () => {
+    logoutAPI();
+    setCart([]);
+    messageAPI.open({
+      key: 'successLogout',
+      type: 'success',
+      content: 'You have logout successfully',
+    });
+    setTimeout(() => messageAPI.destroy('successLogout'), 3000);
+  };
+
   return (
     <Header className='header-container'>
       <Row justify='space-between' align='middle' className='header'>
@@ -83,6 +97,11 @@ const Header = () => {
                 <HiOutlineUser
                   style={{ fontSize: 25, cursor: 'pointer' }}
                   className={getUserEmail() && 'color-primary'}
+                  onClick={() => {
+                    if (getUserId()) setShowAcc(true);
+                    else if (screens.md) LoginRegModal.show('login');
+                    else navigate(findRoutePath('login'));
+                  }}
                 />
               )}
               <Badge
@@ -110,6 +129,32 @@ const Header = () => {
           </Space>
         </Col>
       </Row>
+      <AccountDrawer
+        visible={showAcc}
+        maskClosable
+        onClose={() => {
+          setShowAcc(false);
+        }}
+        onMenuClick={(route) => {
+          if (route === 'logout') {
+            handleLogout();
+          }
+
+          setShowAcc(false);
+        }}
+      />
+
+      <Cart
+        visible={showCart}
+        maskClosable
+        onClose={() => {
+          setShowCart(false);
+        }}
+        onDrawerHide={() => {
+          setShowCart(false);
+        }}
+      />
+
       <Drawer
         visible={showDrawer}
         maskClosable
@@ -126,25 +171,12 @@ const Header = () => {
           }
 
           if (route === 'logout') {
-            logoutAPI();
-            setCart([]);
-            messageAPI.open({
-              key: 'successLogout',
-              type: 'success',
-              content: 'You have logout successfully',
-            });
-            setTimeout(() => messageAPI.destroy('successLogout'), 3000);
+            handleLogout();
           }
-        }}
-      />
-      <Cart
-        visible={showCart}
-        maskClosable
-        onClose={() => {
-          setShowCart(false);
-        }}
-        onDrawerHide={() => {
-          setShowCart(false);
+
+          if (route === 'profile') {
+            setShowAcc(true);
+          }
         }}
       />
       <LoginRegModal />

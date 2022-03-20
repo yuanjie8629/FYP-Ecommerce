@@ -254,6 +254,7 @@ const ItemDetails = () => {
                     <Row gutter={10}>
                       <Col>
                         <Text
+                          type={data.special_price ? 'secondary':undefined}
                           strong
                           style={{ fontSize: 20 }}
                           className={!data.special_price && 'color-primary'}
@@ -335,6 +336,7 @@ const ItemDetails = () => {
                         <Row gutter={10}>
                           <Col>
                             <Text
+                              type={data.special_price ? 'secondary':undefined}
                               strong
                               className={!data.special_price && 'color-primary'}
                               delete={data.special_price}

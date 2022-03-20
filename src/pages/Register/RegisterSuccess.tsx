@@ -11,7 +11,8 @@ const RegisterSuccess = () => {
   const { Text } = Typography;
   useEffect(() => {
     if (!searchParams.has('email')) {
-      navigate('/');
+      console.log('gg')
+      navigate('home');
     }
   }, [navigate, searchParams]);
 

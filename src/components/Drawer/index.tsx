@@ -31,7 +31,7 @@ const Drawer = ({
   onSearch = () => null,
   ...props
 }: DrawerProps) => {
-  const { Text, Title } = Typography;
+  const { Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const navigate = useNavigate();
@@ -116,8 +116,9 @@ const Drawer = ({
                     onClick={() => {
                       onMenuClick(item.route);
                       if (
-                        ['login', 'register', 'logout'].includes(item.route) &&
-                        screens.md
+                        (['login', 'register', 'logout'].includes(item.route) &&
+                          screens.md) ||
+                        ['profile'].includes(item.route)
                       ) {
                         return;
                       }
@@ -133,8 +134,9 @@ const Drawer = ({
                     onClick={() => {
                       onMenuClick(item.route);
                       if (
-                        ['login', 'register', 'logout'].includes(item.route) &&
-                        screens.md
+                        (['login', 'register', 'logout'].includes(item.route) &&
+                          screens.md) ||
+                        ['profile'].includes(item.route)
                       ) {
                         return;
                       }
