@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from customer.models import Cust, CustType
+from .models import Cust, CustType
 
 
 class CustTypeSerializer(serializers.ModelSerializer):
@@ -12,14 +12,41 @@ class CustTypeSerializer(serializers.ModelSerializer):
 
 class CustSerializer(serializers.ModelSerializer):
     type = serializers.SlugRelatedField(
-        slug_field="type", source="cust_type", read_only=True
+        slug_field="type",
+        read_only=True,
+        source="cust_type",
     )
+    birthdate = serializers.DateField(input_formats=["%d-%m-%Y"], format="%d-%m-%Y")
 
     class Meta:
         model = Cust
-        fields = ["email", "name", "phone_num", "gender", "birthdate", "type"]
+        fields = [
+            "email",
+            "name",
+            "gender",
+            "birthdate",
+            "type",
+        ]
 
 
+class ChangePassSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+    new_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = Cust
+        fields = (
+            "password",
+            "new_password",
+        )
+
+    def update(self, instance, validated_data):
+        print("setting new password.")
+        instance.set_password(validated_data.get("new_password"))
+        instance.save()
+        return instance
 
 
 class RegisterSerializer(serializers.ModelSerializer):

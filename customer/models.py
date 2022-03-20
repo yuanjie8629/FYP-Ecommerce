@@ -10,10 +10,10 @@ class Cust(Users):
     pos_reg = models.ForeignKey(
         "CustPosReg", on_delete=models.DO_NOTHING, blank=True, null=True
     )
-    
+
     class Meta:
         db_table = "cust"
-        managed=False
+        managed = False
 
     def __init__(self, *args, **kwargs):
         super(Cust, self).__init__(*args, **kwargs)
@@ -39,7 +39,7 @@ class CustPosReg(models.Model):
 
     class Meta:
         db_table = "cust_pos_reg"
-        managed=False
+        managed = False
 
 
 class CustType(models.Model):
@@ -48,4 +48,4 @@ class CustType(models.Model):
 
     class Meta:
         db_table = "cust_type"
-        managed=False
+        managed = False

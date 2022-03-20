@@ -1,6 +1,6 @@
 import { productPrevAPI } from '@api/services/productAPI';
 import { serverErrMsg } from '@utils/messageUtils';
-import { Empty, message, Row, Tabs } from 'antd';
+import { Empty, Row, Tabs } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
@@ -16,7 +16,7 @@ interface AllProductProps {
 
 const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
   const { TabPane } = Tabs;
-  const [messageApi] = useContext(MessageContext)
+  const [messageApi] = useContext(MessageContext);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const location = useLocation();
@@ -48,12 +48,11 @@ const AllProduct = ({ onChange = () => null, ...props }: AllProductProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
     <div style={{ margin: 10 }}>
-   
       <Tabs
         defaultActiveKey='all'
         onChange={(activeKey) => {

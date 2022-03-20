@@ -4,10 +4,10 @@ import React, { createContext } from 'react';
 export const MessageContext = createContext(null);
 
 export const Provider = (props) => {
-  const [messageAPI] = message.useMessage();
+  const [messageApi] = message.useMessage();
 
   return (
-    <MessageContext.Provider value={[messageAPI]}>
+    <MessageContext.Provider value={[messageApi]}>
       {props.children}
     </MessageContext.Provider>
   );

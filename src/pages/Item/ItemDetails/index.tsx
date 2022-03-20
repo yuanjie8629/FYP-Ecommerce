@@ -14,7 +14,6 @@ import {
   Descriptions,
   Grid,
   Image,
-  message,
   Row,
   Space,
   Table,
@@ -67,7 +66,7 @@ const ItemDetails = () => {
                 type: 'warning',
                 content: 'The item has reached the maximum stock in your cart',
               });
-              setTimeout(() => message.destroy('no_stock'), 3000);
+              setTimeout(() => messageApi.destroy(), 5000);
               setCartLoading(false);
               return;
             }
@@ -84,7 +83,7 @@ const ItemDetails = () => {
             type: 'warning',
             content: 'The item has reached the maximum stock in your cart',
           });
-          setTimeout(() => message.destroy('no_stock'), 3000);
+          setTimeout(() => messageApi.destroy(), 5000);
           return;
         }
       }
@@ -101,6 +100,7 @@ const ItemDetails = () => {
       itemDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
+            console.log(res.data);
             setData(res.data);
             let thumbnail = res.data?.thumbnail;
             let images = res.data?.image;
@@ -131,7 +131,7 @@ const ItemDetails = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const prodColumns: {
@@ -254,7 +254,7 @@ const ItemDetails = () => {
                     <Row gutter={10}>
                       <Col>
                         <Text
-                          type={data.special_price ? 'secondary':undefined}
+                          type={data.special_price ? 'secondary' : undefined}
                           strong
                           style={{ fontSize: 20 }}
                           className={!data.special_price && 'color-primary'}
@@ -336,7 +336,9 @@ const ItemDetails = () => {
                         <Row gutter={10}>
                           <Col>
                             <Text
-                              type={data.special_price ? 'secondary':undefined}
+                              type={
+                                data.special_price ? 'secondary' : undefined
+                              }
                               strong
                               className={!data.special_price && 'color-primary'}
                               delete={data.special_price}

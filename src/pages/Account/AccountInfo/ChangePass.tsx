@@ -1,8 +1,8 @@
-import { Col, Row, Form, Typography, Space, Input, message } from 'antd';
+import { Col, Row, Form, Typography, Space, Input, Alert } from 'antd';
 import Button from '@components/Button';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ColorCard from '@components/Card/ColorCard';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { MdCancel, MdCheckCircle } from 'react-icons/md';
 import { IconBaseProps } from 'react-icons';
 import { useForm } from 'antd/lib/form/Form';
@@ -13,40 +13,27 @@ import {
   hasSymbolLetter,
   hasUpperCaseLetter,
 } from '@utils/strUtils';
-import { resetPassAPI, validateForgotPassTknAPI } from '@api/services/authAPI';
+import { changePassAPI } from '@api/services/authAPI';
 import SuccessModal from '@components/Modal/SuccessModal';
-import PageLoad from '@components/Loading/PageLoad';
+import { removeInvalidData } from '@utils/arrayUtils';
+import { MessageContext } from '@contexts/MessageContext';
+import { serverErrMsg } from '@utils/messageUtils';
 import Layout from '@components/Layout';
 
-const ResetPass = () => {
+const ChangePass = () => {
   const { Text, Title } = Typography;
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [resetPassForm] = useForm();
+  const [changePassForm] = useForm();
   const [hasNumberic, setHasNumeric] = useState(false);
   const [hasLowerCase, setHasLowerCase] = useState(false);
   const [hasUpperCase, setHasUpperCase] = useState(false);
   const [hasSymbol, setHasSymbol] = useState(false);
   const [passInRange, setPassInRange] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-  const [resetErrMsg, setResetErrMsg] = useState([]);
-
-  useEffect(() => {
-    if (!searchParams.has('token')) {
-      navigate('home');
-    } else {
-      setPageLoading(true);
-      validateForgotPassTknAPI(searchParams.get('token'))
-        .catch(() => {
-          navigate('home');
-        })
-        .finally(() => {
-          setPageLoading(false);
-        });
-    }
-  }, [navigate, searchParams]);
+  const [newPassErrMsg, setNewPassErrMsg] = useState([]);
+  const [passErrMsg, setPassErrMsg] = useState('');
+  const [messageApi] = useContext(MessageContext);
 
   const passValidation = [
     {
@@ -101,67 +88,92 @@ const ResetPass = () => {
     );
   };
 
-  const handleResetPass = (values) => {
+  const handleChangePass = (values) => {
+    console.log(values);
+    values = removeInvalidData(values);
     setSubmitLoading(true);
-    resetPassAPI({
-      token: searchParams.get('token'),
-      password: values.password,
-    })
-      .then(() => setSuccessModal(true))
-      .catch((err) => {
-        if (err.response?.status === 400)
-          setResetErrMsg(err.response?.data.password);
-        else {
-          message.error('Error encountered. Please try again.');
-        }
-      })
-      .finally(() => {
+    changePassAPI(values)
+      .then((res) => {
+        setSuccessModal(true);
         setSubmitLoading(false);
+      })
+      .catch((err) => {
+        if (err.response?.status !== 401) {
+          if (err.response?.status === 400) {
+            if (err.response?.data?.error === 'invalid_password') {
+              setPassErrMsg('The password entered is invalid');
+              setSubmitLoading(false);
+              return;
+            }
+            if (err.response?.data?.password) {
+              setNewPassErrMsg(err.response?.data?.password);
+            }
+            return;
+          }
+          setSubmitLoading(false);
+          showServerErrMsg();
+        }
       });
   };
 
-  return !pageLoading ? (
-    <Form
-      name='resetPass'
-      form={resetPassForm}
-      layout='vertical'
-      onFinish={handleResetPass}
-    >
-      <Layout>
-        <Row justify='center' style={{ marginTop: 50, padding: 20 }}>
-          <div style={{ width: 500 }}>
-            <Space direction='vertical' size={15} className='full-width'>
-              <Title level={4} className='center-flex'>
-                Reset Password
-              </Title>
-              <Space
-                direction='vertical'
-                size={0}
-                align='center'
-                className='full-width'
-              >
-                <Text>Create a new password for</Text>
-                <Text className='color-primary'>
-                  {searchParams.get('email')}
-                </Text>
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+    setTimeout(() => messageApi.destroy(), 5000);
+  };
+
+  return (
+    <Layout>
+      <Row justify='center' style={{ marginTop: 50, padding: 20 }}>
+        <div style={{ width: 500 }}>
+          <Space direction='vertical' size={20} className='full-width'>
+            <Title level={4} className='center-flex'>
+              Change Password
+            </Title>
+            {passErrMsg && (
+              <Alert
+                message={<Text type='danger'>{passErrMsg}</Text>}
+                type='error'
+                showIcon
+              />
+            )}
+
+            <ColorCard backgroundColor='grey' bodyStyle={{ padding: 15 }}>
+              <Space direction='vertical' size={0}>
+                <Text>Your password must fulfill the following criteria:</Text>
+                {passValidation.map((err, index) => (
+                  <PassCriteriaList
+                    key={`passCriteriaList-${index}`}
+                    errMsg={err.message}
+                    validation={err.validation}
+                  />
+                ))}
               </Space>
-              <ColorCard backgroundColor='grey' bodyStyle={{ padding: 15 }}>
-                <Space direction='vertical' size={0}>
-                  <Text>
-                    Your password must fulfill the following criteria:
-                  </Text>
-                  {passValidation.map((err, index) => (
-                    <PassCriteriaList
-                      key={`passCriteriaList-${index}`}
-                      errMsg={err.message}
-                      validation={err.validation}
-                    />
-                  ))}
-                </Space>
-              </ColorCard>
+            </ColorCard>
+            <Form
+              name='changePass'
+              form={changePassForm}
+              layout='vertical'
+              onFinish={handleChangePass}
+            >
               <Space direction='vertical' size={10} className='full-width'>
                 <Form.Item
                   name='password'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your password to update.',
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    placeholder='Old Password'
+                    onChange={() => {
+                      setPassErrMsg('');
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='new_password'
                   rules={[
                     {
                       required: true,
@@ -190,20 +202,20 @@ const ResetPass = () => {
                       },
                     },
                   ]}
-                  validateStatus={resetErrMsg.length > 0 && 'error'}
-                  help={resetErrMsg.map((errMsg) => (
+                  validateStatus={newPassErrMsg.length > 0 && 'error'}
+                  help={newPassErrMsg.map((errMsg) => (
                     <ul className='text-sm'>
                       <li style={{ textAlign: 'justify' }}>{errMsg}</li>
                     </ul>
                   ))}
                 >
                   <Input.Password
-                    placeholder='Password'
+                    placeholder='New Password'
                     maxLength={16}
                     onChange={(e) => {
                       const pass = e.target.value.trim();
-                      resetPassForm.setFieldsValue({
-                        password: pass,
+                      changePassForm.setFieldsValue({
+                        new_password: pass,
                       });
                       if (hasDigit(pass)) setHasNumeric(true);
                       else setHasNumeric(false);
@@ -219,7 +231,7 @@ const ResetPass = () => {
                   />
                 </Form.Item>
                 <Form.Item
-                  name='confirmPass'
+                  name='confirm_pass'
                   rules={[
                     {
                       required: true,
@@ -227,7 +239,7 @@ const ResetPass = () => {
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
-                        if (!value || getFieldValue('password') === value) {
+                        if (!value || getFieldValue('new_password') === value) {
                           return Promise.resolve();
                         }
                         return Promise.reject(
@@ -238,7 +250,7 @@ const ResetPass = () => {
                   ]}
                 >
                   <Input.Password
-                    placeholder='Confirm Password'
+                    placeholder='Confirm New Password'
                     maxLength={16}
                   />
                 </Form.Item>
@@ -251,28 +263,27 @@ const ResetPass = () => {
                   Reset Password
                 </Button>
               </Space>
-            </Space>
-          </div>
-        </Row>
-      </Layout>
-      <SuccessModal
-        visible={successModal}
-        title={<Title level={5}>Reset Password Successful</Title>}
-        subTitle={
-          <Text type='secondary' className='text-sm'>
-            You can now use the new password to login.
-          </Text>
-        }
-        extra={[
-          <Button type='primary' onClick={() => navigate('/')}>
-            Got it
-          </Button>,
-        ]}
-      />
-    </Form>
-  ) : (
-    <PageLoad />
+            </Form>
+          </Space>
+
+          <SuccessModal
+            visible={successModal}
+            title={<Title level={5}>Change Password Successful</Title>}
+            subTitle={
+              <Text type='secondary' className='text-sm'>
+                You can now use the new password to login your account.
+              </Text>
+            }
+            extra={[
+              <Button type='primary' onClick={() => navigate('/')}>
+                Got it
+              </Button>,
+            ]}
+          />
+        </div>
+      </Row>
+    </Layout>
   );
 };
 
-export default ResetPass;
+export default ChangePass;

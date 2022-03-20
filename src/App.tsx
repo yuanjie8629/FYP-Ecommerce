@@ -18,7 +18,7 @@ function App() {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const [cart, setCart] = useState([]);
-  const [messageAPI, messageContext] = message.useMessage();
+  const [messageApi, messageContext] = message.useMessage();
   const [notificationAPI, notiContext] = notification.useNotification();
   const idleTimer = useIdleTimer({
     timeout: 10000,
@@ -64,7 +64,7 @@ function App() {
       <IconContext.Provider
         value={{ style: { verticalAlign: 'middle', textAlign: 'center' } }}
       >
-        <MessageContext.Provider value={[messageAPI, messageContext]}>
+        <MessageContext.Provider value={[messageApi, messageContext]}>
           {messageContext}
           <NotificationContext.Provider value={[notificationAPI, notiContext]}>
             {notiContext}

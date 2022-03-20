@@ -1,9 +1,11 @@
 import Button from '@components/Button';
 import Layout from '@components/Layout';
-import { Descriptions, Row, Space, Typography } from 'antd';
+import { Descriptions, Grid, Row, Space, Typography } from 'antd';
 
 const ContactUs = () => {
   const { Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   return (
     <Layout>
       <Row justify='center' style={{ padding: 20 }}>
@@ -13,7 +15,7 @@ const ContactUs = () => {
           style={{ marginTop: 50, width: 500 }}
           size={50}
         >
-          <Title>Contact Us</Title>
+          <Title level={screens.md ? 2 : 3}>Contact Us</Title>
           <img
             src='https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg'
             alt='contact'

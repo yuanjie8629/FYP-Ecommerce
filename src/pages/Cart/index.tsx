@@ -16,7 +16,6 @@ import {
   Grid,
   InputNumber,
   List,
-  message,
   Row,
   Space,
   Typography,
@@ -42,11 +41,9 @@ import { MessageContext } from '@contexts/MessageContext';
 import { moneyFormatter } from '@utils/numUtils';
 import SpinCircle from '@components/Spin/SpinCircle';
 
-interface CartProps extends DrawerProps {
-  onDrawerHide?: () => void;
-}
+interface CartProps extends DrawerProps {}
 
-const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
+const Cart = (props: CartProps) => {
   const { Text, Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
@@ -81,7 +78,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const handleCartAdd = (item) => {
@@ -148,10 +145,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
 
   const ListItem = (item) => (
     <List.Item>
-      <SpinCircle
-        spinning={cartLoading.includes(item.id)}
-   
-      >
+      <SpinCircle spinning={cartLoading.includes(item.id)}>
         <Row gutter={15} align='middle'>
           <Col xs={8} md={7}>
             <img
@@ -284,7 +278,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
               className='color-grey'
               size={30}
               onClick={() => {
-                onDrawerHide();
+                props.onClose(null);
               }}
             />
           </Col>
@@ -312,7 +306,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
             type='primary'
             block
             onClick={() => {
-              onDrawerHide();
+              props.onClose(null);
             }}
           >
             Continue Shopping
@@ -339,7 +333,7 @@ const Cart = ({ onDrawerHide = () => null, ...props }: CartProps) => {
               type='text'
               block
               onClick={() => {
-                onDrawerHide();
+                props.onClose(null);
               }}
             >
               Continue Shopping

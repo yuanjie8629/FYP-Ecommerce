@@ -34,7 +34,7 @@ const Header = () => {
   const [search, setSearch] = useState('');
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useContext(CartContext);
-  const [messageAPI] = useContext(MessageContext);
+  const [messageApi] = useContext(MessageContext);
   const [showAcc, setShowAcc] = useState(false);
 
   useEffect(() => {
@@ -46,12 +46,12 @@ const Header = () => {
   const handleLogout = () => {
     logoutAPI();
     setCart([]);
-    messageAPI.open({
+    messageApi.open({
       key: 'successLogout',
       type: 'success',
       content: 'You have logout successfully',
     });
-    setTimeout(() => messageAPI.destroy('successLogout'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
@@ -148,9 +148,6 @@ const Header = () => {
         visible={showCart}
         maskClosable
         onClose={() => {
-          setShowCart(false);
-        }}
-        onDrawerHide={() => {
           setShowCart(false);
         }}
       />

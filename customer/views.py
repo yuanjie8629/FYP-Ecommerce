@@ -4,18 +4,40 @@ from customer.models import Cust
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from customer.serializers import CustSerializer, RegisterSerializer
+from customer.serializers import ChangePassSerializer, CustSerializer, RegisterSerializer
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth.hashers import check_password
 
 
 class RegisterView(generics.CreateAPIView):
     queryset = Cust.objects.all()
     serializer_class = RegisterSerializer
 
-class CustDetails(generics.RetrieveAPIView):
+
+class ChangePassView(generics.UpdateAPIView):
+    queryset = Cust.objects.all()
+    serializer_class = ChangePassSerializer
+
+    def update(self, request, *args, **kwargs):
+        if not check_password(request.data.get("password"), self.get_object().password):
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
+            )
+        return super().update(request, *args, **kwargs)
+
+
+class CustDetails(generics.RetrieveUpdateAPIView):
     queryset = Cust.objects.all()
     serializer_class = CustSerializer
+
+    def update(self, request, *args, **kwargs):
+        if not check_password(request.data.get("password"), self.get_object().password):
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
+            )
+        return super().update(request, *args, **kwargs)
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(
@@ -31,6 +53,8 @@ def password_reset_token_created(
     :param kwargs:
     :return:
     """
+    print("sending email")
+    print(reset_password_token.user.email)
     # send an e-mail to the user
     context = {
         "email": reset_password_token.user.email,

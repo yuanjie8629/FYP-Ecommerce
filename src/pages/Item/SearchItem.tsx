@@ -4,7 +4,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 
 import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
-import { Pagination, Space, Row, Col, message, Empty } from 'antd';
+import { Pagination, Space, Row, Col, Empty } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
@@ -41,7 +41,7 @@ const SearchItem = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
   return (
     <Layout>

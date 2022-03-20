@@ -1,6 +1,6 @@
 import { itemPrevAPI } from '@api/services/productAPI';
 import { serverErrMsg } from '@utils/messageUtils';
-import { Empty, message, Row } from 'antd';
+import { Empty, Row } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ItemCard from './ItemCard';
@@ -42,7 +42,7 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => message.destroy('serverErr'), 3000);
+    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
