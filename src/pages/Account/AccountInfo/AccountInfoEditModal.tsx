@@ -42,7 +42,6 @@ const AccountInfoEditModal = ({
   const [messageApi] = useContext(MessageContext);
 
   const handleEditAcc = (values) => {
-    console.log(values);
     if (values.birthdate) {
       values.birthdate = getDt(values.birthdate);
     }

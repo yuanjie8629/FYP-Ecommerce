@@ -98,7 +98,6 @@ const ChangePassModal = (props: ModalProps) => {
   };
 
   const handleChangePass = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
     setSubmitLoading(true);
     changePassAPI(values)

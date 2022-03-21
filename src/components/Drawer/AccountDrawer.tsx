@@ -1,9 +1,8 @@
-import LoginRegModal from '@components/Modal/LoginRegModal';
 import { findRoutePath } from '@utils/routingUtils';
 import {
   Col,
-  Drawer as AntdDrawer,
-  DrawerProps as AntdDrawerProps,
+  Drawer,
+  DrawerProps,
   Grid,
   List,
   Row,
@@ -11,9 +10,9 @@ import {
   Typography,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
-interface DrawerProps extends AntdDrawerProps {
+interface AccountDrawerProps extends DrawerProps {
   onMenuClick?: (route?) => void;
   onSearch?: (search: string) => void;
 }
@@ -21,13 +20,11 @@ const AccountDrawer = ({
   onMenuClick = () => null,
   onSearch = () => null,
   ...props
-}: DrawerProps) => {
-  const { Text, Title } = Typography;
+}: AccountDrawerProps) => {
+  const {  Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
   const routes = [
     { label: 'Order History', route: 'orderHistory' },
     { label: 'Address Book', route: 'addressBook' },
@@ -36,7 +33,7 @@ const AccountDrawer = ({
   ];
 
   return (
-    <AntdDrawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' size={30} className='full-width'>
         <Row
           align='top'
@@ -57,6 +54,7 @@ const AccountDrawer = ({
         </Row>
         <Space direction='vertical' size={30} className='full-width'>
           <List
+            rowKey='route'
             dataSource={routes.map((route) => route)}
             renderItem={(item) => (
               <List.Item className='text-button-wrapper'>
@@ -100,8 +98,7 @@ const AccountDrawer = ({
           />
         </Space>
       </Space>
-      <LoginRegModal />
-    </AntdDrawer>
+    </Drawer>
   );
 };
 

@@ -100,7 +100,7 @@ const Header = () => {
                   onClick={() => {
                     if (getUserId()) setShowAcc(true);
                     else if (screens.md) LoginRegModal.show('login');
-                    else navigate(findRoutePath('login'));
+                    else navigate(findRoutePath('home'));
                   }}
                 />
               )}

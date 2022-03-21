@@ -12,7 +12,6 @@ const RegisterSuccess = () => {
   const { Text } = Typography;
   useEffect(() => {
     if (!searchParams.has('email')) {
-      console.log('gg');
       navigate('home');
     }
   }, [navigate, searchParams]);
@@ -37,7 +36,7 @@ const RegisterSuccess = () => {
                 type='primary'
                 style={{ width: '70%' }}
                 onClick={() => {
-                  navigate(findRoutePath('login'));
+                  navigate(findRoutePath('home'));
                 }}
               >
                 Login

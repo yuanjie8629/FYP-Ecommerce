@@ -45,9 +45,7 @@ const AccountInfoEditDrawer = ({
   const [errMsg, setErrMsg] = useState('');
   const [messageApi] = useContext(MessageContext);
 
-
   const handleEditAcc = (values) => {
-    console.log(values);
     if (values.birthdate) {
       values.birthdate = getDt(values.birthdate);
     }
@@ -84,7 +82,7 @@ const AccountInfoEditDrawer = ({
 
   return (
     <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
-      <Space direction='vertical' className='full-width'>
+      <Space direction='vertical' size={30} className='full-width'>
         <Row
           align='top'
           style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}

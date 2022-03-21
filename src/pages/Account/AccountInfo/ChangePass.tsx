@@ -89,7 +89,6 @@ const ChangePass = () => {
   };
 
   const handleChangePass = (values) => {
-    console.log(values);
     values = removeInvalidData(values);
     setSubmitLoading(true);
     changePassAPI(values)

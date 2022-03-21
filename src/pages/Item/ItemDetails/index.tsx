@@ -135,7 +135,7 @@ const ItemDetails = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  console.log(data.stock);
+
   useEffect(() => {
     if (!screens.md) {
       setTabKey('details');
@@ -236,7 +236,7 @@ const ItemDetails = () => {
                 <ul className='item-details-list-info'>
                   <li>
                     <Text>
-                      Weight <br /> {data.weight / 1000} kg
+                        Weight <br /> {data.weight} g
                     </Text>
                   </li>
                   <li>

@@ -17,11 +17,7 @@ const AuthRoute = (_props) => {
   if (!(access || notProtectedRoute.includes(checkURL(location.pathname)))) {
     setCart([]);
     return (
-      <Navigate
-        to={findRoutePath('login')}
-        state={{ from: location }}
-        replace
-      />
+      <Navigate to={findRoutePath('home')} state={{ from: location }} replace />
     );
   }
 

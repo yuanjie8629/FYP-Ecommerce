@@ -102,6 +102,7 @@ const Drawer = ({
             />
           )}
           <List
+            rowKey='route'
             dataSource={
               getUserEmail()
                 ? loginRoutes.map((route) => route)

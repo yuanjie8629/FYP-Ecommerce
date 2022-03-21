@@ -39,6 +39,7 @@ function App() {
   message.config({
     maxCount: 1,
     duration: 5,
+    top: screens.md && 80,
   });
 
   const timer = useTimer({
@@ -58,25 +59,24 @@ function App() {
   useEffect(() => {
     if (getUserId()) {
       console.log('Retrieving cart items...');
-      cartDetailsAPI().then((res) => {
-        setCart(res.data.items);
-      });
+      cartDetailsAPI()
+        .then((res) => {
+          setCart(res.data.items ? res.data.items: []);
+        })
+        .catch((res) => {});
       console.log('Retrieved cart items.');
     } else if (getCartItem()) {
       console.log('Retrieving cart items...');
       itemPrevByIdsAPI(getCartItem().map((item) => item.id)).then((res) => {
         let new_cart = [];
         res.data.results.forEach((item) => {
-     
-            console.log(item);
-            let qty = getCartItem().find(
-              (cartItem) => cartItem.id === item.id
-            ).quantity;
-            new_cart.push({
-              ...item,
-              quantity: item.stock >= qty ? qty : item.stock,
-            });
-          
+          let qty = getCartItem().find(
+            (cartItem) => cartItem.id === item.id
+          ).quantity;
+          new_cart.push({
+            ...item,
+            quantity: item.stock >= qty ? qty : item.stock,
+          });
         });
         setCart(new_cart);
         refreshCart(new_cart);

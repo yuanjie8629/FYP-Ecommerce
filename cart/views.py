@@ -9,6 +9,7 @@ from item.models import Item
 from django.db.models import Prefetch
 from rest_framework import permissions
 
+
 class CartRetrieveView(generics.RetrieveAPIView):
     lookup_field = "cust__id"
     queryset = Cart.objects.all().prefetch_related(
@@ -82,19 +83,18 @@ class CartRemoveItemView(generics.CreateAPIView):
                     data={"error": "no_quantity"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-            if item.stock <= 0 or item.stock - quantity < 0:
-                return Response(
-                    data={"error": "no_stock"}, status=status.HTTP_406_NOT_ACCEPTABLE
-                )
- 
             cart = Cart.objects.filter(cust=request.user.cust).first()
-            print(cart)
-            if cart is None:
-                cart = Cart.objects.create(cust=request.user.cust)
-
             existing_item = get_object_or_404(
                 CartItem.objects.filter(cart=cart, item=item)
             )
+            if item.stock <= 0 or item.stock - quantity < 0:
+                print("remove")
+                print(existing_item.item.name)
+                existing_item.delete()
+                return Response(data={"data": "removed due to no stock."},status=status.HTTP_200_OK)
+
+            if cart is None:
+                cart = Cart.objects.create(cust=request.user.cust)
 
             if existing_item.quantity > 1:
                 existing_item.quantity -= quantity

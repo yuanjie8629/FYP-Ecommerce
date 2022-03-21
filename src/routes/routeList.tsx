@@ -14,6 +14,7 @@ import RegisterSuccess from '@pages/Register/RegisterSuccess';
 import AccountInfo from '@pages/Account/AccountInfo';
 import ChangePass from '@pages/Account/AccountInfo/ChangePass';
 import AddressBook from '@pages/Account/AddressBook';
+import PosReg from '@pages/PosReg';
 
 const routeList: {
   label: string;
@@ -68,7 +69,7 @@ const routeList: {
     path: '/register/success',
     component: <RegisterSuccess />,
     protected: false,
-    },
+  },
   {
     label: 'item',
     path: '/item/:id',
@@ -109,6 +110,12 @@ const routeList: {
     label: 'accountInfo',
     path: '/account/info',
     component: <AccountInfo />,
+    protected: true,
+  },
+  {
+    label: 'posReg',
+    path: '/position/registration',
+    component: <PosReg />,
     protected: true,
   },
   {

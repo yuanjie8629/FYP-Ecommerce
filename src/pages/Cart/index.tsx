@@ -56,7 +56,7 @@ const Cart = (props: CartProps) => {
   const [cartValue, setCartValue] = useState<number>();
   const itemCount = cart.length || getCartItemCount();
   const user = getUserId();
-
+  
   const totalPrice = () => {
     let sum = 0;
     if (user) {
@@ -130,7 +130,7 @@ const Cart = (props: CartProps) => {
     if (user) {
       cartRemoveAPI(item.id, 1)
         .then((res) => {
-          setCart(res.data.items);
+          setCart(res.data.items ? res.data.items : []);
           setCartLoading(cartLoading.filter((cart) => cart !== item.id));
         })
         .catch((err) => {
@@ -177,7 +177,9 @@ const Cart = (props: CartProps) => {
               >
                 <Col>
                   <Space size={5}>
-                    {item.quantity > 1 ? (
+                    {item.quantity > 1 &&
+                    cart.find((cartItem) => cartItem.id === item.id).stock !==
+                      0 ? (
                       <Button
                         icon={
                           <MinusOutlined
@@ -283,7 +285,8 @@ const Cart = (props: CartProps) => {
           )}
         >
           <List
-            dataSource={user ? cart : getCartItem()}
+            rowKey='id'
+            dataSource={user && cart ? cart : getCartItem()}
             renderItem={ListItem}
           />
         </ConfigProvider>
