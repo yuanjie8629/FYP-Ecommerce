@@ -24,15 +24,9 @@ class ItemActiveListView(generics.ListAPIView):
 
 
 class ItemListView(generics.ListAPIView):
-    queryset = (
-        Item.objects.all()
-        .prefetch_related("image")
-        .order_by(("-last_update"))
-    )
+    queryset = Item.objects.all().prefetch_related("image").order_by(("-last_update"))
     serializer_class = ItemSerializer
     filterset_class = ItemFilter
-
-
 
 
 class ItemView(generics.RetrieveAPIView):
@@ -56,21 +50,20 @@ class ItemView(generics.RetrieveAPIView):
 class ProductPrevView(generics.ListAPIView):
     queryset = (
         Product.objects.all()
-        .filter(status="active")
+        .filter(status="active", stock__gt=0)
         .prefetch_related("image")
         .order_by(("-last_update"))
     )
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 
+
 class PackagePrevView(generics.ListAPIView):
     queryset = (
         Package.objects.all()
-        .filter(status="active")
+        .filter(status="active", stock__gt=0)
         .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
         .order_by("-last_update")
     )
     serializer_class = PackagePrevSerializer
     filterset_class = PackageFilter
-
-

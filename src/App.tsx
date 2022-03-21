@@ -61,7 +61,7 @@ function App() {
       console.log('Retrieving cart items...');
       cartDetailsAPI()
         .then((res) => {
-          setCart(res.data.items ? res.data.items: []);
+          setCart(res.data.items);
         })
         .catch((res) => {});
       console.log('Retrieved cart items.');
@@ -75,7 +75,7 @@ function App() {
           ).quantity;
           new_cart.push({
             ...item,
-            quantity: item.stock >= qty ? qty : item.stock,
+            quantity: item.stock ===0 || item.stock >= qty ? qty : item.stock,
           });
         });
         setCart(new_cart);

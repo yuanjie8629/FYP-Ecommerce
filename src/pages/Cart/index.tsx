@@ -56,7 +56,6 @@ const Cart = (props: CartProps) => {
   const [cartValue, setCartValue] = useState<number>();
   const itemCount = cart.length || getCartItemCount();
   const user = getUserId();
-  
   const totalPrice = () => {
     let sum = 0;
     if (user) {
@@ -130,7 +129,7 @@ const Cart = (props: CartProps) => {
     if (user) {
       cartRemoveAPI(item.id, 1)
         .then((res) => {
-          setCart(res.data.items ? res.data.items : []);
+          setCart(res.data.items);
           setCartLoading(cartLoading.filter((cart) => cart !== item.id));
         })
         .catch((err) => {
@@ -140,7 +139,12 @@ const Cart = (props: CartProps) => {
           }
         });
     } else {
-      removeItemFromCart(item.id);
+      if (item.stock === 0) {
+        removeItemFromCart(item.id, true);
+        setCart(cart.filter((cartItem) => cartItem.id !== item.id));
+      } else {
+        removeItemFromCart(item.id);
+      }
       setCartLoading(cartLoading.filter((cart) => cart !== item.id));
     }
   };
@@ -159,7 +163,19 @@ const Cart = (props: CartProps) => {
           </Col>
           <Col xs={16} md={17}>
             <Space direction='vertical' size={10} className='full-width'>
-              <Title level={5}>{item.name}</Title>
+              <div className='text-button-wrapper'>
+                <Title
+                  level={5}
+                  onClick={() => {
+                    if (item.stock > 0) {
+                      navigate(`/item/${item.id}`);
+                    }
+                  }}
+                  className='text-button'
+                >
+                  {item.name}
+                </Title>
+              </div>
               <Row justify='space-between'>
                 <Col>{getItemStatus(item.stock)}</Col>
                 <Col>
@@ -291,9 +307,7 @@ const Cart = (props: CartProps) => {
           />
         </ConfigProvider>
 
-        {itemCount === undefined ||
-        itemCount === null ||
-        itemCount.length < 1 ? (
+        {itemCount === undefined || itemCount === null || itemCount < 1 ? (
           <Button
             type='primary'
             block

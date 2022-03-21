@@ -10,7 +10,7 @@ const ItemCard = ({ info, ...props }: ItemCardProps) => {
   const { id, name, price, special_price, thumbnail } = info;
   const navigate = useNavigate();
   return (
-    <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }}>
+    <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 6 }}>
       <Card
         hoverable
         cover={thumbnail ? <img alt='thumbnail' src={thumbnail} /> : null}
@@ -20,9 +20,7 @@ const ItemCard = ({ info, ...props }: ItemCardProps) => {
         {...props}
       >
         <Row>
-          <Text style={{ textAlign: 'center' }} strong>
-            {name}
-          </Text>
+          <Text strong>{name}</Text>
           {special_price && (
             <Tag style={{ marginLeft: 10 }} color='success'>
               Sale

@@ -91,7 +91,13 @@ class CartRemoveItemView(generics.CreateAPIView):
                 print("remove")
                 print(existing_item.item.name)
                 existing_item.delete()
-                return Response(data={"data": "removed due to no stock."},status=status.HTTP_200_OK)
+                cartItem = CartItem.objects.filter(cart=cart)
+                print(cartItem)
+                serializer = CartItemSerializer(cartItem, many=True)
+
+                return Response(
+                    data={"items": serializer.data}, status=status.HTTP_200_OK
+                )
 
             if cart is None:
                 cart = Cart.objects.create(cust=request.user.cust)

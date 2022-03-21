@@ -62,11 +62,16 @@ export const setQuantityToCart = (id, quantity) => {
   }
 };
 
-export const removeItemFromCart = (id) => {
+export const removeItemFromCart = (id, remove = false) => {
   if (localStorage.getItem('cart')) {
     let cart = JSON.parse(localStorage.getItem('cart'));
     let matchedItem = cart.find((cartItem) => cartItem.id === id);
     cart = cart.filter((cartItem) => cartItem.id !== matchedItem.id);
+
+    if (remove) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return
+    }
     if (matchedItem.quantity > 1)
       cart = [...cart, { ...matchedItem, quantity: matchedItem.quantity - 1 }];
     if (cart.length < 1) localStorage.removeItem('cart');
