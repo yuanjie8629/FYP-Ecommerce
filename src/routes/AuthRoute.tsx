@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { findRoutePath } from '@utils/routingUtils';
+import { checkURL, findRoutePath } from '@utils/routingUtils';
 import Cookies from 'js-cookie';
 import routeList from './routeList';
 import { useContext } from 'react';
@@ -12,8 +12,9 @@ const AuthRoute = (_props) => {
   const notProtectedRoute = routeList
     .filter((route) => route.protected === false)
     .map((filteredRoute) => filteredRoute.path);
+
   const access = Cookies.get('access_token');
-  if (!(access || notProtectedRoute.includes(location.pathname))) {
+  if (!(access || notProtectedRoute.includes(checkURL(location.pathname)))) {
     setCart([]);
     return (
       <Navigate

@@ -6,13 +6,19 @@ import { Grid, message, notification } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
-import { getSessionExp, getUserId } from '@utils/storageUtils';
+import {
+  getCartItem,
+  getSessionExp,
+  getUserId,
+  refreshCart,
+} from '@utils/storageUtils';
 import moment from 'moment';
 import { CartContext } from '@contexts/CartContext';
 import { useEffect, useState } from 'react';
 import { cartDetailsAPI } from '@api/services/cartAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { NotificationContext } from '@contexts/NotificationContext';
+import { itemPrevByIdsAPI } from '@api/services/productAPI';
 
 function App() {
   const { useBreakpoint } = Grid;
@@ -51,8 +57,30 @@ function App() {
 
   useEffect(() => {
     if (getUserId()) {
+      console.log('Retrieving cart items...');
       cartDetailsAPI().then((res) => {
         setCart(res.data.items);
+      });
+      console.log('Retrieved cart items.');
+    } else if (getCartItem()) {
+      console.log('Retrieving cart items...');
+      itemPrevByIdsAPI(getCartItem().map((item) => item.id)).then((res) => {
+        let new_cart = [];
+        res.data.results.forEach((item) => {
+     
+            console.log(item);
+            let qty = getCartItem().find(
+              (cartItem) => cartItem.id === item.id
+            ).quantity;
+            new_cart.push({
+              ...item,
+              quantity: item.stock >= qty ? qty : item.stock,
+            });
+          
+        });
+        setCart(new_cart);
+        refreshCart(new_cart);
+        console.log('Retrieved cart items.');
       });
     }
 

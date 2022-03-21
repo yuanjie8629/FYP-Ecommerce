@@ -2,9 +2,11 @@ from unicodedata import category
 from django_filters import rest_framework as filters
 from .models import Item, Package, Product
 
+class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
+    pass
 
 class ItemFilter(filters.FilterSet):
-    id = filters.NumberFilter(field_name="id")
+    id = NumberInFilter(field_name='id', lookup_expr='in')
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     sku = filters.CharFilter(field_name="sku", lookup_expr="icontains")
     status = filters.CharFilter(field_name="status")

@@ -6,12 +6,13 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const RegisterSuccess = () => {
+  const { Title } = Typography;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { Text } = Typography;
   useEffect(() => {
     if (!searchParams.has('email')) {
-      console.log('gg')
+      console.log('gg');
       navigate('home');
     }
   }, [navigate, searchParams]);
@@ -22,11 +23,13 @@ const RegisterSuccess = () => {
         <div style={{ width: 500 }}>
           <Result
             status='success'
-            title='You have successfully registered.'
+            title={<Title level={5}>You have successfully registered.</Title>}
             subTitle={
               <Text type='secondary'>
                 You can now login with{' '}
-                <Text strong className='color-info'>${searchParams.get('email')}</Text>
+                <Text strong className='color-info'>
+                  {searchParams.get('email')}
+                </Text>
               </Text>
             }
             extra={

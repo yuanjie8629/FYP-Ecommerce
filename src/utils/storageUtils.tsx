@@ -34,7 +34,7 @@ export const removeStorageItem = (key: string) => {
   window.localStorage.removeItem(key);
 };
 
-export const addItemToCart = (data) => {
+export const addItemToCart = (data, setCart) => {
   if (localStorage.getItem('cart')) {
     let cart = JSON.parse(localStorage.getItem('cart'));
     let matchedItem = cart.find((cartItem) => cartItem.id === data.id);
@@ -45,8 +45,10 @@ export const addItemToCart = (data) => {
       cart = [...cart, { ...data, quantity: 1 }];
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+    setCart(cart);
   } else {
     localStorage.setItem('cart', JSON.stringify([{ ...data, quantity: 1 }]));
+    setCart([{ ...data, quantity: 1 }]);
   }
 };
 
@@ -73,6 +75,14 @@ export const removeItemFromCart = (id) => {
 };
 
 export const clearCart = () => localStorage.removeItem('cart');
+
+export const refreshCart = (data) => {
+  if (data.length > 0) {
+    localStorage.setItem('cart', JSON.stringify(data));
+  } else {
+    localStorage.removeItem('cart');
+  }
+};
 
 export const getCartItemCount = () =>
   localStorage.getItem('cart')

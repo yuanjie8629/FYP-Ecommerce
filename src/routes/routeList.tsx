@@ -68,7 +68,7 @@ const routeList: {
     path: '/register/success',
     component: <RegisterSuccess />,
     protected: false,
-  },
+    },
   {
     label: 'item',
     path: '/item/:id',

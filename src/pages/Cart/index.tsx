@@ -40,6 +40,7 @@ import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { moneyFormatter } from '@utils/numUtils';
 import SpinCircle from '@components/Spin/SpinCircle';
+import { getItemStatus } from '@pages/Item/ItemDetails';
 
 interface CartProps extends DrawerProps {}
 
@@ -55,6 +56,7 @@ const Cart = (props: CartProps) => {
   const [cartValue, setCartValue] = useState<number>();
   const itemCount = cart.length || getCartItemCount();
   const user = getUserId();
+
   const totalPrice = () => {
     let sum = 0;
     if (user) {
@@ -96,7 +98,7 @@ const Cart = (props: CartProps) => {
           }
         });
     } else {
-      addItemToCart(item);
+      addItemToCart(item, setCart);
       setCartLoading(cartLoading.filter((cart) => cart !== item.id));
     }
   };
@@ -159,21 +161,7 @@ const Cart = (props: CartProps) => {
             <Space direction='vertical' size={10} className='full-width'>
               <Title level={5}>{item.name}</Title>
               <Row justify='space-between'>
-                <Col>
-                  {item.stock > 10 ? (
-                    <Text strong className='color-primary'>
-                      In Stock
-                    </Text>
-                  ) : item.stock < 10 && item.stock > 0 ? (
-                    <Text strong type='warning'>
-                      Low Stock
-                    </Text>
-                  ) : (
-                    <Text strong type='danger'>
-                      Out of Stock
-                    </Text>
-                  )}
-                </Col>
+                <Col>{getItemStatus(item.stock)}</Col>
                 <Col>
                   {item.special_price && (
                     <Text strong className='text-lg color-primary'>
@@ -222,6 +210,7 @@ const Cart = (props: CartProps) => {
                       value={
                         cartValue !== undefined ? cartValue : item.quantity
                       }
+                      disabled={item.stock === 0}
                       onChange={(value) => {
                         setCartValue(item.stock);
                         setCartValue(value);

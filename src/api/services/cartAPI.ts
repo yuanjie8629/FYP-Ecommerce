@@ -11,3 +11,4 @@ export const cartRemoveAPI = (id, quantity) =>
 
 export const cartSetQuantityAPI = (id, quantity) =>
   axios.post(`cart/${getUserId()}/set/`, { item: id, quantity: quantity });
+

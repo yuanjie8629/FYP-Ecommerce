@@ -26,11 +26,27 @@ import { useParams } from 'react-router-dom';
 import './ItemDetails.less';
 import ItemDetailsSkeleton from './Skeleton/ItemDetailsSkeleton';
 
+const { Text, Title } = Typography;
+export const getItemStatus = (stock) =>
+  stock > 10 ? (
+    <Text strong className='color-primary'>
+      In Stock
+    </Text>
+  ) : stock <= 10 && stock > 0 ? (
+    <Text strong type='warning'>
+      Low Stock
+    </Text>
+  ) : (
+    <Text strong type='danger'>
+      Out of Stock
+    </Text>
+  );
+
 const ItemDetails = () => {
   const { TabPane } = Tabs;
   const { id } = useParams();
   const [messageApi] = useContext(MessageContext);
-  const { Text, Title } = Typography;
+
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(true);
   const [cartLoading, setCartLoading] = useState(false);
@@ -87,7 +103,7 @@ const ItemDetails = () => {
           return;
         }
       }
-      addItemToCart(data);
+      addItemToCart(data, setCart);
       setCartLoading(false);
       addCartSuccessMsg();
     }
@@ -100,7 +116,6 @@ const ItemDetails = () => {
       itemDetailsAPI(id)
         .then((res) => {
           if (isMounted) {
-            console.log(res.data);
             setData(res.data);
             let thumbnail = res.data?.thumbnail;
             let images = res.data?.image;
@@ -120,7 +135,7 @@ const ItemDetails = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
+  console.log(data.stock);
   useEffect(() => {
     if (!screens.md) {
       setTabKey('details');
@@ -234,19 +249,7 @@ const ItemDetails = () => {
                   <li>
                     <Text>
                       Availability <br />
-                      {data.stock > 10 ? (
-                        <Text strong className='color-primary'>
-                          In Stock
-                        </Text>
-                      ) : data.stock < 10 && data.stock > 0 ? (
-                        <Text strong type='warning'>
-                          Low Stock
-                        </Text>
-                      ) : (
-                        <Text strong type='danger'>
-                          Out of Stock
-                        </Text>
-                      )}
+                      {getItemStatus(data.stock)}
                     </Text>
                   </li>
                   <li>
@@ -281,6 +284,7 @@ const ItemDetails = () => {
                 <Button
                   type='primary'
                   disabled={data.stock <= 0}
+                  color={data.stock <= 0 ? 'grey' : null}
                   onClick={addToCart}
                   loading={cartLoading}
                 >
@@ -378,9 +382,10 @@ const ItemDetails = () => {
           {!screens.md && (
             <div style={{ padding: 20 }} className='full-width'>
               <Button
-                type='primary'
+                type={'primary'}
                 block
                 disabled={data.stock <= 0}
+                color={data.stock <= 0 ? 'grey' : null}
                 onClick={addToCart}
                 loading={cartLoading}
               >

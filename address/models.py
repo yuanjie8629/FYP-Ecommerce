@@ -3,22 +3,24 @@ from core.models import SoftDeleteModel
 from customer.models import Cust
 
 
-class State(SoftDeleteModel):
+class State(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=45)
 
     class Meta:
         db_table = "state"
+        managed = False
 
-class Postcode(SoftDeleteModel):
+
+class Postcode(models.Model):
     id = models.AutoField(primary_key=True)
     postcode = models.CharField(max_length=5)
-    area_name = models.CharField(max_length=100)
-    post_office= models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
     state = models.ForeignKey(State, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = "postcode"
+        managed = False
 
 
 class ShippingAddress(SoftDeleteModel):
@@ -32,3 +34,4 @@ class ShippingAddress(SoftDeleteModel):
 
     class Meta:
         db_table = "shipping_address"
+        managed = False

@@ -23,7 +23,6 @@ class CartAddItemView(generics.CreateAPIView):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
     def create(self, request, *args, **kwargs):
         print(get_request_cust(request) == request.user.cust)
         if get_request_cust(request) == request.user.cust:
@@ -87,7 +86,7 @@ class CartRemoveItemView(generics.CreateAPIView):
                 return Response(
                     data={"error": "no_stock"}, status=status.HTTP_406_NOT_ACCEPTABLE
                 )
-
+ 
             cart = Cart.objects.filter(cust=request.user.cust).first()
             print(cart)
             if cart is None:

@@ -12,15 +12,27 @@ from item.serializers import (
 )
 
 
-class ItemListView(generics.ListAPIView):
+class ItemActiveListView(generics.ListAPIView):
     queryset = (
         Item.objects.all()
         .prefetch_related("image")
-        .filter(status="active")
+        .filter(status="active", stock__gt=0)
         .order_by(("-last_update"))
     )
     serializer_class = ItemSerializer
     filterset_class = ItemFilter
+
+
+class ItemListView(generics.ListAPIView):
+    queryset = (
+        Item.objects.all()
+        .prefetch_related("image")
+        .order_by(("-last_update"))
+    )
+    serializer_class = ItemSerializer
+    filterset_class = ItemFilter
+
+
 
 
 class ItemView(generics.RetrieveAPIView):
@@ -51,18 +63,6 @@ class ProductPrevView(generics.ListAPIView):
     serializer_class = ProductPrevSerializer
     filterset_class = ProductFilter
 
-
-class ProductView(generics.RetrieveAPIView):
-    queryset = Product.objects.all().filter(status="active").prefetch_related("image")
-    serializer_class = ProductSerializer
-
-
-class ProdPrevAllView(generics.ListAPIView):
-    queryset = Product.objects.all().filter(status="active")
-    serializer_class = ProductPrevSerializer
-    pagination_class = None
-
-
 class PackagePrevView(generics.ListAPIView):
     queryset = (
         Package.objects.all()
@@ -74,10 +74,3 @@ class PackagePrevView(generics.ListAPIView):
     filterset_class = PackageFilter
 
 
-class PackageView(generics.RetrieveAPIView):
-    queryset = (
-        Package.objects.all()
-        .filter(status="active")
-        .prefetch_related("image", "pack_item", Prefetch("pack_item__prod"))
-    )
-    serializer_class = PackageSerializer
