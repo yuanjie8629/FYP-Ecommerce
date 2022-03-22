@@ -14,7 +14,14 @@ const AuthRoute = (_props) => {
     .map((filteredRoute) => filteredRoute.path);
 
   const access = Cookies.get('access_token');
-  if (!(access || notProtectedRoute.includes(checkURL(location.pathname)))) {
+
+  if (
+    !(
+      access ||
+      notProtectedRoute.includes(checkURL(location.pathname)) ||
+      location.pathname === '/404'
+    )
+  ) {
     setCart([]);
     return (
       <Navigate to={findRoutePath('home')} state={{ from: location }} replace />

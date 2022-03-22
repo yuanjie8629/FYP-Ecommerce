@@ -116,7 +116,7 @@ const routeList: {
     label: 'posReg',
     path: '/position/registration',
     component: <PosReg />,
-    protected: true,
+    protected: false,
   },
   {
     label: 'changePass',

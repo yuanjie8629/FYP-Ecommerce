@@ -71,10 +71,3 @@ interface ResetPassProps {
 export const resetPassAPI = (resetPassDetails: ResetPassProps) =>
   axios.post('password_reset/confirm/', resetPassDetails);
 
-export const changePassAPI = (data) =>
-  axios.patch(`customer/${getUserId()}/change_pass/`, data);
-
-export const accDetailsAPI = () => axios.get(`customer/${getUserId()}/`);
-
-export const accUpdAPI = (data) =>
-  axios.patch(`customer/${getUserId()}/`, data);

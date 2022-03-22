@@ -1,7 +1,9 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import Cust, CustType
+
+from postcode.models import Postcode
+from .models import Cust, CustPosReg, CustType
 
 
 class CustTypeSerializer(serializers.ModelSerializer):
@@ -81,3 +83,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class CustPosRegSerializer(serializers.ModelSerializer):
+    postcode = serializers.SlugRelatedField(
+        slug_field="postcode", queryset=Postcode.objects.all()
+    )
+    birthdate = serializers.DateField(input_formats=["%d-%m-%Y"], format="%d-%m-%Y")
+
+    class Meta:
+        model = CustPosReg
+        exclude = ["created_at", "last_update", "is_deleted", "accept"]

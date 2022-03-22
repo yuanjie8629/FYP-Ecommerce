@@ -41,7 +41,7 @@ const Drawer = ({
     { label: 'Home', route: 'home' },
     { label: 'Login', route: 'login' },
     { label: 'Register', route: 'register' },
-    { label: 'Become Agent/Dropshipepr', route: 'posReg' },
+    { label: 'Become Agent/Dropshipper', route: 'posReg' },
     { label: 'About Us', route: 'about' },
     { label: 'Contact Us', route: 'contact' },
   ];
@@ -49,7 +49,7 @@ const Drawer = ({
   const loginRoutes = [
     { label: 'Home', route: 'home' },
     { label: 'Profile', route: 'profile' },
-    { label: 'Become Agent/Dropshipepr', route: 'posReg' },
+    { label: 'Become Agent/Dropshipper', route: 'posReg' },
     { label: 'About Us', route: 'about' },
     { label: 'Contact Us', route: 'contact' },
     { label: 'Logout', route: 'logout' },

@@ -1,4 +1,4 @@
-import { accUpdAPI } from '@api/services/authAPI';
+import { accUpdAPI } from '@api/services/custAPI';
 import Button from '@components/Button';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';

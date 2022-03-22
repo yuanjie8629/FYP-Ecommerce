@@ -1,10 +1,10 @@
 from django.dispatch import receiver
 from django.template.loader import render_to_string
-from customer.models import Cust
+from customer.models import Cust, CustPosReg
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from customer.serializers import ChangePassSerializer, CustSerializer, RegisterSerializer
+from customer.serializers import ChangePassSerializer, CustPosRegSerializer, CustSerializer, RegisterSerializer
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.hashers import check_password
@@ -81,3 +81,8 @@ def password_reset_token_created(
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
+
+
+class CustPosRegView(generics.CreateAPIView):
+    queryset = CustPosReg.objects.all()
+    serializer_class = CustPosRegSerializer

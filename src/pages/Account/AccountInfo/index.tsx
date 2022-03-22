@@ -1,4 +1,4 @@
-import { accDetailsAPI } from '@api/services/authAPI';
+import { accDetailsAPI } from '@api/services/custAPI';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
 import SpinCircle from '@components/Spin/SpinCircle';

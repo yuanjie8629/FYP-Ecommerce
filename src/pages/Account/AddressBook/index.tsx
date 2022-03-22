@@ -1,5 +1,6 @@
 import { addressListAPI, postcodeListAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
+import ColorCard from '@components/Card/ColorCard';
 import Layout from '@components/Layout';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
@@ -74,35 +75,38 @@ const AddressBook = () => {
 
   const ListItem = (item) => (
     <List.Item>
-      <Row
-        style={{ borderRadius: 12, margin: '10px 0', padding: 20 }}
-        className='full-width bg-grey-50'
+      <ColorCard
+        backgroundColor='grey'
+        bodyStyle={{ padding: 20 }}
+        className='full-width'
       >
-        <Col span={3}>
-          <HiLocationMarker size={20} className='color-primary' />
-        </Col>
-        <Col span={18} style={{ textAlign: 'start' }}>
-          <Space direction='vertical'>
-            <Text strong>{item.contact_name}</Text>
-            <Text type='secondary'>{item.contact_num}</Text>
-            <Text>{item.address}</Text>
-            <Text>{`${item.postcode.state}, ${item.postcode.city}, ${item.postcode.postcode}`}</Text>
-            {item.default && <Tag color='success'>Default</Tag>}
-          </Space>
-        </Col>
-        <Col span={3}>
-          <Button
-            type='link'
-            color='info'
-            onClick={() => {
-              setSelected(item);
-              setShowEdit(true);
-            }}
-          >
-            Edit
-          </Button>
-        </Col>
-      </Row>
+        <Row>
+          <Col span={3}>
+            <HiLocationMarker size={20} className='color-primary' />
+          </Col>
+          <Col span={18} style={{ textAlign: 'start' }}>
+            <Space direction='vertical'>
+              <Text strong>{item.contact_name}</Text>
+              <Text type='secondary'>{item.contact_num}</Text>
+              <Text>{item.address}</Text>
+              <Text>{`${item.postcode.state}, ${item.postcode.city}, ${item.postcode.postcode}`}</Text>
+              {item.default && <Tag color='success'>Default</Tag>}
+            </Space>
+          </Col>
+          <Col span={3}>
+            <Button
+              type='link'
+              color='info'
+              onClick={() => {
+                setSelected(item);
+                setShowEdit(true);
+              }}
+            >
+              Edit
+            </Button>
+          </Col>
+        </Row>
+      </ColorCard>
     </List.Item>
   );
 
@@ -180,15 +184,16 @@ const AddressBook = () => {
         />
       ) : (
         <AddressEditDrawer
-          visible={showAdd}
+          visible={showEdit}
+          data={selected}
           loading={loading}
           postcode={postcode}
           onClose={() => {
-            setShowAdd(false);
+            setShowEdit(false);
           }}
           onUpdate={() => {
             getAddresses();
-            setShowAdd(false);
+            setShowEdit(false);
           }}
         />
       )}

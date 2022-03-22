@@ -6,7 +6,6 @@ from postcode.serializers import PostcodeSerializer
 
 
 class AddressWriteSerializer(serializers.ModelSerializer):
-    postcode = PostcodeSerializer(read_only=True)
     postcode = serializers.SlugRelatedField(
         slug_field="postcode", queryset=Postcode.objects.all()
     )

@@ -23,7 +23,7 @@ import {
   hasSymbolLetter,
   hasUpperCaseLetter,
 } from '@utils/strUtils';
-import { changePassAPI } from '@api/services/authAPI';
+import { changePassAPI } from '@api/services/custAPI';
 import SuccessModal from '@components/Modal/SuccessModal';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { MessageContext } from '@contexts/MessageContext';
