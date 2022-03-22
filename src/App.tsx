@@ -39,7 +39,7 @@ function App() {
   message.config({
     maxCount: 1,
     duration: 5,
-    top: screens.md && 80,
+    top: screens.md && 50,
   });
 
   const timer = useTimer({
@@ -75,7 +75,7 @@ function App() {
           ).quantity;
           new_cart.push({
             ...item,
-            quantity: item.stock ===0 || item.stock >= qty ? qty : item.stock,
+            quantity: item.stock === 0 || item.stock >= qty ? qty : item.stock,
           });
         });
         setCart(new_cart);
@@ -92,9 +92,9 @@ function App() {
       <IconContext.Provider
         value={{ style: { verticalAlign: 'middle', textAlign: 'center' } }}
       >
-        <MessageContext.Provider value={[messageApi, messageContext]}>
+        <MessageContext.Provider value={[messageApi]}>
           {messageContext}
-          <NotificationContext.Provider value={[notificationAPI, notiContext]}>
+          <NotificationContext.Provider value={[notificationAPI]}>
             {notiContext}
             <CartContext.Provider value={[cart, setCart]}>
               <Routes />

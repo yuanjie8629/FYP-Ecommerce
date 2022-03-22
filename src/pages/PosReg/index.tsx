@@ -102,7 +102,12 @@ const PosReg = () => {
           <Title level={screens.md ? 4 : 5}>
             Agent/Dropshipper Registration Form
           </Title>
-          <Form name='posRegForm' layout='vertical' onFinish={handleSubmit}>
+          <Form
+            name='posRegForm'
+            layout='vertical'
+            onFinish={handleSubmit}
+            scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+          >
             <Space
               direction='vertical'
               size={40}

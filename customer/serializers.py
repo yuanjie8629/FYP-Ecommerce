@@ -89,6 +89,9 @@ class CustPosRegSerializer(serializers.ModelSerializer):
     postcode = serializers.SlugRelatedField(
         slug_field="postcode", queryset=Postcode.objects.all()
     )
+    position = serializers.SlugRelatedField(
+        slug_field="type", queryset=CustType.objects.all()
+    )
     birthdate = serializers.DateField(input_formats=["%d-%m-%Y"], format="%d-%m-%Y")
 
     class Meta:
