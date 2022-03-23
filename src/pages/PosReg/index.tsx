@@ -107,6 +107,7 @@ const PosReg = () => {
             layout='vertical'
             onFinish={handleSubmit}
             scrollToFirstError={{ behavior: 'smooth', block: 'center' }}
+            form={posRegForm}
           >
             <Space
               direction='vertical'

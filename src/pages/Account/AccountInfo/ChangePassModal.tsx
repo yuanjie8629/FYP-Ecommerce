@@ -109,14 +109,15 @@ const ChangePassModal = (props: ModalProps) => {
         if (err.response?.status !== 401) {
           if (err.response?.status === 400) {
             if (err.response?.data?.error === 'invalid_password') {
-              setPassErrMsg('The password entered is invalid');
+              setPassErrMsg('The old password entered is invalid');
               setSubmitLoading(false);
               return;
             }
             if (err.response?.data?.password) {
               setNewPassErrMsg(err.response?.data?.password);
+              setSubmitLoading(false);
+              return;
             }
-            return;
           }
           setSubmitLoading(false);
           showServerErrMsg();

@@ -10,11 +10,11 @@ class AddressViewset(viewsets.ModelViewSet):
     pagination_class = None
 
     def create(self, request, *args, **kwargs):
-        request.data.update({"cust": request.user})
+        request.data.update({"cust": request.user.id})
         return super().create(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        request.data.update({"cust": request.user})
+        request.data.update({"cust": request.user.id})
         return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):

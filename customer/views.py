@@ -4,7 +4,12 @@ from customer.models import Cust, CustPosReg
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from customer.serializers import ChangePassSerializer, CustPosRegSerializer, CustSerializer, RegisterSerializer
+from customer.serializers import (
+    ChangePassSerializer,
+    CustPosRegSerializer,
+    CustSerializer,
+    RegisterSerializer,
+)
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.hashers import check_password
@@ -20,7 +25,9 @@ class ChangePassView(generics.UpdateAPIView):
     serializer_class = ChangePassSerializer
 
     def update(self, request, *args, **kwargs):
-        if not check_password(request.data.get("password"), self.get_object().password):
+        if not check_password(
+            request.data.pop("password", None), self.get_object().password
+        ):
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
             )
@@ -32,7 +39,7 @@ class CustDetails(generics.RetrieveUpdateAPIView):
     serializer_class = CustSerializer
 
     def update(self, request, *args, **kwargs):
-        if not check_password(request.data.get("password"), self.get_object().password):
+        if not check_password(request.data.pop("password", None), self.get_object().password):
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, data={"error": "invalid_password"}
             )

@@ -12,26 +12,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Cart',
+            name='Postcode',
             fields=[
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('last_update', models.DateTimeField(auto_now=True)),
-                ('is_deleted', models.BooleanField(default=False)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('postcode', models.CharField(max_length=5)),
+                ('city', models.CharField(max_length=50)),
             ],
             options={
-                'db_table': 'cart',
+                'db_table': 'postcode',
                 'managed': False,
             },
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name='State',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('quantity', models.PositiveIntegerField()),
+                ('code', models.CharField(max_length=3, primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=45)),
             ],
             options={
-                'db_table': 'cart_item',
+                'db_table': 'state',
                 'managed': False,
             },
         ),

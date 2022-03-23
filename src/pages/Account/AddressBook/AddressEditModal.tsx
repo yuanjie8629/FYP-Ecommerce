@@ -159,7 +159,6 @@ const AddressEditModal = ({
                   setState(value);
                   addressForm.setFieldsValue({ city: undefined });
                   addressForm.setFieldsValue({ postcode: undefined });
-
                   setCity('');
                 }}
               >

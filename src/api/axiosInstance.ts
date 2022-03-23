@@ -3,7 +3,7 @@ import oriAxios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshTknAPI } from './services/authAPI';
 
-const localBaseURL = 'http://127.0.0.1:8000/api/';
+const localBaseURL = 'http://127.0.0.1:8001/api/';
 const serverBaseURL = 'https://fyp-shrf-ecommerce.herokuapp.com/api/';
 
 export const baseURL =

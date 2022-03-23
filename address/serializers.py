@@ -17,7 +17,7 @@ class AddressWriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         addresses = Address.objects.filter(cust=validated_data.get("cust"))
         if not addresses:
-            validated_data.data.update({"default": True})
+            validated_data.update({"default": True})
         if addresses and validated_data.get("default") == True:
             for address in addresses:
                 address.default = False

@@ -12,8 +12,7 @@ class EmailOrUsernameModelBackend(ModelBackend):
             username = kwargs.get(user_model.USERNAME_FIELD)
 
         users = user_model._default_manager.filter(
-            Q(**{user_model.USERNAME_FIELD: username})
-            | Q(email__iexact=username) & Q(is_superuser=False) & Q(is_staff=False)
+            Q(**{user_model.USERNAME_FIELD: username}) | Q(email__iexact=username)
         )
 
         for user in users:
