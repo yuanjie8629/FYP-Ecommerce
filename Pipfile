@@ -83,6 +83,7 @@ MarkupSafe = "==2.1.1"
 Pillow = "==9.0.1"
 PyJWT = "==2.3.0"
 Rx = "==1.6.1"
+django-postgres-copy = "*"
 
 [dev-packages]
 
