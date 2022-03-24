@@ -79,3 +79,29 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    (async function () {
+      try {
+        return await fetch(event.request);
+      } catch (err) {
+        return caches.match(event.request);
+      }
+    })()
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(async function() {
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames.filter((cacheName) => {
+        // Return true if you want to remove this cache,
+        // but remember that caches are shared across
+        // the whole origin
+        return true
+      }).map(cacheName => caches.delete(cacheName))
+    );
+  }());
+});

@@ -8,8 +8,8 @@ from postcode.models import State
 class ShippingFee(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     location = models.ForeignKey(State, on_delete=models.DO_NOTHING)
-    weight_start = models.IntegerField(max_digits=8)
-    weight_end = models.IntegerField(max_digits=8)
+    weight_start = models.IntegerField()
+    weight_end = models.IntegerField()
     ship_fee = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
