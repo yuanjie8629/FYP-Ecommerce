@@ -83,7 +83,6 @@ function App() {
         console.log('Retrieved cart items.');
       });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUserId()]);
 

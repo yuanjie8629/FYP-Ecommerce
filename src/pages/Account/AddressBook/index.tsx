@@ -1,13 +1,12 @@
 import { addressListAPI, postcodeListAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
-import ColorCard from '@components/Card/ColorCard';
+import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
 import Layout from '@components/Layout';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
-import { Card, Col, Grid, List, Row, Space, Tag, Typography } from 'antd';
+import { Card, Grid, List, Row, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { HiLocationMarker } from 'react-icons/hi';
 import AddressAddDrawer from './AddressAddDrawer';
 import AddressAddModal from './AddressAddModal';
 import AddressEditDrawer from './AddressEditDrawer';
@@ -25,6 +24,7 @@ const AddressBook = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [selected, setSelected] = useState();
   const getPostcodes = (isMounted = true) => {
+    setLoading(true);
     postcodeListAPI()
       .then((res) => {
         if (isMounted) {
@@ -73,27 +73,21 @@ const AddressBook = () => {
     setTimeout(() => messageApi.destroy(), 5000);
   };
 
-  const ListItem = (item) => (
-    <List.Item>
-      <ColorCard
-        backgroundColor='grey'
-        bodyStyle={{ padding: 20 }}
-        className='full-width'
-      >
-        <Row>
-          <Col span={3}>
-            <HiLocationMarker size={20} className='color-primary' />
-          </Col>
-          <Col span={18} style={{ textAlign: 'start' }}>
-            <Space direction='vertical'>
-              <Text strong>{item.contact_name}</Text>
-              <Text type='secondary'>{item.contact_num}</Text>
-              <Text>{item.address}</Text>
-              <Text>{`${item.postcode.state}, ${item.postcode.city}, ${item.postcode.postcode}`}</Text>
-              {item.default && <Tag color='success'>Default</Tag>}
-            </Space>
-          </Col>
-          <Col span={3}>
+  const ListItem = (item) => {
+    let address: AddressInfo = {
+      contactName: item.contact_name,
+      contactNum: item.contact_num,
+      address: item.address,
+      state: item.postcode.state,
+      city: item.postcode.city,
+      postcode: item.postcode.postcode,
+      default: item.default,
+    };
+    return (
+      <List.Item>
+        <AddressCard
+          address={address}
+          extra={
             <Button
               type='link'
               color='info'
@@ -104,11 +98,11 @@ const AddressBook = () => {
             >
               Edit
             </Button>
-          </Col>
-        </Row>
-      </ColorCard>
-    </List.Item>
-  );
+          }
+        />
+      </List.Item>
+    );
+  };
 
   return (
     <Layout>

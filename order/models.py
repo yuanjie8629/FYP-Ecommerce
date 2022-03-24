@@ -11,7 +11,7 @@ class Order(SoftDeleteModel):
     total_amt = models.DecimalField(max_digits=10, decimal_places=2)
     ship_type = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
-    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING)
+    cust = models.ForeignKey(Cust, on_delete=models.DO_NOTHING, blank=True, null=True)
     voucher = models.ForeignKey(
         Voucher, on_delete=models.DO_NOTHING, blank=True, null=True
     )

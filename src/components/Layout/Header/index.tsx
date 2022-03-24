@@ -15,13 +15,14 @@ import {
   HiOutlineUser,
 } from 'react-icons/hi';
 import { removeSearchParams } from '@utils/urlUtls';
-import LoginRegModal from '@components/Modal/LoginRegModal';
 import { logoutAPI } from '@api/services/authAPI';
 import { getCartItemCount, getUserEmail, getUserId } from '@utils/storageUtils';
 import Cart from '@pages/Cart';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import AccountDrawer from '@components/Drawer/AccountDrawer';
+import Login from '@pages/Login';
+import Register from '@pages/Register';
 
 const Header = () => {
   const { Header } = Layout;
@@ -36,6 +37,9 @@ const Header = () => {
   const [cart, setCart] = useContext(CartContext);
   const [messageApi] = useContext(MessageContext);
   const [showAcc, setShowAcc] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [loginRemind, setLoginRemind] = useState(false);
 
   useEffect(() => {
     if (searchParams.has('name')) {
@@ -99,8 +103,7 @@ const Header = () => {
                   className={getUserEmail() && 'color-primary'}
                   onClick={() => {
                     if (getUserId()) setShowAcc(true);
-                    else if (screens.md) LoginRegModal.show('login');
-                    else navigate(findRoutePath('login'));
+                    else setShowLogin(true);
                   }}
                 />
               )}
@@ -112,9 +115,12 @@ const Header = () => {
                 }}
               >
                 <HiOutlineShoppingCart
-                  style={{ fontSize: 25, cursor: 'pointer' }}
+                  style={{
+                    fontSize: 25,
+                    cursor: location.pathname !== '/checkout' && 'pointer',
+                  }}
                   onClick={() => {
-                    setShowCart(true);
+                    location.pathname !== '/checkout' && setShowCart(true);
                   }}
                 />
               </Badge>
@@ -139,7 +145,6 @@ const Header = () => {
           if (route === 'logout') {
             handleLogout();
           }
-
           setShowAcc(false);
         }}
       />
@@ -149,6 +154,10 @@ const Header = () => {
         maskClosable
         onClose={() => {
           setShowCart(false);
+        }}
+        onLoginRemind={() => {
+          setLoginRemind(true);
+          setShowLogin(true);
         }}
       />
 
@@ -161,10 +170,10 @@ const Header = () => {
         onMenuClick={(route) => {
           setShowDrawer(false);
           if (route === 'login') {
-            LoginRegModal.show('login');
+            setShowLogin(true);
           }
           if (route === 'register') {
-            LoginRegModal.show('register');
+            setShowRegister(true);
           }
 
           if (route === 'logout') {
@@ -176,7 +185,26 @@ const Header = () => {
           }
         }}
       />
-      <LoginRegModal />
+      <Login
+        visible={showLogin}
+        onClose={() => {
+          setShowLogin(false);
+          setLoginRemind(false);
+        }}
+        onRegister={() => {
+          setShowLogin(false);
+          setShowRegister(true);
+          setLoginRemind(false);
+        }}
+        remind={loginRemind}
+      />
+
+      <Register
+        visible={showRegister}
+        onClose={() => {
+          setShowRegister(false);
+        }}
+      />
     </Header>
   );
 };

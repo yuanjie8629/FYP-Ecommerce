@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
-import { Form, Input, Row, Space, Typography } from 'antd';
+import { DrawerProps, Form, Input, Space, Typography } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 import Button from '@components/Button';
 import { forgotPassAPI } from '@api/services/authAPI';
 import { useForm } from 'antd/lib/form/Form';
-import { createSearchParams, useNavigate } from 'react-router-dom';
-import { findRoutePath } from '@utils/routingUtils';
-import Layout from '@components/Layout';
+import LoginDrawer from './LoginDrawer';
+import CheckEmail from './CheckEmail';
 
-const ForgotPass = () => {
-  const { Text, Title } = Typography;
+interface ForgotPassProps extends DrawerProps {
+  onBack?: () => void;
+}
+
+const ForgotPass = ({ onBack = () => null, ...props }: ForgotPassProps) => {
+  const { Text } = Typography;
   const [forgotPass] = useForm();
   const [loading, setLoading] = useState(false);
+  const [showCheckEmail, setShowCheckEmail] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const navigate = useNavigate();
   const handleSubmit = (values) => {
     setLoading(true);
     forgotPassAPI(values.email)
       .then(() => {
-        navigate({
-          pathname: findRoutePath('checkEmail'),
-          search: createSearchParams({ email: values.email }).toString(),
-        });
+        setShowCheckEmail(true);
       })
       .catch((err) => {
         if (err.response?.status === 400)
@@ -32,53 +33,64 @@ const ForgotPass = () => {
   };
 
   return (
-    <Layout>
-      <Row justify='center' style={{ marginTop: 50, padding: 20 }}>
-        <div style={{ width: 500 }}>
-          <Form
-            name='forgotPass'
-            form={forgotPass}
-            layout='vertical'
-            onFinish={handleSubmit}
-          >
-            <Space
-              direction='vertical'
-              size={20}
-              style={{ textAlign: 'center' }}
-            >
-              <Title level={4} className='color-primary'>
-                Forgot Password
-              </Title>
-              <Text>
-                Please enter your email address below and we will send you
-                further insturctions on how to reset your password.
-              </Text>
-              <div>
-                <Form.Item
-                  name='email'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter valid email address.',
-                      type: 'email',
-                    },
-                  ]}
-                  help={errMsg
-                    .split('.')
-                    .map((msg) => msg !== '' && <p>{`${msg}.`}</p>)}
-                  validateStatus={errMsg && 'error'}
-                >
-                  <Input placeholder='Email address' style={{ width: '90%' }} />
-                </Form.Item>
-              </div>
-              <Button htmlType='submit' type='primary' loading={loading}>
-                Reset Password
-              </Button>
-            </Space>
-          </Form>
-        </div>
-      </Row>
-    </Layout>
+    <LoginDrawer
+      {...props}
+      title='Forgot Password'
+      closeIcon={
+        <LeftOutlined
+          className='color-grey'
+          size={30}
+          onClick={() => {
+            props.onClose(null);
+          }}
+        />
+      }
+    >
+      {!showCheckEmail ? (
+        <Form
+          name='forgotPass'
+          form={forgotPass}
+          layout='vertical'
+          onFinish={handleSubmit}
+        >
+          <Space direction='vertical' size={20} style={{ textAlign: 'center' }}>
+            <Text>
+              Please enter your email address below and we will send you further
+              insturctions on how to reset your password.
+            </Text>
+            <div>
+              <Form.Item
+                name='email'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter valid email address.',
+                    type: 'email',
+                  },
+                ]}
+                help={errMsg
+                  .split('.')
+                  .map((msg) => msg !== '' && <p>{`${msg}.`}</p>)}
+                validateStatus={errMsg && 'error'}
+              >
+                <Input placeholder='Email address' style={{ width: '90%' }} />
+              </Form.Item>
+            </div>
+            <Button htmlType='submit' type='primary' loading={loading}>
+              Reset Password
+            </Button>
+          </Space>
+        </Form>
+      ) : (
+        <CheckEmail
+          email={forgotPass.getFieldValue('email')}
+          onOk={() => {
+            props.onClose(null);
+            onBack();
+          }}
+        />
+      )}
+    </LoginDrawer>
   );
 };
 

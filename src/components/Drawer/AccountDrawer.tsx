@@ -10,7 +10,7 @@ import {
   Typography,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface AccountDrawerProps extends DrawerProps {
   onMenuClick?: (route?) => void;
@@ -21,7 +21,7 @@ const AccountDrawer = ({
   onSearch = () => null,
   ...props
 }: AccountDrawerProps) => {
-  const {  Title } = Typography;
+  const { Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const AccountDrawer = ({
           align='top'
           style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
         >
-          <Col span={1}>
+          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
             <CloseOutlined
               className='color-grey'
               size={30}
@@ -48,7 +48,7 @@ const AccountDrawer = ({
               }}
             />
           </Col>
-          <Col span={23} style={{ textAlign: 'center' }}>
+          <Col span={24} style={{ textAlign: 'center' }}>
             <Title level={5}>My Account</Title>
           </Col>
         </Row>

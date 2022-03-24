@@ -46,7 +46,6 @@ const ItemDetails = () => {
   const { TabPane } = Tabs;
   const { id } = useParams();
   const [messageApi] = useContext(MessageContext);
-
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(true);
   const [cartLoading, setCartLoading] = useState(false);

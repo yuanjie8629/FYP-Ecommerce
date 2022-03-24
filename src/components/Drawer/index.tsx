@@ -115,15 +115,17 @@ const Drawer = ({
                     level={5}
                     className='text-button '
                     onClick={() => {
+                      console.log(item.route);
                       onMenuClick(item.route);
                       if (
-                        (['login', 'register', 'logout'].includes(item.route) &&
-                          screens.md) ||
-                        ['profile'].includes(item.route)
+                        ['login', 'register', 'logout', 'profile'].includes(
+                          item.route
+                        )
                       ) {
                         return;
+                      } else {
+                        navigate(findRoutePath(item.route));
                       }
-                      navigate(findRoutePath(item.route));
                     }}
                   >
                     {item.label}
@@ -135,9 +137,9 @@ const Drawer = ({
                     onClick={() => {
                       onMenuClick(item.route);
                       if (
-                        (['login', 'register', 'logout'].includes(item.route) &&
-                          screens.md) ||
-                        ['profile'].includes(item.route)
+                        ['login', 'register', 'logout', 'profile'].includes(
+                          item.route
+                        )
                       ) {
                         return;
                       }

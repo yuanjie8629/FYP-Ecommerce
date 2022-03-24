@@ -5,7 +5,6 @@ import {
   PlusOutlined,
   MinusOutlined,
   DeleteOutlined,
-  LoadingOutlined,
 } from '@ant-design/icons';
 import {
   Col,
@@ -20,7 +19,7 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import {
   addItemToCart,
@@ -42,14 +41,15 @@ import { moneyFormatter } from '@utils/numUtils';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { getItemStatus } from '@pages/Item/ItemDetails';
 
-interface CartProps extends DrawerProps {}
+interface CartProps extends DrawerProps {
+  onLoginRemind?: () => void;
+}
 
-const Cart = (props: CartProps) => {
+const Cart = ({ onLoginRemind = () => null, ...props }: CartProps) => {
   const { Text, Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const navigate = useNavigate();
-  const location = useLocation();
   const [cart, setCart] = useContext(CartContext);
   const [cartLoading, setCartLoading] = useState([]);
   const [messageApi] = useContext(MessageContext);
@@ -332,7 +332,18 @@ const Cart = (props: CartProps) => {
                 </Text>
               </Col>
             </Row>
-            <Button type='primary' block>
+            <Button
+              type='primary'
+              block
+              onClick={() => {
+                if (getUserId()) {
+                  navigate(findRoutePath('checkout'));
+                } else {
+                  onLoginRemind();
+                }
+              }}
+              style={{ height: 40 }}
+            >
               Checkout
             </Button>
             <Button

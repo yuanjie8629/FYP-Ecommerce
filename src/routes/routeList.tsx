@@ -3,18 +3,12 @@ import NotFound from '@pages/NotFound/NotFound';
 import ItemDetails from '@pages/Item/ItemDetails';
 import SearchItem from '@pages/Item/SearchItem';
 import Cart from '@pages/Cart';
-import Login from '@pages/Login';
-import Register from '@pages/Register';
-import ForgotPass from '@pages/Login/ForgotPass';
-import CheckEmail from '@pages/Login/CheckEmail';
 import AboutUs from '@pages/AboutUs';
 import ContactUs from '@pages/ContactUs';
-import ResetPass from '@pages/Login/ResetPass';
-import RegisterSuccess from '@pages/Register/RegisterSuccess';
 import AccountInfo from '@pages/Account/AccountInfo';
-import ChangePass from '@pages/Account/AccountInfo/ChangePass';
 import AddressBook from '@pages/Account/AddressBook';
 import PosReg from '@pages/PosReg';
+import Checkout from '@pages/Checkout';
 
 const routeList: {
   label: string;
@@ -35,42 +29,6 @@ const routeList: {
     protected: false,
   },
   {
-    label: 'login',
-    path: '/login',
-    component: <Login />,
-    protected: false,
-  },
-  {
-    label: 'forgotPass',
-    path: '/forgot_pass',
-    component: <ForgotPass />,
-    protected: false,
-  },
-  {
-    label: 'checkEmail',
-    path: '/check_email',
-    component: <CheckEmail />,
-    protected: false,
-  },
-  {
-    label: 'resetPass',
-    path: '/pass_reset',
-    component: <ResetPass />,
-    protected: false,
-  },
-  {
-    label: 'register',
-    path: '/register',
-    component: <Register />,
-    protected: false,
-  },
-  {
-    label: 'registerSuccess',
-    path: '/register/success',
-    component: <RegisterSuccess />,
-    protected: false,
-  },
-  {
     label: 'item',
     path: '/item/:id',
     component: <ItemDetails />,
@@ -86,6 +44,12 @@ const routeList: {
     label: 'cart',
     path: '/cart',
     component: <Cart />,
+    protected: false,
+  },
+  {
+    label: 'checkout',
+    path: '/checkout',
+    component: <Checkout />,
     protected: false,
   },
   {
@@ -118,13 +82,6 @@ const routeList: {
     component: <PosReg />,
     protected: false,
   },
-  {
-    label: 'changePass',
-    path: '/account/change_pass',
-    component: <ChangePass />,
-    protected: true,
-  },
-
   {
     label: 'logout',
     path: '/home',

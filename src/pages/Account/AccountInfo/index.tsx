@@ -5,12 +5,11 @@ import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { custCat, genderCat } from '@utils/optionUtils';
-import { findRoutePath } from '@utils/routingUtils';
 import { Col, Descriptions, Grid, Row, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AccountInfoEditDrawer from './AccountInfoEditDrawer';
 import AccountInfoEditModal from './AccountInfoEditModal';
+import ChangePassDrawer from './ChangePassDrawer';
 import ChangePassModal from './ChangePassModal';
 
 const AccountInfo = () => {
@@ -22,7 +21,6 @@ const AccountInfo = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const [showChangePass, setShowChangePass] = useState(false);
-  const navigate = useNavigate();
   const getUserDetails = (isMounted = true) => {
     setLoading(true);
     accDetailsAPI()
@@ -115,11 +113,7 @@ const AccountInfo = () => {
                       type='link'
                       color='info'
                       onClick={() => {
-                        if (screens.md) {
-                          setShowChangePass(true);
-                        } else {
-                          navigate(findRoutePath('changePass'));
-                        }
+                        setShowChangePass(true);
                       }}
                     >
                       Change
@@ -173,12 +167,21 @@ const AccountInfo = () => {
           }}
         />
       )}
-      <ChangePassModal
-        visible={showChangePass}
-        onCancel={() => {
-          setShowChangePass(false);
-        }}
-      />
+      {screens.md ? (
+        <ChangePassModal
+          visible={showChangePass}
+          onCancel={() => {
+            setShowChangePass(false);
+          }}
+        />
+      ) : (
+        <ChangePassDrawer
+          visible={showChangePass}
+          onClose={() => {
+            setShowChangePass(false);
+          }}
+        />
+      )}
     </Layout>
   );
 };

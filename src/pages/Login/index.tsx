@@ -1,20 +1,40 @@
 import React, { useContext, useState } from 'react';
-import { Alert, Form, Input, Row, Space, Typography } from 'antd';
+import {
+  Alert,
+  Divider,
+  DrawerProps,
+  Form,
+  Input,
+  Space,
+  Typography,
+} from 'antd';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
 import { loginAPI } from '@api/services/authAPI';
-import Layout from '@components/Layout';
-import './Login.less';
-import { useNavigate } from 'react-router-dom';
-import { findRoutePath } from '@utils/routingUtils';
 import { MessageContext } from '@contexts/MessageContext';
 import { clearCart } from '@utils/storageUtils';
+import LoginDrawer from './LoginDrawer';
+import ForgotPass from './ForgotPass';
+import { useNavigate } from 'react-router-dom';
+import { findRoutePath } from '@utils/routingUtils';
 
-const Login = () => {
-  const { Text, Title } = Typography;
+interface LoginProps extends DrawerProps {
+  remind?: boolean;
+  onRegister?: () => void;
+  onShowMe?: () => void;
+}
+
+const Login = ({
+  remind,
+  onRegister = () => null,
+  onShowMe = () => null,
+  ...props
+}: LoginProps) => {
+  const { Text } = Typography;
   const [loginForm] = useForm();
   const [loading, setLoading] = useState(false);
   const [loginErr, setLoginErr] = useState<React.ReactNode>();
+  const [showForgotPass, setShowForgotPass] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const navigate = useNavigate();
   const handleLogin = async (values) => {
@@ -30,7 +50,7 @@ const Login = () => {
           content: 'You have successfully login.',
         });
         clearCart();
-        navigate(findRoutePath('home'));
+        props.onClose(null);
       })
       .catch((e) => {
         if (e.response?.status === 401) {
@@ -49,80 +69,123 @@ const Login = () => {
   };
 
   return (
-    <Layout>
-      <Row justify='center' style={{ marginTop: 50, padding: 20 }}>
-        <div style={{ width: 500 }}>
-          <Form
-            name='loginForm'
-            form={loginForm}
-            layout='vertical'
-            onFinish={handleLogin}
-          >
-            <Space
-              direction='vertical'
-              size={20}
-              style={{ textAlign: 'center' }}
-              className='full-width'
+    <>
+      <LoginDrawer {...props} title='Login'>
+        {remind && (
+          <>
+            <Button
+              block
+              size='large'
+              style={{ height: 50 }}
+              onClick={() => {
+                navigate(findRoutePath('checkout'));
+              }}
             >
-              <Title level={4}>Login</Title>
-              {loginErr && (
-                <Alert
-                  message={<Text type='danger'>{loginErr}</Text>}
-                  type='error'
-                  showIcon
-                />
-              )}
-              <div>
-                <Space
-                  direction='vertical'
-                  style={{ textAlign: 'center' }}
-                  className='full-width'
-                >
-                  <Form.Item
-                    name='email'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter your email.',
-                        whitespace: true,
-                      },
-                    ]}
-                  >
-                    <Input size='large' placeholder='Email' type='email' />
-                  </Form.Item>
-                  <Form.Item
-                    name='password'
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter your password.',
-                      },
-                    ]}
-                  >
-                    <Input.Password size='large' placeholder='Password' />
-                  </Form.Item>
-                </Space>
-              </div>
-
-              <Button htmlType='submit' type='primary' block loading={loading}>
-                Login
-              </Button>
-
-              <Button
-                type='link'
-                color='info'
-                className='login-right-align'
-                onClick={() => {
-                  navigate(findRoutePath('forgotPass'));
-                }}
+              Order without logging in
+            </Button>
+            <Divider style={{ margin: 0 }} />
+          </>
+        )}
+        <Form
+          name='loginForm'
+          form={loginForm}
+          layout='vertical'
+          onFinish={handleLogin}
+        >
+          <Space
+            direction='vertical'
+            size={20}
+            style={{ textAlign: 'center' }}
+            className='full-width'
+          >
+            {loginErr && (
+              <Alert
+                message={<Text type='danger'>{loginErr}</Text>}
+                type='error'
+                showIcon
+              />
+            )}
+            <div>
+              <Space
+                direction='vertical'
+                style={{ textAlign: 'center' }}
+                className='full-width'
               >
-                Forgot Password
-              </Button>
-            </Space>
-          </Form>
-        </div>
-      </Row>
-    </Layout>
+                <Form.Item
+                  label='Email'
+                  name='email'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your email.',
+                      whitespace: true,
+                    },
+                  ]}
+                >
+                  <Input size='large' type='email' />
+                </Form.Item>
+                <Form.Item
+                  label='Password'
+                  name='password'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your password.',
+                    },
+                  ]}
+                >
+                  <Input.Password size='large' />
+                </Form.Item>
+              </Space>
+            </div>
+
+            <Button
+              htmlType='submit'
+              type='primary'
+              size='large'
+              block
+              loading={loading}
+              style={{ height: 50 }}
+            >
+              Login
+            </Button>
+
+            <Button
+              type='link'
+              color='info'
+              onClick={() => {
+                setShowForgotPass(true);
+              }}
+              size='large'
+            >
+              Forgot Password
+            </Button>
+          </Space>
+        </Form>
+        <Divider style={{ margin: '10px 0' }}>
+          <Text type='secondary'>OR</Text>
+        </Divider>
+        <Button
+          size='large'
+          block
+          onClick={() => {
+            onRegister();
+          }}
+          style={{ height: 50 }}
+        >
+          Register
+        </Button>
+      </LoginDrawer>
+      <ForgotPass
+        visible={showForgotPass}
+        onClose={() => {
+          setShowForgotPass(false);
+        }}
+        onBack={() => {
+          props.onClose(null);
+        }}
+      />
+    </>
   );
 };
 

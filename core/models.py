@@ -45,11 +45,15 @@ class SoftDeleteModel(BaseModel):
 
     class Meta:
         abstract = True
+        managed = False
 
-    def delete(self):
-        self.is_deleted = True
-        invalidate_model(self)
-        self.save()
+    def delete(self, hard_delete: bool = False):
+        if hard_delete:
+            super().delete()
+        else:
+            self.is_deleted = True
+            invalidate_model(self)
+            self.save()
 
     def restore(self):
         self.is_deleted = False

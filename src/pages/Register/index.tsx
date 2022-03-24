@@ -1,5 +1,18 @@
 import React, { useContext, useState } from 'react';
-import { Alert, Col, Form, Input, Row, Space, Typography } from 'antd';
+import {
+  Alert,
+  Col,
+  Drawer,
+  DrawerProps,
+  Form,
+  Grid,
+  Input,
+  Result,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
 import { registerAPI } from '@api/services/authAPI';
@@ -13,13 +26,16 @@ import {
   hasSymbolLetter,
   hasUpperCaseLetter,
 } from '@utils/strUtils';
-import Layout from '@components/Layout';
-import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MessageContext } from '@contexts/MessageContext';
 
-const Register = () => {
+interface RegisterProps extends DrawerProps {}
+
+const Register = (props: RegisterProps) => {
   const { Text, Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   const [registerForm] = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -31,6 +47,7 @@ const Register = () => {
   const [passInRange, setPassInRange] = useState(false);
   const [errMsg, setErrMsg] = useState([]);
   const [sameEmailMsg, setSameEmailMsg] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const passValidation = [
     {
@@ -93,10 +110,7 @@ const Register = () => {
       password2: values.confirmPass,
     })
       .then((res) => {
-        navigate({
-          pathname: findRoutePath('registerSuccess'),
-          search: createSearchParams({ email: values.email }).toString(),
-        });
+        setSuccess(true);
       })
       .catch((err) => {
         if (err.response?.status === 400) {
@@ -120,9 +134,52 @@ const Register = () => {
   };
 
   return (
-    <Layout>
-      <Row justify='center' style={{ marginTop: 50, padding: 20 }}>
-        <div style={{ width: 500 }}>
+    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+      <Space direction='vertical' size={30} className='full-width'>
+        <Row
+          align='top'
+          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
+        >
+          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
+            <CloseOutlined
+              className='color-grey'
+              size={30}
+              onClick={() => {
+                props.onClose(null);
+              }}
+            />
+          </Col>
+          <Col span={24} style={{ textAlign: 'center' }}>
+            <Title level={5}>Register</Title>
+          </Col>
+        </Row>
+        {success ? (
+          <Result
+            status='success'
+            title={<Title level={5}>You have successfully registered.</Title>}
+            subTitle={
+              <Text type='secondary'>
+                You can now login with{' '}
+                <Text strong className='color-info'>
+                  {registerForm.getFieldValue('email')}
+                </Text>
+              </Text>
+            }
+            extra={
+              <Button
+                type='primary'
+                onClick={() => {
+                  setSuccess(false);
+                  navigate(findRoutePath('home'));
+                  props.onClose(null);
+                }}
+                style={{ width: '50%' }}
+              >
+                Got it
+              </Button>
+            }
+          />
+        ) : (
           <Form
             name='registerForm'
             form={registerForm}
@@ -135,7 +192,6 @@ const Register = () => {
               style={{ textAlign: 'center' }}
               className='full-width'
             >
-              <Title level={4}>Registration</Title>
               {sameEmailMsg && (
                 <Alert
                   message={<Text type='danger'>{sameEmailMsg}</Text>}
@@ -263,14 +319,20 @@ const Register = () => {
                   </Form.Item>
                 </Space>
               </div>
-              <Button htmlType='submit' type='primary' block loading={loading}>
+              <Button
+                htmlType='submit'
+                type='primary'
+                block
+                loading={loading}
+                style={{ height: 50 }}
+              >
                 Register
               </Button>
             </Space>
           </Form>
-        </div>
-      </Row>
-    </Layout>
+        )}
+      </Space>
+    </Drawer>
   );
 };
 

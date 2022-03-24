@@ -87,7 +87,7 @@ const AccountInfoEditDrawer = ({
           align='top'
           style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
         >
-          <Col span={1}>
+          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
             <CloseOutlined
               className='color-grey'
               size={30}
@@ -96,7 +96,7 @@ const AccountInfoEditDrawer = ({
               }}
             />
           </Col>
-          <Col span={23} style={{ textAlign: 'center' }}>
+          <Col span={24} style={{ textAlign: 'center' }}>
             <Title level={5}>Edit Account Information</Title>
           </Col>
         </Row>
