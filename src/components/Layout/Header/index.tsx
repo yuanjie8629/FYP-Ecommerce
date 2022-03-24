@@ -24,7 +24,14 @@ import AccountDrawer from '@components/Drawer/AccountDrawer';
 import Login from '@pages/Login';
 import Register from '@pages/Register';
 
-const Header = () => {
+export type drawerProps = 'cart' | 'account' | 'menu';
+
+interface HeaderProps {
+  drawerOpen?: drawerProps;
+  onDrawerClose?: (drawer: drawerProps) => void;
+}
+
+const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
   const { Header } = Layout;
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,6 +53,16 @@ const Header = () => {
       setSearch(searchParams.get('name'));
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (drawerOpen === 'cart') {
+      setShowCart(true);
+    } else if (drawerOpen === 'account') {
+      setShowAcc(true);
+    } else if (drawerOpen === 'menu') {
+      setShowDrawer(true);
+    }
+  }, [drawerOpen]);
 
   const handleLogout = () => {
     logoutAPI();
@@ -140,12 +157,14 @@ const Header = () => {
         maskClosable
         onClose={() => {
           setShowAcc(false);
+          onDrawerClose('account');
         }}
         onMenuClick={(route) => {
           if (route === 'logout') {
             handleLogout();
           }
           setShowAcc(false);
+          onDrawerClose('account');
         }}
       />
 
@@ -154,6 +173,7 @@ const Header = () => {
         maskClosable
         onClose={() => {
           setShowCart(false);
+          onDrawerClose('cart');
         }}
         onLoginRemind={() => {
           setLoginRemind(true);
@@ -166,6 +186,7 @@ const Header = () => {
         maskClosable
         onClose={() => {
           setShowDrawer(false);
+          onDrawerClose('menu');
         }}
         onMenuClick={(route) => {
           setShowDrawer(false);

@@ -1,18 +1,30 @@
 import React, { Suspense } from 'react';
 import { Layout as AntdLayout, RowProps } from 'antd';
-import Header from './Header';
+import Header, { drawerProps } from './Header';
 import PageLoad from '@components/Loading/PageLoad';
 
 export interface CustomLayoutProps extends RowProps {
   justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
   children?: React.ReactNode;
+  drawerOpen?: drawerProps;
+  onDrawerClose?: (drawer: drawerProps) => void;
 }
 
-const Layout = ({ justify = 'center', ...props }: CustomLayoutProps) => {
+const Layout = ({
+  justify = 'center',
+  drawerOpen,
+  onDrawerClose,
+  ...props
+}: CustomLayoutProps) => {
   const { Content } = AntdLayout;
   return (
     <AntdLayout>
-      <Header />
+      <Header
+        drawerOpen={drawerOpen}
+        onDrawerClose={(drawer) => {
+          onDrawerClose(drawer);
+        }}
+      />
       <Suspense fallback={<PageLoad />}>
         <Content
           className='content'

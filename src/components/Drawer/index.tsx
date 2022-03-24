@@ -115,7 +115,6 @@ const Drawer = ({
                     level={5}
                     className='text-button '
                     onClick={() => {
-                      console.log(item.route);
                       onMenuClick(item.route);
                       if (
                         ['login', 'register', 'logout', 'profile'].includes(

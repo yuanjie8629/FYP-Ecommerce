@@ -75,7 +75,6 @@ const PosReg = () => {
     let { city, state, ...data } = values;
     data.birthdate = getDt(data.birthdate);
     data = removeInvalidData(data);
-    console.log(data);
     setSubmitLoading(true);
     posRegAPI(data)
       .then((res) => {

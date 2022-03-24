@@ -22,7 +22,8 @@ const ShippingAddress = ({
   const { Title } = Typography;
   const [addressLoading, setAddressLoading] = useState(false);
   const [address, setAddress] = useState<AddressInfo & { id?: number }>();
-  const [addAdress, setAddAddress] = useState(false);
+  const [addAddress, setAddAddress] = useState(false);
+  const [userAddress, setUserAddress] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const [showSelectDrawer, setShowSelectDrawer] = useState(false);
@@ -43,6 +44,7 @@ const ShippingAddress = ({
             default: res.data?.default,
           });
           setAddressLoading(false);
+          setUserAddress(true);
         }
       })
       .catch((err) => {
@@ -86,14 +88,14 @@ const ShippingAddress = ({
               <MdEdit
                 size={20}
                 onClick={() => {
-                  setConfirm(false);
                   setAddAddress(true);
+                  setConfirm(false);
                 }}
               />
             </Col>
           )}
         </Row>
-        {getUserId() && !addAdress ? (
+        {(getUserId() && !addAddress) || confirm ? (
           <AddressCard
             address={address}
             loading={addressLoading}
@@ -115,12 +117,11 @@ const ShippingAddress = ({
           />
         ) : (
           <ShippingAddressForm
-            address={confirm ? address : undefined}
+            address={!userAddress ? address : undefined}
             onSelectAddress={() => {
               setAddAddress(false);
             }}
             onSubmit={(values) => {
-              console.log(values);
               setAddress({
                 contactName: values.contact_name,
                 contactNum: values.contact_num,
@@ -132,10 +133,11 @@ const ShippingAddress = ({
               });
               setAddAddress(false);
               setConfirm(true);
+              setUserAddress(false);
             }}
           />
         )}
-        {!addAdress && !confirm && (
+        {!addAddress && !confirm && getUserId() && (
           <Button
             onClick={() => {
               setAddAddress(true);
@@ -144,7 +146,7 @@ const ShippingAddress = ({
             Add New Address
           </Button>
         )}
-        {!confirm && !addAdress && (
+        {!confirm && !addAddress && getUserId() && (
           <Row justify='end'>
             <Col>
               <Button
@@ -169,6 +171,7 @@ const ShippingAddress = ({
         }}
         onSelect={(selected) => {
           setAddress(selected);
+          setUserAddress(true);
         }}
       />
     </MainCard>

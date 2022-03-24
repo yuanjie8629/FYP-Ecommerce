@@ -110,6 +110,8 @@ const ShippingAddressForm = ({
           handleAddAddress(data).then((res) => {
             onSubmit(data);
           });
+        } else {
+          onSubmit(data);
         }
       }}
     >
@@ -249,7 +251,7 @@ const ShippingAddressForm = ({
         <Row
           gutter={10}
           justify='end'
-          style={{ marginTop: getUserId ? 0 : 20 }}
+          style={{ marginTop: getUserId() ? 0 : 20 }}
         >
           <Col>
             <Button

@@ -1,8 +1,12 @@
 import MainCard from '@components/Card/MainCard';
-import { Col, Row, Space, Typography } from 'antd';
+import { CardProps, Col, Row, Space, Typography } from 'antd';
 import { MdEdit } from 'react-icons/md';
 
-const OrderSummary = () => {
+interface OrderSummaryProps extends CardProps {
+  onCartClick?: () => void;
+}
+
+const OrderSummary = ({ onCartClick, ...props }: OrderSummaryProps) => {
   const { Title } = Typography;
   return (
     <MainCard>
@@ -13,7 +17,12 @@ const OrderSummary = () => {
           </Col>
 
           <Col>
-            <MdEdit size={20} />
+            <MdEdit
+              size={20}
+              onClick={() => {
+                onCartClick();
+              }}
+            />
           </Col>
         </Row>
       </Space>

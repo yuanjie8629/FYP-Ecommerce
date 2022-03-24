@@ -3,6 +3,7 @@ import Button from '@components/Button';
 import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
 import MainCard from '@components/Card/MainCard';
 import Layout from '@components/Layout';
+import { drawerProps } from '@components/Layout/Header';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { getUserId } from '@utils/storageUtils';
@@ -16,14 +17,19 @@ const Checkout = () => {
 
   const [messageApi] = useContext(MessageContext);
   const [address, setAddress] = useState<AddressInfo>();
-
+  const [drawerOpen, setDrawerOpen] = useState<drawerProps>();
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
     setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
-    <Layout>
+    <Layout
+      drawerOpen={drawerOpen}
+      onDrawerClose={() => {
+        setDrawerOpen(undefined);
+      }}
+    >
       <Space
         direction='vertical'
         size={20}
@@ -31,16 +37,20 @@ const Checkout = () => {
         style={{ padding: 20 }}
       >
         <Row gutter={[20, 20]}>
-          <Col xs={24} md={12}>
+          <Col xs={24} xl={12}>
             <ShippingAddress
               onSave={(address) => {
                 setAddress(address);
               }}
             />
           </Col>
-          <Col xs={24} md={12}>
+          <Col xs={24} xl={12}>
             <div>
-              <OrderSummary />
+              <OrderSummary
+                onCartClick={() => {
+                  setDrawerOpen('cart');
+                }}
+              />
             </div>
           </Col>
         </Row>
