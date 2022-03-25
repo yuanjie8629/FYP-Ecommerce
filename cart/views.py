@@ -34,7 +34,7 @@ def calculate_ship_fee(total_weight, state):
         remain_weight = total_weight - weight_end
         shipping_fee = ship_fee + (remain_weight / sub_weight * sub_fee)
         return shipping_fee
-        
+
     serializer = ShippingFeeSerializer(shipping_fee)
     return serializer.data.get("ship_fee")
 
@@ -61,8 +61,9 @@ class CartRetrieveView(generics.RetrieveAPIView):
             response.data.update({"ship_fee": shipping_fee})
 
         subtotal_price = response.data.get("subtotal_price")
-        total_price = float(subtotal_price) + float(shipping_fee) - float(discount)
-        response.data.update({"total_price": total_price})
+        if subtotal_price and shipping_fee and discount:
+            total_price = float(subtotal_price) + float(shipping_fee) - float(discount)
+            response.data.update({"total_price": total_price})
         return response
 
 

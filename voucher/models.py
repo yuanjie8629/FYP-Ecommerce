@@ -1,10 +1,11 @@
 from datetime import date
 from django.db import models
+from core.models import SoftDeleteModel
 from customer.models import CustType
 from voucher.choices import VOUCHER_STATUS
 
 
-class Voucher(models.Model):
+class Voucher(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=20, unique=True)
     status = models.CharField(max_length=20, choices=VOUCHER_STATUS)
@@ -25,10 +26,10 @@ class Voucher(models.Model):
 
     class Meta:
         db_table = "voucher"
-        managed=False
+        managed = False
 
     def save(self, *args, **kwargs):
-        if self.total_amt <= 0 and self.status == "active":
+        if self.total_amt == 0 and self.status == "active":
             self.status = "oos"
 
         if self.total_amt > 0 and self.status == "oos":
@@ -63,4 +64,4 @@ class VoucherLine(models.Model):
 
     class Meta:
         db_table = "voucher_line"
-        managed=False
+        managed = False

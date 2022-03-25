@@ -24,4 +24,5 @@ urlpatterns = [
     path("postcode/", include("postcode.urls")),
     path("", include("address.urls")),
     path("shipment/", include("shipment.urls")),
+    path("voucher/", include("voucher.urls")),
 ]
