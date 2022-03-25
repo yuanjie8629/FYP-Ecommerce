@@ -16,7 +16,7 @@ import {
 } from 'react-icons/hi';
 import { removeSearchParams } from '@utils/urlUtls';
 import { logoutAPI } from '@api/services/authAPI';
-import { getCartItemCount, getUserEmail, getUserId } from '@utils/storageUtils';
+import { getUserEmail, getUserId } from '@utils/storageUtils';
 import Cart from '@pages/Cart';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
@@ -25,9 +25,9 @@ import Login from '@pages/Login';
 import Register from '@pages/Register';
 
 export type drawerProps = 'cart' | 'account' | 'menu';
-
+export type drawerOpenProps = { drawer: drawerProps; from: string };
 interface HeaderProps {
-  drawerOpen?: drawerProps;
+  drawerOpen?: drawerOpenProps;
   onDrawerClose?: (drawer: drawerProps) => void;
 }
 
@@ -47,6 +47,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [loginRemind, setLoginRemind] = useState(false);
+  const [cartViewOnly, setCartViewOnly] = useState(false);
 
   useEffect(() => {
     if (searchParams.has('name')) {
@@ -55,11 +56,14 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (drawerOpen === 'cart') {
+    if (drawerOpen?.drawer === 'cart') {
       setShowCart(true);
-    } else if (drawerOpen === 'account') {
+      if (drawerOpen.from === 'orderSummary') {
+        setCartViewOnly(true);
+      }
+    } else if (drawerOpen?.drawer === 'account') {
       setShowAcc(true);
-    } else if (drawerOpen === 'menu') {
+    } else if (drawerOpen?.drawer === 'menu') {
       setShowDrawer(true);
     }
   }, [drawerOpen]);
@@ -72,6 +76,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
       type: 'success',
       content: 'You have logout successfully',
     });
+    navigate(findRoutePath('home'));
     setTimeout(() => messageApi.destroy(), 5000);
   };
 
@@ -125,7 +130,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
                 />
               )}
               <Badge
-                count={cart.length || getCartItemCount()}
+                count={cart.length}
                 style={{
                   backgroundColor: '#0e9f6e',
                   color: 'white',
@@ -174,11 +179,15 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
         onClose={() => {
           setShowCart(false);
           onDrawerClose('cart');
+          setTimeout(() => {
+            setCartViewOnly(false);
+          }, 200);
         }}
         onLoginRemind={() => {
           setLoginRemind(true);
           setShowLogin(true);
         }}
+        viewOnly={cartViewOnly}
       />
 
       <Drawer

@@ -15,12 +15,14 @@ interface ShippingAddressFormProps {
   address?: AddressInfo;
   onSubmit?: (values) => void;
   onSelectAddress?: () => void;
+  onPickup?: () => void;
 }
 
 const ShippingAddressForm = ({
   address,
   onSubmit = () => null,
   onSelectAddress = () => null,
+  onPickup = () => null,
 }: ShippingAddressFormProps) => {
   const { Option } = Select;
   const { TextArea } = Input;
@@ -89,6 +91,10 @@ const ShippingAddressForm = ({
         });
         setSubmitLoading(false);
         setTimeout(() => messageApi.destroy(), 5000);
+        onSubmit({
+          id: res.data?.id,
+          ...values,
+        });
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -107,9 +113,7 @@ const ShippingAddressForm = ({
       onFinish={(values) => {
         let { address_book, ...data } = values;
         if (address_book) {
-          handleAddAddress(data).then((res) => {
-            onSubmit(data);
-          });
+          handleAddAddress(data);
         } else {
           onSubmit(data);
         }
@@ -243,16 +247,28 @@ const ShippingAddressForm = ({
                 onSelectAddress();
               }}
             >
-              Select address
+              Select Address
             </Button>
           </>
         )}
 
         <Row
           gutter={10}
-          justify='end'
+          justify={!getUserId() ? 'space-between' : 'end'}
           style={{ marginTop: getUserId() ? 0 : 20 }}
         >
+          {!getUserId() && (
+            <Col>
+              <Button
+                disabled={submitLoading}
+                onClick={() => {
+                  onPickup();
+                }}
+              >
+                Select Pickup
+              </Button>
+            </Col>
+          )}
           <Col>
             <Button
               type='primary'

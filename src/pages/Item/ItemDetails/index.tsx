@@ -1,4 +1,4 @@
-import { cartAddAPI } from '@api/services/cartAPI';
+import { cartAddAPI, cartDetailsAPI } from '@api/services/cartAPI';
 import { itemDetailsAPI } from '@api/services/productAPI';
 import Button from '@components/Button';
 import Layout from '@components/Layout';
@@ -7,7 +7,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import { NotificationContext } from '@contexts/NotificationContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
-import { addItemToCart, getCartItem, getUserId } from '@utils/storageUtils';
+import { addItemToCart, getUserId, refreshCart } from '@utils/storageUtils';
 import {
   Carousel,
   Col,
@@ -56,7 +56,7 @@ const ItemDetails = () => {
   const [notiApi] = useContext(NotificationContext);
   const screens = useBreakpoint();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cart, setCart] = useContext(CartContext);
+  const [cart, setCart, cartPrice, setCartPrice] = useContext(CartContext);
 
   const addCartSuccessMsg = () =>
     notiApi.success({
@@ -64,12 +64,13 @@ const ItemDetails = () => {
       description: 'You have successfully added an item to your cart.',
     });
 
-  const addToCart = () => {
+  const addToCart = async () => {
     if (getUserId()) {
       setCartLoading(true);
       cartAddAPI(id, 1)
         .then((res) => {
-          setCart(res.data.items);
+          setCart(res.data?.items);
+          setCartPrice(res.data?.subtotal_price);
           setCartLoading(false);
           addCartSuccessMsg();
         })
@@ -90,21 +91,33 @@ const ItemDetails = () => {
           }
         });
     } else {
-      if (getCartItem()) {
-        let matchedItem = getCartItem().find((item) => item.id === data.id);
-        if (matchedItem && data.stock <= matchedItem.quantity) {
-          messageApi.open({
-            key: 'no_stock',
-            type: 'warning',
-            content: 'The item has reached the maximum stock in your cart',
-          });
-          setTimeout(() => messageApi.destroy(), 5000);
-          return;
-        }
+      setCartLoading(true);
+      let cart = addItemToCart(data);
+      if (cart === 'no_stock') {
+        setCartLoading(false);
+        messageApi.open({
+          key: 'no_stock',
+          type: 'warning',
+          content: 'The item has reached the maximum stock in your cart',
+        });
+        setTimeout(() => messageApi.destroy(), 5000);
+        return;
       }
-      addItemToCart(data, setCart);
-      setCartLoading(false);
-      addCartSuccessMsg();
+
+      await cartDetailsAPI(cart)
+        .then((res) => {
+          setCart(res.data?.items);
+          setCartPrice(res.data?.subtotal_price);
+          refreshCart(res.data?.items);
+          setCartLoading(false);
+          addCartSuccessMsg();
+          console.log('Retrieved cart items.');
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+          }
+        });
     }
   };
 
@@ -235,7 +248,7 @@ const ItemDetails = () => {
                 <ul className='item-details-list-info'>
                   <li>
                     <Text>
-                        Weight <br /> {data.weight} g
+                      Weight <br /> {data.weight} g
                     </Text>
                   </li>
                   <li>

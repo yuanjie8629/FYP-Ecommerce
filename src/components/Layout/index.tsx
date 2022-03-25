@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react';
 import { Layout as AntdLayout, RowProps } from 'antd';
-import Header, { drawerProps } from './Header';
+import Header, { drawerOpenProps, drawerProps } from './Header';
 import PageLoad from '@components/Loading/PageLoad';
 
 export interface CustomLayoutProps extends RowProps {
   justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
   children?: React.ReactNode;
-  drawerOpen?: drawerProps;
+  drawerOpen?: drawerOpenProps;
   onDrawerClose?: (drawer: drawerProps) => void;
 }
 

@@ -134,7 +134,12 @@ const Register = (props: RegisterProps) => {
   };
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer
+      destroyOnClose
+      closable={false}
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
       <Space direction='vertical' size={30} className='full-width'>
         <Row
           align='top'

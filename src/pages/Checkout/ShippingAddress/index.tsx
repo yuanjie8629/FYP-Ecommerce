@@ -1,25 +1,31 @@
 import { addressDefaultAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
 import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
+import PickupCard from '@components/Card/AddressCard/PickupCard';
 import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { getUserId } from '@utils/storageUtils';
-import { CardProps, Col, Row, Space, Typography } from 'antd';
+import { CardProps, Col, Grid, Row, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import AddressSelectDrawer from './AddressSelectDrawer';
+import PickupForm from './PickupForm';
 import ShippingAddressForm from './ShippingAddressForm';
 
 interface ShippingAddressProps extends CardProps {
   onSave?: (address?: AddressInfo) => void;
+  onPickup?: (location: string) => void;
 }
 
 const ShippingAddress = ({
   onSave = () => null,
+  onPickup = () => null,
   ...props
 }: ShippingAddressProps) => {
   const { Title } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   const [addressLoading, setAddressLoading] = useState(false);
   const [address, setAddress] = useState<AddressInfo & { id?: number }>();
   const [addAddress, setAddAddress] = useState(false);
@@ -27,6 +33,9 @@ const ShippingAddress = ({
   const [confirm, setConfirm] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const [showSelectDrawer, setShowSelectDrawer] = useState(false);
+  const [showPickup, setShowPickup] = useState(false);
+  const [pickup, setPickup] = useState('');
+  const [addressCard, setAddressCard] = useState(false);
 
   const getDefaultAddress = (isMounted: boolean = true) => {
     setAddressLoading(true);
@@ -57,7 +66,13 @@ const ShippingAddress = ({
 
   useEffect(() => {
     let isMounted = true;
-    getUserId() && getDefaultAddress(isMounted);
+    if (getUserId()) {
+      getDefaultAddress(isMounted);
+      setAddressCard(true);
+    } else {
+      setAddAddress(true);
+    }
+
     return () => {
       isMounted = false;
     };
@@ -65,11 +80,11 @@ const ShippingAddress = ({
   }, []);
 
   useEffect(() => {
-    if (confirm) {
+    if (confirm && !pickup) {
       onSave(address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, confirm]);
+  }, [confirm, pickup]);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
@@ -81,7 +96,9 @@ const ShippingAddress = ({
       <Space direction='vertical' size={20} className='full-width'>
         <Row justify='space-between' align='middle'>
           <Col>
-            <Title level={5}>Shipping Address</Title>
+            <Title level={5}>
+              {pickup || showPickup ? 'Pickup' : 'Shipping Address'}
+            </Title>
           </Col>
           {confirm && (
             <Col>
@@ -90,12 +107,16 @@ const ShippingAddress = ({
                 onClick={() => {
                   setAddAddress(true);
                   setConfirm(false);
+                  setPickup('');
+                  setShowPickup(false);
+                  setAddressCard(false);
                 }}
+                style={{ cursor: 'pointer' }}
               />
             </Col>
           )}
         </Row>
-        {(getUserId() && !addAddress) || confirm ? (
+        {addressCard && (
           <AddressCard
             address={address}
             loading={addressLoading}
@@ -115,14 +136,17 @@ const ShippingAddress = ({
               )
             }
           />
-        ) : (
+        )}
+        {addAddress && (
           <ShippingAddressForm
             address={!userAddress ? address : undefined}
             onSelectAddress={() => {
               setAddAddress(false);
+              setAddressCard(true);
             }}
             onSubmit={(values) => {
               setAddress({
+                id: values?.id,
                 contactName: values.contact_name,
                 contactNum: values.contact_num,
                 address: values.address,
@@ -134,33 +158,65 @@ const ShippingAddress = ({
               setAddAddress(false);
               setConfirm(true);
               setUserAddress(false);
+              setAddressCard(true);
+            }}
+            onPickup={() => {
+              setShowPickup(true);
+              setAddAddress(false);
             }}
           />
         )}
-        {!addAddress && !confirm && getUserId() && (
-          <Button
-            onClick={() => {
+        {pickup && confirm && <PickupCard location={pickup} />}
+        {showPickup && (
+          <PickupForm
+            onSelectAddress={() => {
+              setShowPickup(false);
               setAddAddress(true);
             }}
-          >
-            Add New Address
-          </Button>
+            onSubmit={(values) => {
+              setPickup(values);
+              setShowPickup(false);
+              setConfirm(true);
+              onPickup(values);
+            }}
+          />
         )}
-        {!confirm && !addAddress && getUserId() && (
-          <Row justify='end'>
-            <Col>
+        {addressCard && !confirm && (
+          <>
+            <Space direction={screens.xs ? 'vertical' : 'horizontal'}>
               <Button
-                type='primary'
-                size='large'
-                style={{ width: 100 }}
                 onClick={() => {
-                  setConfirm(true);
+                  setAddAddress(true);
+                  setAddressCard(false);
                 }}
               >
-                Save
+                Add New Address
               </Button>
-            </Col>
-          </Row>
+              <Button
+                onClick={() => {
+                  setAddressCard(false);
+                  setShowPickup(true);
+                }}
+              >
+                Select Pickup
+              </Button>
+            </Space>
+
+            <Row justify='end'>
+              <Col>
+                <Button
+                  type='primary'
+                  size='large'
+                  style={{ width: 100 }}
+                  onClick={() => {
+                    setConfirm(true);
+                  }}
+                >
+                  Save
+                </Button>
+              </Col>
+            </Row>
+          </>
         )}
       </Space>
       <AddressSelectDrawer

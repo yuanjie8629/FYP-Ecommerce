@@ -15,15 +15,16 @@ import {
 import moment from 'moment';
 import { CartContext } from '@contexts/CartContext';
 import { useEffect, useState } from 'react';
-import { cartDetailsAPI } from '@api/services/cartAPI';
+import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { NotificationContext } from '@contexts/NotificationContext';
-import { itemPrevByIdsAPI } from '@api/services/productAPI';
+import { serverErrMsg } from '@utils/messageUtils';
 
 function App() {
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const [cart, setCart] = useState([]);
+  const [cartPrice, setCartPrice] = useState<number>();
   const [messageApi, messageContext] = message.useMessage();
   const [notificationAPI, notiContext] = notification.useNotification();
   const idleTimer = useIdleTimer({
@@ -59,32 +60,42 @@ function App() {
   useEffect(() => {
     if (getUserId()) {
       console.log('Retrieving cart items...');
-      cartDetailsAPI()
+      cartDetailsForUserAPI()
         .then((res) => {
-          setCart(res.data.items);
+          setCart(res.data?.items);
+          setCartPrice(res.data?.subtotal_price);
+          console.log('Retrieved cart items.');
         })
-        .catch((res) => {});
-      console.log('Retrieved cart items.');
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+          }
+        });
     } else if (getCartItem()) {
       console.log('Retrieving cart items...');
-      itemPrevByIdsAPI(getCartItem().map((item) => item.id)).then((res) => {
-        let new_cart = [];
-        res.data.results.forEach((item) => {
-          let qty = getCartItem().find(
-            (cartItem) => cartItem.id === item.id
-          ).quantity;
-          new_cart.push({
-            ...item,
-            quantity: item.stock === 0 || item.stock >= qty ? qty : item.stock,
-          });
+      cartDetailsAPI(
+        getCartItem().map((item) => {
+          return { id: item.id, quantity: item.quantity };
+        })
+      )
+        .then((res) => {
+          setCart(res.data?.items);
+          setCartPrice(res.data?.subtotal_price);
+          refreshCart(res.data?.items);
+          console.log('Retrieved cart items.');
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            showServerErrMsg();
+          }
         });
-        setCart(new_cart);
-        refreshCart(new_cart);
-        console.log('Retrieved cart items.');
-      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUserId()]);
+
+  const showServerErrMsg = () => {
+    messageApi.open(serverErrMsg);
+  };
 
   return (
     <ConfigProvider prefixCls='shrf'>
@@ -95,7 +106,9 @@ function App() {
           {messageContext}
           <NotificationContext.Provider value={[notificationAPI]}>
             {notiContext}
-            <CartContext.Provider value={[cart, setCart]}>
+            <CartContext.Provider
+              value={[cart, setCart, cartPrice, setCartPrice]}
+            >
               <Routes />
             </CartContext.Provider>
           </NotificationContext.Provider>

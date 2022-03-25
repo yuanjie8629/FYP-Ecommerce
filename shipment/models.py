@@ -1,8 +1,9 @@
 from django.db import models
 from address.models import Address
-from core.models import SoftDeleteModel
+from core.models import PolySoftDeleteModel, SoftDeleteModel
 from order.models import Order
 from postcode.models import State
+from polymorphic.models import PolymorphicModel
 
 
 class ShippingFee(SoftDeleteModel):
@@ -14,19 +15,46 @@ class ShippingFee(SoftDeleteModel):
     sub_fee = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
+    sub_weight = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = "shipping_fee"
         managed=False
 
 
-class Shipment(SoftDeleteModel):
+class OrderShipment(PolySoftDeleteModel, PolymorphicModel):
     id = models.AutoField(primary_key=True)
-    track_num = models.CharField(max_length=50)
-    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
-    ship_fee = models.ForeignKey(ShippingFee, on_delete=models.DO_NOTHING)
+    type = models.CharField(max_length=20)
     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
 
     class Meta:
+        db_table = "order_shipment"
+        managed=False
+
+
+class Shipment(OrderShipment):
+    track_num = models.CharField(max_length=50)
+    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
+    ship_fee = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
         db_table = "shipment"
+        managed=False
+
+
+class Pickup(OrderShipment):
+    pickup_dt = models.DateTimeField()
+    pickup_loc = models.ForeignKey("PickupLoc", on_delete=models.DO_NOTHING)
+
+    class Meta:
+        db_table = "pickup"
+        managed=False
+
+
+class PickupLoc(SoftDeleteModel):
+    id = models.AutoField(primary_key=True)
+    location = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "pickup_loc"
         managed=False

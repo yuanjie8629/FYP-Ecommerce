@@ -4,10 +4,10 @@ export const CartContext = createContext(null);
 
 export const Provider = (props) => {
   const [cart, setCart] = useState([]);
-  const [cartLoading, setCartLoading] = useState(false);
+  const [totalPrice, setTotalPrice] = useState<number>();
 
   return (
-    <CartContext.Provider value={[cart, setCart, cartLoading, setCartLoading]}>
+    <CartContext.Provider value={[cart, setCart, totalPrice, setTotalPrice]}>
       {props.children}
     </CartContext.Provider>
   );

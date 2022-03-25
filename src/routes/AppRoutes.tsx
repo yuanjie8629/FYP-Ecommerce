@@ -1,3 +1,5 @@
+import { NotificationContext } from '@contexts/NotificationContext';
+import { useContext } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,6 +11,15 @@ import routeList from './routeList';
 import routeRedirectList from './routeRedirectList';
 
 export default function AppRoute() {
+  const [notiApi] = useContext(NotificationContext);
+  window.addEventListener('offline', function (e) {
+    notiApi.warning({
+      message: 'Offline',
+      description: 'You are now offline. You can only view the cached products.',
+      duration: 10,
+    });
+  });
+  
   return (
     <Router>
       <Routes>

@@ -1,8 +1,8 @@
 from django.db import models
 from core.models import SoftDeleteModel
 from customer.models import Cust
-from django.db.models import F, Sum
 from item.models import Item
+from django.db.models import Sum, F, Case, When
 
 
 class Cart(SoftDeleteModel):
@@ -13,6 +13,24 @@ class Cart(SoftDeleteModel):
     class Meta:
         db_table = "cart"
         managed = False
+
+    @property
+    def get_subtotal_price(self):
+        result = self.cart_item.aggregate(
+            total_price=Sum(
+                Case(
+                    When(
+                        item__special_price__isnull=True,
+                        then=(F("quantity") * F("item__price")),
+                    ),
+                    When(
+                        item__special_price__isnull=False,
+                        then=(F("quantity") * F("item__special_price")),
+                    ),
+                )
+            )
+        )
+        return result.get("total_price")
 
 
 class CartItem(models.Model):

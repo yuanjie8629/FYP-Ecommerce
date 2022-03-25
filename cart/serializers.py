@@ -1,8 +1,10 @@
+from numpy import source
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from cart.models import Cart, CartItem
 from customer.models import Cust
 from item.models import Item
+
 
 # class CartItemSerializer(serializers.ModelSerializer):
 #     cart = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -30,6 +32,9 @@ class CartItemSerializer(serializers.ModelSerializer):
     stock = serializers.SlugRelatedField(
         slug_field="stock", source="item", read_only=True
     )
+    weight = serializers.SlugRelatedField(
+        slug_field="weight", source="item", read_only=True
+    )
     quantity = serializers.IntegerField()
     item = serializers.PrimaryKeyRelatedField(
         queryset=Item.objects.all(), write_only=True
@@ -48,6 +53,7 @@ class CartItemSerializer(serializers.ModelSerializer):
             "special_price",
             "thumbnail",
             "stock",
+            "weight",
             "quantity",
             "item",
             "cust",
@@ -59,8 +65,8 @@ class CartSerializer(serializers.ModelSerializer):
         slug_field="email", queryset=Cust.objects.all(), required=False
     )
     items = CartItemSerializer(many=True, source="cart_item")
-    total_price = serializers.DecimalField(
-        max_digits=10, decimal_places=2, read_only=True
+    subtotal_price = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True, source="get_subtotal_price"
     )
 
     class Meta:

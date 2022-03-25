@@ -51,6 +51,7 @@ const Login = ({
         });
         clearCart();
         props.onClose(null);
+        navigate(findRoutePath('home'));
       })
       .catch((e) => {
         if (e.response?.status === 401) {
