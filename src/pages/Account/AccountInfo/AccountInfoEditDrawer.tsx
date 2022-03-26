@@ -60,7 +60,6 @@ const AccountInfoEditDrawer = ({
           content: 'Your account information is updated.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -77,7 +76,6 @@ const AccountInfoEditDrawer = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

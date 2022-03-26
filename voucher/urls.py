@@ -1,8 +1,6 @@
 from django.urls import include, path
-from voucher.views import VoucherRetrieveView
+from voucher.views import VoucherCheckView
 
 urlpatterns = [
-    path(
-        "voucher/<str:code>", VoucherRetrieveView.as_view(), name="voucherRetrieveView"
-    ),
+    path("check/", VoucherCheckView, name="voucherRetrieveView"),
 ]

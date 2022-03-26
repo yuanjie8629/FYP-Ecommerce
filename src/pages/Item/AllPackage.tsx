@@ -42,7 +42,6 @@ const AllPackage = ({ onChange = () => null, ...props }: AllPackageProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

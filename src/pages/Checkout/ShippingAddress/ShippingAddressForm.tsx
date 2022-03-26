@@ -75,7 +75,6 @@ const ShippingAddressForm = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const handleAddAddress = async (values) => {
@@ -90,7 +89,7 @@ const ShippingAddressForm = ({
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onSubmit({
           id: res.data?.id,
           ...values,

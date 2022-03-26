@@ -30,7 +30,6 @@ const LoginModal = memo(
           });
           clearCart();
           onSubmit(true);
-          setTimeout(() => messageApi.destroy(), 5000);
         })
         .catch((e) => {
           onSubmit(false);

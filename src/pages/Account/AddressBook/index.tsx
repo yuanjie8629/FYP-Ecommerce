@@ -70,7 +70,6 @@ const AddressBook = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const ListItem = (item) => {

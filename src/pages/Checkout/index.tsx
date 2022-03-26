@@ -1,23 +1,18 @@
-import { addressDefaultAPI } from '@api/services/addressAPI';
 import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
-import { itemPrevByIdsAPI } from '@api/services/productAPI';
-import Button from '@components/Button';
-import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
-import MainCard from '@components/Card/MainCard';
+import { AddressInfo } from '@components/Card/AddressCard';
 import Layout from '@components/Layout';
-import { drawerOpenProps, drawerProps } from '@components/Layout/Header';
+import { drawerOpenProps } from '@components/Layout/Header';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { getCartItem, getUserId, refreshCart } from '@utils/storageUtils';
-import { Col, Grid, Row, Space, Typography } from 'antd';
+import { Col, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import OrderSummary from './Order Summary';
 import ShippingAddress from './ShippingAddress';
 import Voucher from './Voucher';
 
 const Checkout = () => {
-  const { Text, Title } = Typography;
   const [address, setAddress] = useState<AddressInfo>();
   const [pickup, setPickup] = useState('');
   const [drawerOpen, setDrawerOpen] = useState<drawerOpenProps>();
@@ -26,18 +21,43 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [shippingFee, setShippingFee] = useState<number>();
   const [totalPrice, setTotalPrice] = useState<number>();
+  const [discount, setDiscount] = useState<number>();
+  const [voucher, setVoucher] = useState('');
 
   useEffect(() => {
     setLoading(true);
     if (getUserId()) {
       console.log('Retrieving cart items...');
-      cartDetailsForUserAPI(address?.state)
+      cartDetailsForUserAPI(address?.state, voucher)
         .then((res) => {
+          if (res.data?.items?.length <= 0) {
+            window.location.href = '';
+          }
           setCart(res.data?.items);
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
             setShippingFee(res.data?.ship_fee);
           }
+          if (res.data?.discount) {
+            if (res.data?.discount === 'no_stock')
+              showVoucherErrMsg('Sorry, this voucher has been fully redeemed.');
+            else if (res.data?.discount === 'invalid')
+              showVoucherErrMsg('Sorry, this voucher is not valid.');
+            else if (res.data?.discount === 'exceed_limit') {
+              showVoucherErrMsg(
+                'Sorry, you have reached the redemption limit on this voucher.'
+              );
+            } else if (res.data?.discount?.min_spend) {
+              showVoucherErrMsg(
+                `Sorry, the minimum spend to apply this voucher is RM${res.data?.discount?.min_spend}.`
+              );
+            } else {
+              setDiscount(res.data?.discount);
+            }
+          } else {
+            setDiscount(undefined);
+          }
+
           setTotalPrice(res.data?.total_price);
           console.log('Retrieved cart items.');
           setLoading(false);
@@ -56,6 +76,9 @@ const Checkout = () => {
         address?.state
       )
         .then((res) => {
+          if (res.data?.items?.length <= 0) {
+            window.location.href = '';
+          }
           setCart(res.data?.items);
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
@@ -73,11 +96,18 @@ const Checkout = () => {
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getUserId(), address]);
+  }, [getUserId(), address, voucher]);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
+  };
+
+  const showVoucherErrMsg = (message) => {
+    messageApi.open({
+      key: 'voucherErr',
+      type: 'error',
+      content: message,
+    });
   };
 
   return (
@@ -106,7 +136,12 @@ const Checkout = () => {
                   setAddress(undefined);
                 }}
               />
-              <Voucher />
+              <Voucher
+                cartPrice={cartPrice}
+                onApplyVoucher={(code) => {
+                  setVoucher(code);
+                }}
+              />
             </Space>
           </Col>
           <Col xs={24} xl={12}>
@@ -116,6 +151,7 @@ const Checkout = () => {
                 total={totalPrice}
                 subTotal={cartPrice}
                 shipping={shippingFee}
+                discount={discount}
                 loading={loading}
                 onCartClick={() => {
                   setDrawerOpen({ drawer: 'cart', from: 'orderSummary' });

@@ -56,7 +56,6 @@ const AccountInfoEditModal = ({
           content: 'Your account information is updated.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -73,7 +72,6 @@ const AccountInfoEditModal = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

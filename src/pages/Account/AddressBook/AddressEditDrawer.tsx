@@ -62,7 +62,7 @@ const AddressEditDrawer = ({
           content: 'Your address has been updated.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onUpdate();
       })
       .catch((err) => {
@@ -83,7 +83,7 @@ const AddressEditDrawer = ({
           content: 'Your address has been deleted.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onUpdate();
       })
       .catch((err) => {
@@ -96,7 +96,6 @@ const AddressEditDrawer = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

@@ -42,7 +42,6 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

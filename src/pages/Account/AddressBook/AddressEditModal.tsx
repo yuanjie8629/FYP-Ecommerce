@@ -39,7 +39,7 @@ const AddressEditModal = ({
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [messageApi] = useContext(MessageContext);
-  
+
   useEffect(() => {
     setState(data?.postcode.state);
     setCity(data?.postcode.city);
@@ -57,7 +57,7 @@ const AddressEditModal = ({
           content: 'Your address has been updated.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onUpdate();
       })
       .catch((err) => {
@@ -78,7 +78,7 @@ const AddressEditModal = ({
           content: 'Your address has been deleted.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onUpdate();
       })
       .catch((err) => {
@@ -91,7 +91,6 @@ const AddressEditModal = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

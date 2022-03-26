@@ -11,6 +11,7 @@ import {
   Space,
   Typography,
 } from 'antd';
+import { useEffect, useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,6 +41,14 @@ const OrderSummary = ({
   const navigate = useNavigate();
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
+  const [load, setLoad] = useState(0);
+
+  useEffect(() => {
+    if (loading) {
+      setLoad(load + 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const ListItem = (item) => (
     <List.Item>
@@ -123,7 +132,7 @@ const OrderSummary = ({
           </Col>
         </Row>
         <Divider style={{ margin: 0 }} />
-        {loading ? (
+        {loading && load <= 1 ? (
           <Skeleton
             active
             avatar={{ shape: 'square', size: screens.md ? 124 : 70 }}
@@ -155,7 +164,11 @@ const OrderSummary = ({
                 <Text className='text-lg'>Shipping</Text>
               </Col>
               <Col>
-                {shipping ? (
+                {loading ? (
+                  <Text strong className='text-lg'>
+                    Calculating...
+                  </Text>
+                ) : shipping ? (
                   <Text strong className='text-lg'>
                     RM {shipping}
                   </Text>
@@ -174,7 +187,7 @@ const OrderSummary = ({
               </Col>
               <Col>
                 <Text strong className='text-lg'>
-                  RM {}
+                  {loading ? 'Calculating...' : `- RM ${discount}`}
                 </Text>
               </Col>
             </Row>

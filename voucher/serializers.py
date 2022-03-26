@@ -4,23 +4,6 @@ from customer.serializers import CustTypeSerializer
 from voucher.models import Voucher
 
 
-def check_code(value, *args, **kwargs):
-    print(value)
-    compare = kwargs.get("compare")
-    check_query = Voucher.objects_with_deleted.filter(code=value)
-    if check_query.exists():
-        if not compare or compare != value:
-            raise serializers.ValidationError(
-                detail={
-                    "error": {
-                        "code": "invalid_code",
-                        "message": "Voucher with this code already exists.",
-                    }
-                }
-            )
-    return value
-
-
 class VoucherSerializer(serializers.ModelSerializer):
     cust_type = serializers.SlugRelatedField(
         many=True, slug_field="type", read_only=True

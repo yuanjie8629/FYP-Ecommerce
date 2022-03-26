@@ -40,7 +40,7 @@ const AddressAddModal = ({
 
   const handleAddAddress = (values) => {
     let { city, state, ...data } = values;
-    data = removeInvalidData(data)
+    data = removeInvalidData(data);
     setSubmitLoading(true);
     addressAddAPI(data)
       .then((res) => {
@@ -50,8 +50,8 @@ const AddressAddModal = ({
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
-        onUpdate()
+
+        onUpdate();
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
@@ -63,7 +63,6 @@ const AddressAddModal = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
@@ -93,7 +92,7 @@ const AddressAddModal = ({
                 },
               ]}
             >
-              <Input placeholder='Please enter the contact name'/>
+              <Input placeholder='Please enter the contact name' />
             </Form.Item>
 
             <Form.Item

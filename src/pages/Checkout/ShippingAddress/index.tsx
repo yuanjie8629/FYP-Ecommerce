@@ -1,6 +1,7 @@
 import { addressDefaultAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
 import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
+import NoAddressCard from '@components/Card/AddressCard/NoAddressCard';
 import PickupCard from '@components/Card/AddressCard/PickupCard';
 import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
@@ -36,6 +37,7 @@ const ShippingAddress = ({
   const [showPickup, setShowPickup] = useState(false);
   const [pickup, setPickup] = useState('');
   const [addressCard, setAddressCard] = useState(false);
+  const [noAddress, setNoAddress] = useState(false);
 
   const getDefaultAddress = (isMounted: boolean = true) => {
     setAddressLoading(true);
@@ -58,7 +60,11 @@ const ShippingAddress = ({
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
-          showServerErrMsg();
+          if (err.response?.status === 400) {
+            setNoAddress(true);
+          } else {
+            showServerErrMsg();
+          }
           setAddressLoading(false);
         }
       });
@@ -88,7 +94,6 @@ const ShippingAddress = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
@@ -116,7 +121,7 @@ const ShippingAddress = ({
             </Col>
           )}
         </Row>
-        {addressCard && (
+        {addressCard && !noAddress && (
           <AddressCard
             address={address}
             loading={addressLoading}
@@ -137,6 +142,7 @@ const ShippingAddress = ({
             }
           />
         )}
+        {noAddress && <NoAddressCard />}
         {addAddress && (
           <ShippingAddressForm
             address={!userAddress ? address : undefined}
@@ -159,10 +165,12 @@ const ShippingAddress = ({
               setConfirm(true);
               setUserAddress(false);
               setAddressCard(true);
+              setNoAddress(false);
             }}
             onPickup={() => {
               setShowPickup(true);
               setAddAddress(false);
+              setNoAddress(false);
             }}
           />
         )}
@@ -178,6 +186,7 @@ const ShippingAddress = ({
               setShowPickup(false);
               setConfirm(true);
               onPickup(values);
+              setNoAddress(false);
             }}
           />
         )}
@@ -188,6 +197,7 @@ const ShippingAddress = ({
                 onClick={() => {
                   setAddAddress(true);
                   setAddressCard(false);
+                  setNoAddress(false);
                 }}
               >
                 Add New Address
@@ -196,27 +206,30 @@ const ShippingAddress = ({
                 onClick={() => {
                   setAddressCard(false);
                   setShowPickup(true);
+                  setNoAddress(false);
                 }}
               >
                 Select Pickup
               </Button>
             </Space>
-
-            <Row justify='end'>
-              <Col>
-                <Button
-                  type='primary'
-                  size='large'
-                  style={{ width: 100 }}
-                  onClick={() => {
-                    setConfirm(true);
-                  }}
-                >
-                  Save
-                </Button>
-              </Col>
-            </Row>
           </>
+        )}
+        {addressCard && !confirm && !noAddress && !addressLoading && (
+          <Row justify='end'>
+            <Col>
+              <Button
+                type='primary'
+                size='large'
+                style={{ width: 100 }}
+                onClick={() => {
+                  setConfirm(true);
+                  setNoAddress(false);
+                }}
+              >
+                Save
+              </Button>
+            </Col>
+          </Row>
         )}
       </Space>
       <AddressSelectDrawer

@@ -127,7 +127,6 @@ const ChangePassModal = (props: ModalProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

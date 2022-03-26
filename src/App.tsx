@@ -34,12 +34,12 @@ function App() {
   notification.config({
     maxCount: 1,
     placement: screens.md ? 'bottomRight' : 'top',
-    duration: 5,
+    duration: 3,
   });
 
   message.config({
     maxCount: 1,
-    duration: 5,
+    duration: 3,
     top: screens.md && 50,
   });
 
@@ -58,37 +58,45 @@ function App() {
   });
 
   useEffect(() => {
-    if (getUserId()) {
-      console.log('Retrieving cart items...');
-      cartDetailsForUserAPI()
-        .then((res) => {
-          setCart(res.data?.items);
-          setCartPrice(res.data?.subtotal_price);
-          console.log('Retrieved cart items.');
-        })
-        .catch((err) => {
-          if (err.response?.status !== 401) {
-            showServerErrMsg();
-          }
-        });
-    } else if (getCartItem()) {
-      console.log('Retrieving cart items...');
-      cartDetailsAPI(
-        getCartItem().map((item) => {
-          return { id: item.id, quantity: item.quantity };
-        })
-      )
-        .then((res) => {
-          setCart(res.data?.items);
-          setCartPrice(res.data?.subtotal_price);
-          refreshCart(res.data?.items);
-          console.log('Retrieved cart items.');
-        })
-        .catch((err) => {
-          if (err.response?.status !== 401) {
-            showServerErrMsg();
-          }
-        });
+    if (window.location.pathname !== '/checkout') {
+      if (getUserId()) {
+        console.log('Retrieving cart items...');
+        cartDetailsForUserAPI()
+          .then((res) => {
+            if (res.data?.items?.length <= 0) {
+              window.location.href = '';
+            }
+            setCart(res.data?.items);
+            setCartPrice(res.data?.subtotal_price);
+            console.log('Retrieved cart items.');
+          })
+          .catch((err) => {
+            if (err.response?.status !== 401) {
+              showServerErrMsg();
+            }
+          });
+      } else if (getCartItem()) {
+        console.log('Retrieving cart items...');
+        cartDetailsAPI(
+          getCartItem().map((item) => {
+            return { id: item.id, quantity: item.quantity };
+          })
+        )
+          .then((res) => {
+            if (res.data?.items?.length <= 0) {
+              window.location.href = '';
+            }
+            setCart(res.data?.items);
+            setCartPrice(res.data?.subtotal_price);
+            refreshCart(res.data?.items);
+            console.log('Retrieved cart items.');
+          })
+          .catch((err) => {
+            if (err.response?.status !== 401) {
+              showServerErrMsg();
+            }
+          });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUserId()]);

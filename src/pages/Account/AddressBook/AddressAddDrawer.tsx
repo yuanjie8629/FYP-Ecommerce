@@ -57,7 +57,7 @@ const AddressAddDrawer = ({
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-        setTimeout(() => messageApi.destroy(), 5000);
+
         onUpdate();
       })
       .catch((err) => {
@@ -70,7 +70,6 @@ const AddressAddDrawer = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (

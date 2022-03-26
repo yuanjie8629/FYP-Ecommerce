@@ -80,7 +80,6 @@ const Cart = ({
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const updateLocalCart = async (cart) => {
@@ -261,7 +260,10 @@ const Cart = ({
                       ) {
                         setCartValue({ id: item.id, value: item.stock });
                       }
-                      if (cartValue?.id === item.id && cartValue?.value !== undefined) {
+                      if (
+                        cartValue?.id === item.id &&
+                        cartValue?.value !== undefined
+                      ) {
                         handleCartSet(item, cartValue?.value);
                       }
                     }}

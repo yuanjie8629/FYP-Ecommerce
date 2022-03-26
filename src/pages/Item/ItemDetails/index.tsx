@@ -82,7 +82,7 @@ const ItemDetails = () => {
                 type: 'warning',
                 content: 'The item has reached the maximum stock in your cart',
               });
-              setTimeout(() => messageApi.destroy(), 5000);
+
               setCartLoading(false);
               return;
             }
@@ -100,7 +100,7 @@ const ItemDetails = () => {
           type: 'warning',
           content: 'The item has reached the maximum stock in your cart',
         });
-        setTimeout(() => messageApi.destroy(), 5000);
+
         return;
       }
 
@@ -158,7 +158,6 @@ const ItemDetails = () => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   const prodColumns: {

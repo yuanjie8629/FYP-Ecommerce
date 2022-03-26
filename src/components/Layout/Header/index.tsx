@@ -77,7 +77,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
       content: 'You have logout successfully',
     });
     navigate(findRoutePath('home'));
-    setTimeout(() => messageApi.destroy(), 5000);
+    
   };
 
   return (

@@ -72,7 +72,6 @@ export const addItemToCart = (data) => {
   } else {
     cart.push({ id: data.id, quantity: 1 });
   }
-  console.log(cart);
   return cart;
 };
 

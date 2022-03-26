@@ -41,7 +41,6 @@ const PickupForm = ({ onSubmit, onSelectAddress }: PickupFormProps) => {
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);
-    setTimeout(() => messageApi.destroy(), 5000);
   };
 
   return (
