@@ -63,15 +63,12 @@ function App() {
         console.log('Retrieving cart items...');
         cartDetailsForUserAPI()
           .then((res) => {
-            if (res.data?.items?.length <= 0) {
-              window.location.href = '';
-            }
             setCart(res.data?.items);
             setCartPrice(res.data?.subtotal_price);
             console.log('Retrieved cart items.');
           })
           .catch((err) => {
-            if (err.response?.status !== 401) {
+            if (![401, 404].includes(err.response?.status)) {
               showServerErrMsg();
             }
           });
@@ -83,9 +80,6 @@ function App() {
           })
         )
           .then((res) => {
-            if (res.data?.items?.length <= 0) {
-              window.location.href = '';
-            }
             setCart(res.data?.items);
             setCartPrice(res.data?.subtotal_price);
             refreshCart(res.data?.items);

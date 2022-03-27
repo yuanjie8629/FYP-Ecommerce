@@ -5,10 +5,14 @@ import { drawerOpenProps } from '@components/Layout/Header';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import { getCartItem, getUserId, refreshCart } from '@utils/storageUtils';
 import { Col, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import OrderSummary from './Order Summary';
+import Payment, { paymentMethodType } from './Payment';
+import PlaceOrder from './PlaceOrder.tsx';
 import ShippingAddress from './ShippingAddress';
 import Voucher from './Voucher';
 
@@ -23,6 +27,20 @@ const Checkout = () => {
   const [totalPrice, setTotalPrice] = useState<number>();
   const [discount, setDiscount] = useState<number>();
   const [voucher, setVoucher] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<paymentMethodType>();
+  const [outOfStock, setOutofStock] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cart.length <= 0) {
+      navigate(findRoutePath('home'));
+    }
+    if (cart && cart.find((cartItem) => cartItem.stock <= 0)) {
+      setOutofStock(true);
+    } else {
+      setOutofStock(false);
+    }
+  }, [cart, navigate]);
 
   useEffect(() => {
     setLoading(true);
@@ -30,9 +48,6 @@ const Checkout = () => {
       console.log('Retrieving cart items...');
       cartDetailsForUserAPI(address?.state, voucher)
         .then((res) => {
-          if (res.data?.items?.length <= 0) {
-            window.location.href = '';
-          }
           setCart(res.data?.items);
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
@@ -135,11 +150,20 @@ const Checkout = () => {
                   setPickup(location);
                   setAddress(undefined);
                 }}
+                onEdit={() => {
+                  setAddress(undefined);
+                  setPickup('');
+                }}
               />
               <Voucher
                 cartPrice={cartPrice}
                 onApplyVoucher={(code) => {
                   setVoucher(code);
+                }}
+              />
+              <Payment
+                onPaymentSelect={(paymentMethod) => {
+                  setPaymentMethod(paymentMethod);
                 }}
               />
             </Space>
@@ -153,12 +177,25 @@ const Checkout = () => {
                 shipping={shippingFee}
                 discount={discount}
                 loading={loading}
+                oos={outOfStock}
                 onCartClick={() => {
                   setDrawerOpen({ drawer: 'cart', from: 'orderSummary' });
                 }}
                 pickup={pickup !== ''}
               />
             </div>
+          </Col>
+          <Col xs={24} xl={12}>
+            <PlaceOrder
+              loading={loading}
+              cart={cart}
+              totalPrice={totalPrice}
+              address={address}
+              pickup={pickup}
+              voucher={voucher}
+              paymentMethod={paymentMethod}
+              oos={outOfStock}
+            />
           </Col>
         </Row>
       </Space>

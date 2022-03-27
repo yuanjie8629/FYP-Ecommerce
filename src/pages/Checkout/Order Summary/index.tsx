@@ -1,6 +1,6 @@
 import MainCard from '@components/Card/MainCard';
-import { moneyFormatter } from '@utils/numUtils';
 import {
+  Alert,
   CardProps,
   Col,
   Divider,
@@ -23,6 +23,7 @@ interface OrderSummaryProps extends CardProps {
   shipping?: number;
   total?: number;
   pickup?: boolean;
+  oos?: boolean;
   onCartClick?: () => void;
 }
 
@@ -34,6 +35,7 @@ const OrderSummary = ({
   discount = 0,
   shipping = 0,
   pickup,
+  oos,
   onCartClick,
   ...props
 }: OrderSummaryProps) => {
@@ -81,6 +83,11 @@ const OrderSummary = ({
                   {item.quantity}
                 </Text>
               </Text>
+              {item.stock <= 0 && (
+                <Text strong type='danger'>
+                  Out of Stock
+                </Text>
+              )}
             </Space>
           </Space>
         </Col>
@@ -131,6 +138,15 @@ const OrderSummary = ({
             />
           </Col>
         </Row>
+        {oos && (
+          <Alert
+            showIcon
+            type='error'
+            message={
+              <Text type='danger'>Please remove out of stock items.</Text>
+            }
+          />
+        )}
         <Divider style={{ margin: 0 }} />
         {loading && load <= 1 ? (
           <Skeleton
@@ -199,7 +215,7 @@ const OrderSummary = ({
             </Col>
             <Col>
               <Text strong className='text-lg'>
-                {loading || !total ? 'Calculating...' : moneyFormatter(total)}
+                {loading || !total ? 'Calculating...' : `RM ${total}`}
               </Text>
             </Col>
           </Row>

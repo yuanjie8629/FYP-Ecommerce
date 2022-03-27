@@ -17,11 +17,13 @@ import ShippingAddressForm from './ShippingAddressForm';
 interface ShippingAddressProps extends CardProps {
   onSave?: (address?: AddressInfo) => void;
   onPickup?: (location: string) => void;
+  onEdit?: () => void;
 }
 
 const ShippingAddress = ({
   onSave = () => null,
   onPickup = () => null,
+  onEdit = () => null,
   ...props
 }: ShippingAddressProps) => {
   const { Title } = Typography;
@@ -115,6 +117,7 @@ const ShippingAddress = ({
                   setPickup('');
                   setShowPickup(false);
                   setAddressCard(false);
+                  onEdit();
                 }}
                 style={{ cursor: 'pointer' }}
               />

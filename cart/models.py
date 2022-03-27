@@ -33,6 +33,7 @@ class Cart(SoftDeleteModel):
         return result.get("total_price")
 
 
+
 class CartItem(models.Model):
     id = models.AutoField(primary_key=True)
     quantity = models.PositiveIntegerField()

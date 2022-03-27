@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { addressListAPI } from '@api/services/addressAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { getUserId } from '@utils/storageUtils';
 
 interface AddressSelectDrawerProps extends DrawerProps {
   selected: number;
@@ -26,32 +27,34 @@ const AddressSelectDrawer = ({
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    addressListAPI()
-      .then((res) => {
-        if (isMounted) {
-          let list = [];
-          res.data.forEach((address) => {
-            list.push({
-              id: address?.id,
-              contactName: address?.contact_name,
-              contactNum: address?.contact_num,
-              address: address?.address,
-              state: address?.postcode?.state,
-              city: address?.postcode?.city,
-              postcode: address?.postcode?.postcode,
-              default: address?.default,
+    if (getUserId()) {
+      addressListAPI()
+        .then((res) => {
+          if (isMounted) {
+            let list = [];
+            res.data.forEach((address) => {
+              list.push({
+                id: address?.id,
+                contactName: address?.contact_name,
+                contactNum: address?.contact_num,
+                address: address?.address,
+                state: address?.postcode?.state,
+                city: address?.postcode?.city,
+                postcode: address?.postcode?.postcode,
+                default: address?.default,
+              });
             });
-          });
-          setData(list);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (err.response?.status !== 401) {
-          setLoading(false);
-          showServerErrMsg();
-        }
-      });
+            setData(list);
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status !== 401) {
+            setLoading(false);
+            showServerErrMsg();
+          }
+        });
+    }
 
     return () => {
       isMounted = false;

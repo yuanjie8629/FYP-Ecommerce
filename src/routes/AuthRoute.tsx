@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import routeList from './routeList';
 import { useContext } from 'react';
 import { CartContext } from '@contexts/CartContext';
+import { getCartItem, getUserId } from '@utils/storageUtils';
 
 const AuthRoute = (_props) => {
   const location = useLocation();
@@ -14,6 +15,12 @@ const AuthRoute = (_props) => {
     .map((filteredRoute) => filteredRoute.path);
 
   const access = Cookies.get('access_token');
+
+  if (location.pathname === '/checkout' && !getUserId() && !getCartItem()) {
+    return (
+      <Navigate to={findRoutePath('home')} state={{ from: location }} replace />
+    );
+  }
 
   if (
     !(

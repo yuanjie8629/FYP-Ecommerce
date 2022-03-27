@@ -42,7 +42,7 @@ def VoucherCheckView(request):
     print(orders.count())
     print(voucher.get("usage_limit"))
 
-    if orders.count() > voucher.get("usage_limit"):
+    if orders.count() > voucher.get("usage_limit") and voucher.get("usage_limit") != -1:
         return Response(
             status=status.HTTP_404_NOT_FOUND, data={"detail": "exceed_limit"}
         )
@@ -65,3 +65,31 @@ def VoucherCheckView(request):
         )
 
     return Response(status=status.HTTP_200_OK, data={"detail": "valid_voucher"})
+
+
+@api_view(["GET"])
+def VoucherCheckAutoApplyView(request):
+    if not hasattr(request.user, "cust"):
+        return Response(
+            status=status.HTTP_404_NOT_FOUND, data={"detail": "require_login"}
+        )
+
+    print(request.user.cust.cust_type)
+    auto_voucher = (
+        Voucher.objects.all()
+        .filter(
+            status="active",
+            avail_start_dt__lte=date.today(),
+            avail_end_dt__gte=date.today(),
+            auto_apply=True,
+            cust_type=request.user.cust.cust_type,
+        )
+        .order_by("created_at")
+        .prefetch_related("cust_type")
+        .first()
+    )
+    print(auto_voucher)
+
+    if auto_voucher:
+        return Response(status=status.HTTP_200_OK, data={"code": auto_voucher.code})
+    return Response(status=status.HTTP_404_NOT_FOUND, data={"detail": "Not found."})

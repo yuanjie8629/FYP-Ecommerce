@@ -325,7 +325,7 @@ const Cart = ({
             showIcon
             type='error'
             message={
-              <Text type='danger'>Please remove out of stock items.</Text>
+              <Text type='danger'>Please remove the out of stock items.</Text>
             }
           />
         )}
