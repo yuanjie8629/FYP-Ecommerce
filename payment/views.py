@@ -12,7 +12,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class StripeCheckoutView(APIView):
     def post(self, request):
         total_amount = request.data.get("total_amt", None) * 100
-        payment_method = request.data.get("payment_method", None) 
+        payment_method = request.data.get("payment_method", None)
         if total_amount:
             try:
                 session = stripe.checkout.Session.create(
@@ -30,8 +30,8 @@ class StripeCheckoutView(APIView):
                     ],
                     mode="payment",
                     payment_method_types=[payment_method],
-                    success_url="https://localhost:3000/?success=true&session_id={CHECKOUT_SESSION_ID}",
-                    cancel_url="https://localhost:3000/?cancel=true",
+                    # success_url="https://localhost:3000/?success=true&session_id={CHECKOUT_SESSION_ID}",
+                    # cancel_url="https://localhost:3000/?cancel=true",
                 )
                 print(session)
                 return redirect(session.url)
