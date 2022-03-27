@@ -30,8 +30,8 @@ class StripeCheckoutView(APIView):
                     ],
                     mode="payment",
                     payment_method_types=[payment_method],
-                    # success_url="https://localhost:3000/?success=true&session_id={CHECKOUT_SESSION_ID}",
-                    # cancel_url="https://localhost:3000/?cancel=true",
+                    success_url="https://fyp-shrf-ecommerce.herokuapp.com/?success=true&session_id={CHECKOUT_SESSION_ID}",
+                    cancel_url="https://fyp-shrf-ecommerce.herokuapp.com/?cancel=true",
                 )
                 print(session)
                 return redirect(session.url)

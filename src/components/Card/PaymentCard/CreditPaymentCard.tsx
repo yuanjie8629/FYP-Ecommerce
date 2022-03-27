@@ -7,7 +7,7 @@ const CreditPaymentCard = (props: PaymentCardProps) => {
   return (
     <PaymentCard hoverable style={{ border: '1px solid #e5e7eb' }} {...props}>
       <Row gutter={20} align='middle'>
-        <Col span={3}>
+        <Col xs={5} md={3}>
           <HiCreditCard size={30} className='color-grey' />
         </Col>
         <Col>
