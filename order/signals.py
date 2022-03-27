@@ -7,7 +7,6 @@ from django.utils.translation import gettext as _
 
 @receiver(pre_save, sender=OrderLine)
 def deduct_product_quantity(sender, instance, **kwargs):
-
     item = instance.item
     if item.stock <= 0:
         raise serializers.ValidationError({"detail": "no_stock"})

@@ -1,4 +1,5 @@
 import { placeOrderAPI } from '@api/services/orderAPI';
+import { createPaymentSessionAPI } from '@api/services/paymentAPI';
 import Button from '@components/Button';
 import { AddressInfo } from '@components/Card/AddressCard';
 import MainCard from '@components/Card/MainCard';
@@ -54,6 +55,7 @@ const PlaceOrder = ({
     )
       .then((res) => {
         console.log(res.data);
+        createPaymentSessionAPI(parseFloat(res.data?.total_amt), paymentMethod);
         setSubmitLoading(false);
       })
       .catch((err) => {
