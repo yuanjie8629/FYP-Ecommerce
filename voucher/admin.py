@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from voucher.models import Voucher
+from reversion.admin import VersionAdmin
+
+
+@admin.register(Voucher)
+class VoucherAdmin(VersionAdmin):
+    pass

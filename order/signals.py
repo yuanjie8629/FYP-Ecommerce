@@ -7,7 +7,8 @@ from django.utils.translation import gettext as _
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.db.models import Sum, F, Case, When
-from shipment.models import Pickup, Shipment
+from shipment.models import Shipment
+from reversion.models import Version
 
 
 @receiver(pre_save, sender=OrderLine)
@@ -52,6 +53,27 @@ def send_order_confirmation(sender, instance, **kwargs):
 
         subtotal = result.get("subtotal_price")
 
+        total_discount = 0
+
+        voucher_version = (
+            Version.objects.get_for_object(instance.voucher)
+            .filter(revision__date_created__lte=instance.created_at)
+            .order_by("-revision__date_created")
+            .first()
+        )
+
+        if voucher_version:
+            if voucher_version.field_dict["type"] == "percentage":
+                total_discount = subtotal * voucher_version.field_dict["discount"]
+            else:
+                total_discount = voucher_version.field_dict["discount"]
+
+        elif instance.voucher:
+            if instance.voucher.type == "percentage":
+                total_discount = subtotal * instance.voucher.discount
+            else:
+                total_discount = instance.voucher.discount
+
         context = {
             "email": instance.email,
             "contact_name": shipment.contact_name,
@@ -67,7 +89,7 @@ def send_order_confirmation(sender, instance, **kwargs):
             "shipping_fee": shipment.ship_fee
             if hasattr(shipment, "ship_fee")
             else None,
-            "discount": instance.discount,
+            "discount": "{:.2f}".format(float(total_discount)),
             "subtotal": subtotal,
             "order_line": order_line,
         }

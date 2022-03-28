@@ -91,6 +91,9 @@
         list-style-type: decimal !important;
       }
       @media screen and (max-width: 480px) {
+        .price_space {
+          display: none;
+        }
         .preheader .rightColumnContent,
         .footer .rightColumnContent {
           text-align: left !important;
@@ -998,6 +1001,15 @@
                                                               text-align: inherit;
                                                             "
                                                           >
+                                                            Quantity:   {{ol.quantity}}
+                                                          </div>
+                                                          <div
+                                                            style="
+                                                              font-family: inherit;
+                                                              text-align: inherit;
+                                                            "
+                                                            class="price_space"
+                                                          >
                                                             <br />
                                                           </div>
                                                           <div
@@ -1006,21 +1018,32 @@
                                                               text-align: inherit;
                                                             "
                                                           >
-                                                            Quantity:
-                                                            {{ol.quantity}}
-                                                          </div>
-                                                          <div
-                                                            style="
-                                                              font-family: inherit;
-                                                              text-align: inherit;
-                                                            "
-                                                          >
+                                                            {% if ol.special_price %}
                                                             <span
                                                               style="
-                                                                color: #0e9f6e;
+                                                                text-decoration: line-through;
+                                                                color: #858b9c;
                                                               "
                                                               >RM {{ol.price}}
                                                             </span>
+                                                            <span
+                                                              style="
+                                                                color: #0e9f6e;
+                                                                font-weight: 600;
+                                                                padding-left: 10px;
+                                                              "
+                                                              >RM
+                                                              {{ol.special_price}}
+                                                            </span>
+                                                            {% else %}
+                                                            <span
+                                                              style="
+                                                                color: #0e9f6e;
+                                                                font-weight: 600;
+                                                              "
+                                                              >RM {{ol.price}}
+                                                            </span>
+                                                            {% endif %}
                                                           </div>
                                                           <div></div>
                                                         </div>
@@ -1171,9 +1194,12 @@
                                         >
                                           <tbody>
                                             <tr>
-                                              <td width="400">Subtotal</td>
+                                              <td width="350">Subtotal</td>
                                               <td align="right">RM</td>
-                                              <td align="right">
+                                              <td
+                                                align="right"
+                                                style="min-width: 80px"
+                                              >
                                                 {{subtotal}}
                                               </td>
                                             </tr>

@@ -120,7 +120,6 @@ class OrderSerializer(serializers.ModelSerializer):
                 total_amt=total_amt,
                 email=cust.email,
                 status="unpaid",
-                discount=discount + cart.get_total_special_discount,
             )
 
             for ol in order_line:
@@ -168,7 +167,6 @@ class OrderSerializer(serializers.ModelSerializer):
                 total_amt=total_amt,
                 email=email,
                 status="unpaid",
-                discount=discount + total_special_discount,
             )
 
             for ol in order_line:
