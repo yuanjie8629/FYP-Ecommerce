@@ -1,6 +1,6 @@
 import { addressListAPI, postcodeListAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
-import AddressCard, { AddressInfo } from '@components/Card/AddressCard';
+import AddressCard from '@components/Card/AddressCard';
 import Layout from '@components/Layout';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
@@ -73,19 +73,10 @@ const AddressBook = () => {
   };
 
   const ListItem = (item) => {
-    let address: AddressInfo = {
-      contactName: item.contact_name,
-      contactNum: item.contact_num,
-      address: item.address,
-      state: item.postcode.state,
-      city: item.postcode.city,
-      postcode: item.postcode.postcode,
-      default: item.default,
-    };
     return (
       <List.Item>
         <AddressCard
-          address={address}
+          address={item}
           extra={
             <Button
               type='link'

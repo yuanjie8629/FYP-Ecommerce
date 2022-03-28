@@ -5,8 +5,9 @@ from core.utils import calculate_discount, calculate_ship_fee
 from customer.models import Cust
 from item.models import Item
 from order.models import Order, OrderLine
-from postcode.models import Postcode, State
-from shipment.models import Pickup, PickupLoc, Shipment
+from postcode.models import Postcode
+from shipment.models import Pickup, Shipment
+from shipment.serializers import PickupSerializer
 from voucher.models import Voucher
 from django.db.models import Prefetch, Sum, F
 
@@ -57,6 +58,7 @@ class OrderAddressSerializer(serializers.Serializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     voucher = serializers.SlugRelatedField(
         slug_field="code",
         queryset=Voucher.objects.all().filter(
@@ -68,9 +70,7 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     items = OrderLineSerializer(many=True, source="order_line")
     address = OrderAddressSerializer(required=False)
-    pickup = serializers.SlugRelatedField(
-        slug_field="location", queryset=PickupLoc.objects.all(), required=False
-    )
+    pickup = PickupSerializer(required=False)
 
     class Meta:
         model = Order
@@ -78,6 +78,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         cust = validated_data.get("cust", None)
+        email = validated_data.get("email", None)
         voucher = validated_data.get("voucher", None)
         address = validated_data.get("address", None)
         pickup = validated_data.get("pickup", None)
@@ -109,7 +110,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
                 total_amt = subtotal + shipping_fee - discount
             else:
-                shipment = Pickup.objects.create(pickup_loc=pickup)
+                shipment = Pickup.objects.create(**pickup)
                 total_amt = subtotal - discount
 
             order = Order.objects.create(
@@ -117,11 +118,20 @@ class OrderSerializer(serializers.ModelSerializer):
                 voucher=voucher,
                 shipment=shipment,
                 total_amt=total_amt,
+                email=cust.email,
                 status="unpaid",
+                discount=discount + cart.get_total_special_discount,
             )
-      
+
             for ol in order_line:
-                order_item = OrderLine(order=order, item=ol.item, quantity=ol.quantity)
+                order_item = OrderLine(
+                    order=order,
+                    item=ol.item,
+                    price=ol.item.price,
+                    special_price=ol.item.special_price,
+                    weight=ol.item.weight,
+                    quantity=ol.quantity,
+                )
                 order_item.save()
             cart.delete()
             return order
@@ -130,12 +140,14 @@ class OrderSerializer(serializers.ModelSerializer):
             order_line = validated_data.get("order_line")
             total_weight = 0
             subtotal = 0
+            total_special_discount = 0
             for ol in order_line:
                 item = ol.get("item")
                 quantity = ol.get("quantity")
                 total_weight += item.weight * quantity
                 if item.special_price:
                     price = item.special_price * quantity
+                    total_special_discount += item.price - item.special_price
                 else:
                     price = item.price * quantity
                 subtotal += price
@@ -146,19 +158,30 @@ class OrderSerializer(serializers.ModelSerializer):
                 )
                 shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
                 total_amt = float(subtotal) + shipping_fee
+
             else:
-                shipment = Pickup.objects.create(pickup_loc=pickup)
+                shipment = Pickup.objects.create(**pickup)
                 total_amt = float(subtotal)
 
             order = Order.objects.create(
                 shipment=shipment,
                 total_amt=total_amt,
+                email=email,
                 status="unpaid",
+                discount=discount + total_special_discount,
             )
 
             for ol in order_line:
                 item = ol.get("item")
                 quantity = ol.get("quantity")
-                order_item = OrderLine(order=order, item=item, quantity=quantity)
+                order_item = OrderLine(
+                    order=order,
+                    item=item,
+                    price=item.price,
+                    special_price=item.special_price,
+                    weight=item.weight,
+                    quantity=quantity,
+                )
                 order_item.save()
+            print(order)
             return order

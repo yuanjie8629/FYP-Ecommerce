@@ -100,6 +100,7 @@ const RegisterModal = memo(
             type: 'success',
             content: 'You have successfully register.',
           });
+          registerForm.resetFields();
         })
         .catch((err) => {
           onSubmit(false);

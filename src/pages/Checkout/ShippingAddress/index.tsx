@@ -14,16 +14,24 @@ import AddressSelectDrawer from './AddressSelectDrawer';
 import PickupForm from './PickupForm';
 import ShippingAddressForm from './ShippingAddressForm';
 
+export interface PickupInfo {
+  contact_name: string;
+  contact_num: string;
+  location: string;
+}
+
 interface ShippingAddressProps extends CardProps {
   onSave?: (address?: AddressInfo) => void;
-  onPickup?: (location: string) => void;
+  onPickup?: (info: PickupInfo) => void;
   onEdit?: () => void;
+  onEmail?: (email) => void;
 }
 
 const ShippingAddress = ({
   onSave = () => null,
   onPickup = () => null,
   onEdit = () => null,
+  onEmail = () => null,
   ...props
 }: ShippingAddressProps) => {
   const { Title } = Typography;
@@ -37,7 +45,7 @@ const ShippingAddress = ({
   const [messageApi] = useContext(MessageContext);
   const [showSelectDrawer, setShowSelectDrawer] = useState(false);
   const [showPickup, setShowPickup] = useState(false);
-  const [pickup, setPickup] = useState('');
+  const [pickup, setPickup] = useState<PickupInfo>();
   const [addressCard, setAddressCard] = useState(false);
   const [noAddress, setNoAddress] = useState(false);
 
@@ -48,8 +56,8 @@ const ShippingAddress = ({
         if (isMounted) {
           setAddress({
             id: res.data?.id,
-            contactName: res.data?.contact_name,
-            contactNum: res.data?.contact_num,
+            contact_name: res.data?.contact_name,
+            contact_num: res.data?.contact_num,
             address: res.data?.address,
             state: res.data?.postcode?.state,
             city: res.data?.postcode?.city,
@@ -114,7 +122,7 @@ const ShippingAddress = ({
                 onClick={() => {
                   setAddAddress(true);
                   setConfirm(false);
-                  setPickup('');
+                  setPickup(undefined);
                   setShowPickup(false);
                   setAddressCard(false);
                   onEdit();
@@ -156,8 +164,8 @@ const ShippingAddress = ({
             onSubmit={(values) => {
               setAddress({
                 id: values?.id,
-                contactName: values.contact_name,
-                contactNum: values.contact_num,
+                contact_name: values.contact_name,
+                contact_num: values.contact_num,
                 address: values.address,
                 state: values.state,
                 city: values.city,
@@ -175,9 +183,12 @@ const ShippingAddress = ({
               setAddAddress(false);
               setNoAddress(false);
             }}
+            onEmail={(email) => {
+              onEmail(email);
+            }}
           />
         )}
-        {pickup && confirm && <PickupCard location={pickup} />}
+        {pickup && confirm && <PickupCard info={pickup} />}
         {showPickup && (
           <PickupForm
             onSelectAddress={() => {
@@ -190,6 +201,9 @@ const ShippingAddress = ({
               setConfirm(true);
               onPickup(values);
               setNoAddress(false);
+            }}
+            onEmail={(email) => {
+              onEmail(email);
             }}
           />
         )}

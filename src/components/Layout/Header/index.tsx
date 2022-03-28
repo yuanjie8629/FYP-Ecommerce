@@ -77,7 +77,6 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
       content: 'You have logout successfully',
     });
     navigate(findRoutePath('home'));
-    
   };
 
   return (
@@ -167,6 +166,8 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
         onMenuClick={(route) => {
           if (route === 'logout') {
             handleLogout();
+          } else {
+            navigate(findRoutePath(route));
           }
           setShowAcc(false);
           onDrawerClose('account');
@@ -201,17 +202,14 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
           setShowDrawer(false);
           if (route === 'login') {
             setShowLogin(true);
-          }
-          if (route === 'register') {
+          } else if (route === 'register') {
             setShowRegister(true);
-          }
-
-          if (route === 'logout') {
+          } else if (route === 'logout') {
             handleLogout();
-          }
-
-          if (route === 'profile') {
+          } else if (route === 'profile') {
             setShowAcc(true);
+          } else {
+            navigate(findRoutePath(route));
           }
         }}
       />

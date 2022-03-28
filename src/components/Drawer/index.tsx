@@ -50,6 +50,7 @@ const Drawer = ({
     { label: 'Home', route: 'home' },
     { label: 'Profile', route: 'profile' },
     { label: 'Become Agent/Dropshipper', route: 'posReg' },
+    { label: 'Search Order', route: 'orderSearch' },
     { label: 'About Us', route: 'about' },
     { label: 'Contact Us', route: 'contact' },
     { label: 'Logout', route: 'logout' },
@@ -98,6 +99,7 @@ const Drawer = ({
                   if (location.pathname === '/item/search')
                     navigate(findRoutePath('home'));
                 }
+                props.onClose(null);
               }}
             />
           )}
@@ -116,15 +118,6 @@ const Drawer = ({
                     className='text-button '
                     onClick={() => {
                       onMenuClick(item.route);
-                      if (
-                        ['login', 'register', 'logout', 'profile'].includes(
-                          item.route
-                        )
-                      ) {
-                        return;
-                      } else {
-                        navigate(findRoutePath(item.route));
-                      }
                     }}
                   >
                     {item.label}
@@ -135,14 +128,6 @@ const Drawer = ({
                     className='text-button'
                     onClick={() => {
                       onMenuClick(item.route);
-                      if (
-                        ['login', 'register', 'logout', 'profile'].includes(
-                          item.route
-                        )
-                      ) {
-                        return;
-                      }
-                      navigate(findRoutePath(item.route));
                     }}
                   >
                     {item.label}

@@ -47,9 +47,20 @@ class Shipment(OrderShipment):
         self.type = "shipping"
 
 
+class PickupLoc(SoftDeleteModel):
+    id = models.AutoField(primary_key=True)
+    location = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "pickup_loc"
+        managed = False
+
+
 class Pickup(OrderShipment):
+    contact_name = models.CharField(max_length=100)
+    contact_num = models.CharField(max_length=15)
     pickup_dt = models.DateTimeField(blank=True, null=True)
-    pickup_loc = models.ForeignKey("PickupLoc", on_delete=models.DO_NOTHING)
+    pickup_loc = models.ForeignKey(PickupLoc, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = "pickup"
@@ -60,10 +71,3 @@ class Pickup(OrderShipment):
         self.type = "pickup"
 
 
-class PickupLoc(SoftDeleteModel):
-    id = models.AutoField(primary_key=True)
-    location = models.CharField(max_length=50)
-
-    class Meta:
-        db_table = "pickup_loc"
-        managed = False

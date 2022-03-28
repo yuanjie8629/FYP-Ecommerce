@@ -7,18 +7,19 @@ import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { findRoutePath } from '@utils/routingUtils';
 import { getCartItem, getUserId, refreshCart } from '@utils/storageUtils';
-import { Col, Row, Space } from 'antd';
+import { Col, Modal, Row, Space, Spin, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderSummary from './Order Summary';
 import Payment, { paymentMethodType } from './Payment';
 import PlaceOrder from './PlaceOrder.tsx';
-import ShippingAddress from './ShippingAddress';
+import ShippingAddress, { PickupInfo } from './ShippingAddress';
 import Voucher from './Voucher';
 
 const Checkout = () => {
+  const { Text } = Typography;
   const [address, setAddress] = useState<AddressInfo>();
-  const [pickup, setPickup] = useState('');
+  const [pickup, setPickup] = useState<PickupInfo>();
   const [drawerOpen, setDrawerOpen] = useState<drawerOpenProps>();
   const [cart, setCart, cartPrice, setCartPrice] = useContext(CartContext);
   const [messageApi] = useContext(MessageContext);
@@ -29,12 +30,11 @@ const Checkout = () => {
   const [voucher, setVoucher] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<paymentMethodType>();
   const [outOfStock, setOutofStock] = useState(false);
+  const [showPaymentRedirect, setShowPaymentRedirect] = useState(false);
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cart.length <= 0 && getUserId()) {
-      navigate(findRoutePath('home'));
-    }
     if (cart && cart.find((cartItem) => cartItem.stock <= 0)) {
       setOutofStock(true);
     } else {
@@ -48,6 +48,9 @@ const Checkout = () => {
       console.log('Retrieving cart items...');
       cartDetailsForUserAPI(address?.state, voucher)
         .then((res) => {
+          if (res.data?.items?.length <= 0) {
+            navigate(findRoutePath('home'));
+          }
           setCart(res.data?.items);
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
@@ -79,6 +82,10 @@ const Checkout = () => {
         })
         .catch((err) => {
           if (err.response?.status !== 401) {
+            if (err.response?.status === 404) {
+              navigate(findRoutePath('home'));
+              return;
+            }
             showServerErrMsg();
           }
         });
@@ -144,7 +151,7 @@ const Checkout = () => {
               <ShippingAddress
                 onSave={(address) => {
                   setAddress(address);
-                  setPickup('');
+                  setPickup(undefined);
                 }}
                 onPickup={(location) => {
                   setPickup(location);
@@ -152,7 +159,10 @@ const Checkout = () => {
                 }}
                 onEdit={() => {
                   setAddress(undefined);
-                  setPickup('');
+                  setPickup(undefined);
+                }}
+                onEmail={(email) => {
+                  setEmail(email);
                 }}
               />
               <Voucher
@@ -181,7 +191,7 @@ const Checkout = () => {
                 onCartClick={() => {
                   setDrawerOpen({ drawer: 'cart', from: 'orderSummary' });
                 }}
-                pickup={pickup !== ''}
+                pickup={pickup !== undefined}
               />
             </div>
           </Col>
@@ -195,10 +205,30 @@ const Checkout = () => {
               voucher={voucher}
               paymentMethod={paymentMethod}
               oos={outOfStock}
+              email={email}
+              resetCart={() => {
+                setCart([]);
+              }}
+              onPaymentRedirect={(load) => {
+                setShowPaymentRedirect(load);
+              }}
             />
           </Col>
         </Row>
       </Space>
+      <Modal
+        footer={null}
+        closable={false}
+        maskClosable={false}
+        centered
+        visible={showPaymentRedirect}
+        width={220}
+      >
+        <Space direction='vertical' className='full-width center-flex'>
+          <Spin spinning />
+          <Text>Redirecting to payment...</Text>
+        </Space>
+      </Modal>
     </Layout>
   );
 };

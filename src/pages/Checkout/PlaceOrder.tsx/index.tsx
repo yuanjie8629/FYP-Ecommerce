@@ -9,16 +9,20 @@ import { clearCart } from '@utils/storageUtils';
 import { CardProps, Col, Row, Space, Typography } from 'antd';
 import { useContext, useState } from 'react';
 import { paymentMethodType } from '../Payment';
+import { PickupInfo } from '../ShippingAddress';
 
 interface PlaceOrderProps extends CardProps {
   loading?: boolean;
   cart?: any[];
   totalPrice?: number;
   address?: AddressInfo;
-  pickup?: string;
+  pickup?: PickupInfo;
   voucher?: string;
   paymentMethod?: paymentMethodType;
   oos?: boolean;
+  email?: string;
+  resetCart?: () => void;
+  onPaymentRedirect?: (load: boolean) => void;
 }
 
 const PlaceOrder = ({
@@ -30,6 +34,9 @@ const PlaceOrder = ({
   voucher,
   paymentMethod,
   oos,
+  email,
+  resetCart = () => null,
+  onPaymentRedirect = () => null,
   ...props
 }: PlaceOrderProps) => {
   const { Text } = Typography;
@@ -37,31 +44,26 @@ const PlaceOrder = ({
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handlePlaceOrder = () => {
-    let addressInfo = undefined;
-    if (address) {
-      let { contactName, contactNum, ...addressData } = address;
-      addressData['contact_name'] = contactName;
-      addressData['contact_num'] = contactNum;
-      addressInfo = addressData;
-    }
-
     setSubmitLoading(true);
     placeOrderAPI(
       cart.map((cartItem) => {
         return { item: cartItem.id, quantity: cartItem.quantity };
       }),
       voucher,
-      addressInfo,
-      pickup
+      address,
+      pickup,
+      email
     )
-      .then((res) => {
-        console.log(res.data);
-        createPaymentSessionAPI(
+      .then(async (res) => {
+        onPaymentRedirect(true);
+        await createPaymentSessionAPI(
           parseFloat(res.data?.total_amt),
-          paymentMethod
+          paymentMethod,
+          res.data?.id
         ).then((res) => {
-          clearCart();
-          window.open(res.data?.url, '_self');
+          if (res.data?.url) {
+            window.open(res.data?.url, '_self');
+          }
         });
         setSubmitLoading(false);
       })
@@ -78,6 +80,11 @@ const PlaceOrder = ({
           showServerErrMsg();
           setSubmitLoading(false);
         }
+      })
+      .finally(() => {
+        clearCart();
+        resetCart();
+        onPaymentRedirect(false);
       });
   };
 

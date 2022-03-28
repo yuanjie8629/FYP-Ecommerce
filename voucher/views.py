@@ -22,15 +22,21 @@ def VoucherCheckView(request):
         .prefetch_related("cust_type")
         .first()
     )
+    
+    if instance is None:
+        print("invalid voucher")
+        return Response(status=status.HTTP_404_NOT_FOUND, data={"detail": "invalid"})
+
     serializer = VoucherSerializer(instance)
     voucher = serializer.data
+    print(voucher)
 
     if not hasattr(request.user, "cust"):
         return Response(
             status=status.HTTP_404_NOT_FOUND, data={"detail": "require_login"}
         )
 
-    if not request.user.cust.cust_type.type in voucher.get("cust_type"):
+    if not voucher or not request.user.cust.cust_type.type in voucher.get("cust_type"):
         print("invalid cust_type")
         return Response(status=status.HTTP_404_NOT_FOUND, data={"detail": "invalid"})
 

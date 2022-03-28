@@ -1,4 +1,3 @@
-import { findRoutePath } from '@utils/routingUtils';
 import {
   Col,
   Drawer,
@@ -10,7 +9,6 @@ import {
   Typography,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 
 interface AccountDrawerProps extends DrawerProps {
   onMenuClick?: (route?) => void;
@@ -24,7 +22,6 @@ const AccountDrawer = ({
   const { Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
-  const navigate = useNavigate();
   const routes = [
     { label: 'Order History', route: 'orderHistory' },
     { label: 'Address Book', route: 'addressBook' },
@@ -64,13 +61,6 @@ const AccountDrawer = ({
                     className='text-button '
                     onClick={() => {
                       onMenuClick(item.route);
-                      if (
-                        ['login', 'register', 'logout'].includes(item.route) &&
-                        screens.md
-                      ) {
-                        return;
-                      }
-                      navigate(findRoutePath(item.route));
                     }}
                   >
                     {item.label}
@@ -81,13 +71,6 @@ const AccountDrawer = ({
                     className='text-button'
                     onClick={() => {
                       onMenuClick(item.route);
-                      if (
-                        ['login', 'register', 'logout'].includes(item.route) &&
-                        screens.md
-                      ) {
-                        return;
-                      }
-                      navigate(findRoutePath(item.route));
                     }}
                   >
                     {item.label}

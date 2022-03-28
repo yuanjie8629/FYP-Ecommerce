@@ -3,8 +3,8 @@ import { HiLocationMarker } from 'react-icons/hi';
 import ColorCard, { ColorCardProps } from '../ColorCard';
 
 export interface AddressInfo {
-  contactName: string;
-  contactNum: string;
+  contact_name: string;
+  contact_num: string;
   address: string;
   state: string;
   city: string;
@@ -41,8 +41,8 @@ const AddressCard = ({
         <Col span={18} style={{ textAlign: 'start' }}>
           {address ? (
             <Space direction='vertical'>
-              <Text strong>{address.contactName}</Text>
-              <Text type='secondary'>{address.contactNum}</Text>
+              <Text strong>{address.contact_name}</Text>
+              <Text type='secondary'>{address.contact_num}</Text>
               <Text>{address.address}</Text>
               <Text>{`${address.state}, ${address.city}, ${address.postcode}`}</Text>
               {address.default && showDefault && (

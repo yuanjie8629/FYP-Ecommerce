@@ -9,6 +9,10 @@ import AccountInfo from '@pages/Account/AccountInfo';
 import AddressBook from '@pages/Account/AddressBook';
 import PosReg from '@pages/PosReg';
 import Checkout from '@pages/Checkout';
+import PaymentSuccess from '@pages/Payment/PaymentSuccess';
+import PaymentCancel from '@pages/Payment/PaymentCancel';
+import OrderSearch from '@pages/Order/OrderSearch';
+import OrderHistory from '@pages/Order/OrderHistory';
 
 const routeList: {
   label: string;
@@ -80,6 +84,30 @@ const routeList: {
     label: 'posReg',
     path: '/position/registration',
     component: <PosReg />,
+    protected: false,
+  },
+  {
+    label: 'paymentSuccess',
+    path: '/payment/success',
+    component: <PaymentSuccess />,
+    protected: false,
+  },
+  {
+    label: 'paymentCancel',
+    path: '/payment/cancel',
+    component: <PaymentCancel />,
+    protected: false,
+  },
+  {
+    label: 'orderHistory',
+    path: '/order/history',
+    component: <OrderHistory />,
+    protected: true,
+  },
+  {
+    label: 'orderSearch',
+    path: '/order/search',
+    component: <OrderSearch />,
     protected: false,
   },
   {

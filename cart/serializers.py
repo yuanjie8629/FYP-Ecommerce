@@ -68,6 +68,9 @@ class CartSerializer(serializers.ModelSerializer):
     subtotal_price = serializers.DecimalField(
         max_digits=10, decimal_places=2, read_only=True, source="get_subtotal_price"
     )
+    total_special_discount =serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True, source="get_total_special_discount"
+    )
 
     class Meta:
         model = Cart

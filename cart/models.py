@@ -32,6 +32,17 @@ class Cart(SoftDeleteModel):
         )
         return result.get("total_price")
 
+    @property
+    def get_total_special_discount(self):
+        result = self.cart_item.aggregate(
+            total_discount=Sum(
+                (F("quantity") * (F("item__price") - F("item__special_price"))),
+            )
+        )
+        if result.get("total_discount"):
+            return result.get("total_discount")
+        else:
+            return 0
 
 
 class CartItem(models.Model):

@@ -29,6 +29,7 @@ const LoginModal = memo(
             content: 'You have successfully login.',
           });
           clearCart();
+          loginForm.resetFields();
           onSubmit(true);
         })
         .catch((e) => {

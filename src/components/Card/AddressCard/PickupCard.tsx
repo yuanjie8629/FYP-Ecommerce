@@ -1,16 +1,17 @@
-import { Col, Row, Skeleton, Typography } from 'antd';
+import { PickupInfo } from '@pages/Checkout/ShippingAddress';
+import { Col, Row, Skeleton, Space, Typography } from 'antd';
 import { HiLocationMarker } from 'react-icons/hi';
 import ColorCard, { ColorCardProps } from '../ColorCard';
 
 interface PickupCardProps extends ColorCardProps {
-  location?: string;
+  info: PickupInfo;
   loading?: boolean;
   extra?: React.ReactNode;
   showDefault?: boolean;
 }
 
 const PickupCard = ({
-  location,
+  info,
   loading,
   extra,
   showDefault = true,
@@ -29,8 +30,12 @@ const PickupCard = ({
           <HiLocationMarker size={20} className='color-primary' />
         </Col>
         <Col span={18} style={{ textAlign: 'start' }}>
-          {location ? (
-            <Text strong>{location}</Text>
+          {info ? (
+            <Space direction='vertical'>
+              <Text strong>{info.contact_name}</Text>
+              <Text type='secondary'>{info.contact_num}</Text>
+              <Text strong>{info.location}</Text>
+            </Space>
           ) : (
             <Skeleton paragraph={{ rows: 2 }} active={loading} />
           )}

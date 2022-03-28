@@ -1,16 +1,22 @@
 import { pickupLocListAPI } from '@api/services/shipmentAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
-import { Button, Col, Form, Row, Select, Skeleton, Space } from 'antd';
+import { getUserId } from '@utils/storageUtils';
+import { Button, Col, Form, Input, Row, Select, Skeleton, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useContext, useEffect, useState } from 'react';
 
 interface PickupFormProps {
   onSubmit?: (values) => void;
   onSelectAddress?: () => void;
+  onEmail?: (email: string) => void;
 }
 
-const PickupForm = ({ onSubmit, onSelectAddress }: PickupFormProps) => {
+const PickupForm = ({
+  onSubmit = () => null,
+  onSelectAddress = () => null,
+  onEmail = () => null,
+}: PickupFormProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [messageApi] = useContext(MessageContext);
@@ -50,7 +56,11 @@ const PickupForm = ({ onSubmit, onSelectAddress }: PickupFormProps) => {
       labelCol={{ span: 6 }}
       labelAlign='left'
       onFinish={(values) => {
-        onSubmit(values.location);
+        let { email, ...data } = values;
+        onSubmit(data);
+        if (email) {
+          onEmail(email);
+        }
       }}
     >
       <Space direction='vertical' size={20} className='full-width'>
@@ -62,13 +72,61 @@ const PickupForm = ({ onSubmit, onSelectAddress }: PickupFormProps) => {
           />
         ) : (
           <>
-            <Form.Item name='location'>
+            <Form.Item
+              label='Contact Name'
+              name='contact_name'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the contact name.',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              label='Contact Number'
+              name='contact_num'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the contact number.',
+                },
+              ]}
+            >
+              <Input placeholder='012-3456789' />
+            </Form.Item>
+            {!getUserId() && (
+              <Form.Item
+                label='Email Address'
+                name='email'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter the your email address.',
+                  },
+                ]}
+              >
+                <Input type='email' placeholder='Please enter your email' />
+              </Form.Item>
+            )}
+
+            <Form.Item
+              name='location'
+              label='Pickup Location'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select the pickup location.',
+                },
+              ]}
+            >
               <Select
                 placeholder='Select Pickup Location'
                 options={data.map((data) => {
                   return { value: data.location, label: data.location };
                 })}
-                style={{ width: '80%' }}
               />
             </Form.Item>
             <Row gutter={10} justify='space-between'>

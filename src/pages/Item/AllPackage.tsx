@@ -52,7 +52,7 @@ const AllPackage = ({ onChange = () => null, ...props }: AllPackageProps) => {
         ) : list.length > 0 ? (
           list.map((data) => <ItemCard key={data.id} info={data} />)
         ) : (
-          <Row justify='center' className='full-width'>
+          <Row justify='center' className='full-width' style={{ padding: 20 }}>
             <Empty />
           </Row>
         )}

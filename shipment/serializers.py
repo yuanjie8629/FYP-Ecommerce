@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from postcode.models import State
-from shipment.models import PickupLoc, ShippingFee
+from shipment.models import Pickup, PickupLoc, ShippingFee
 
 
 class ShippingFeeSerializer(serializers.ModelSerializer):
@@ -20,3 +20,13 @@ class PickupLocSerializer(serializers.ModelSerializer):
     class Meta:
         model = PickupLoc
         fields = ["id", "location"]
+
+
+class PickupSerializer(serializers.ModelSerializer):
+    location = serializers.SlugRelatedField(
+        slug_field="location", queryset=PickupLoc.objects.all(), source="pickup_loc"
+    )
+
+    class Meta:
+        model = Pickup
+        exclude = ["type", "is_deleted", "pickup_loc"]

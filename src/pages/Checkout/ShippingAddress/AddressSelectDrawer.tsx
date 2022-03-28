@@ -27,7 +27,7 @@ const AddressSelectDrawer = ({
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    if (getUserId()) {
+    if (getUserId() && props.visible) {
       addressListAPI()
         .then((res) => {
           if (isMounted) {
@@ -35,8 +35,8 @@ const AddressSelectDrawer = ({
             res.data.forEach((address) => {
               list.push({
                 id: address?.id,
-                contactName: address?.contact_name,
-                contactNum: address?.contact_num,
+                contact_name: address?.contact_name,
+                contact_num: address?.contact_num,
                 address: address?.address,
                 state: address?.postcode?.state,
                 city: address?.postcode?.city,

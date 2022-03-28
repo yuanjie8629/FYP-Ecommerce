@@ -16,6 +16,7 @@ interface ShippingAddressFormProps {
   onSubmit?: (values) => void;
   onSelectAddress?: () => void;
   onPickup?: () => void;
+  onEmail?: (email: string) => void;
 }
 
 const ShippingAddressForm = ({
@@ -23,6 +24,7 @@ const ShippingAddressForm = ({
   onSubmit = () => null,
   onSelectAddress = () => null,
   onPickup = () => null,
+  onEmail = () => null,
 }: ShippingAddressFormProps) => {
   const { Option } = Select;
   const { TextArea } = Input;
@@ -55,14 +57,7 @@ const ShippingAddressForm = ({
     let isMounted = true;
     getPostcodeList(isMounted);
     if (address) {
-      addressForm.setFieldsValue({
-        contact_name: address.contactName,
-        contact_num: address.contactNum,
-        address: address.address,
-        state: address.state,
-        city: address.city,
-        postcode: address.postcode,
-      });
+      addressForm.setFieldsValue(address);
       setState(address.state);
       setCity(address.city);
     }
@@ -110,11 +105,15 @@ const ShippingAddressForm = ({
       labelCol={{ span: 6 }}
       labelAlign='left'
       onFinish={(values) => {
-        let { address_book, ...data } = values;
+        let { address_book, email, ...data } = values;
         if (address_book) {
           handleAddAddress(data);
         } else {
           onSubmit(data);
+        }
+
+        if (email) {
+          onEmail(email);
         }
       }}
     >
@@ -129,7 +128,7 @@ const ShippingAddressForm = ({
             },
           ]}
         >
-          <Input />
+          <Input placeholder='Please enter the contact name' />
         </Form.Item>
 
         <Form.Item
@@ -144,7 +143,20 @@ const ShippingAddressForm = ({
         >
           <Input placeholder='012-3456789' />
         </Form.Item>
-
+        {!getUserId() && (
+          <Form.Item
+            label='Email Address'
+            name='email'
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the your email address.',
+              },
+            ]}
+          >
+            <Input type='email' placeholder='Please enter your email' />
+          </Form.Item>
+        )}
         <Form.Item
           label='State'
           name='state'
