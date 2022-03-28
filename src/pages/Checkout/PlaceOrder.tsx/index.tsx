@@ -5,6 +5,7 @@ import { AddressInfo } from '@components/Card/AddressCard';
 import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { clearCart } from '@utils/storageUtils';
 import { CardProps, Col, Row, Space, Typography } from 'antd';
 import { useContext, useState } from 'react';
 import { paymentMethodType } from '../Payment';
@@ -55,7 +56,13 @@ const PlaceOrder = ({
     )
       .then((res) => {
         console.log(res.data);
-        createPaymentSessionAPI(parseFloat(res.data?.total_amt), paymentMethod);
+        createPaymentSessionAPI(
+          parseFloat(res.data?.total_amt),
+          paymentMethod
+        ).then((res) => {
+          clearCart();
+          window.open(res.data?.url, '_self');
+        });
         setSubmitLoading(false);
       })
       .catch((err) => {
