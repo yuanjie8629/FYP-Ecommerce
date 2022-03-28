@@ -32,7 +32,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cart.length <= 0) {
+    if (cart.length <= 0 && getUserId()) {
       navigate(findRoutePath('home'));
     }
     if (cart && cart.find((cartItem) => cartItem.stock <= 0)) {

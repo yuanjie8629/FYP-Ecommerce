@@ -14,7 +14,7 @@ class StripeCheckoutView(APIView):
         total_amount = request.data.get("total_amt", None) * 100
         payment_method = request.data.get("payment_method", None)
         if total_amount:
-            try:
+            # try:
                 session = stripe.checkout.Session.create(
                     line_items=[
                         {
@@ -36,11 +36,11 @@ class StripeCheckoutView(APIView):
                 print(session)
                 return redirect(session.url)
 
-            except:
-                return Response(
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    data={"error": "stipe_session_failed"},
-                )
+            # except:
+            #     return Response(
+            #         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #         data={"error": "stipe_session_failed"},
+            #     )
         else:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, data={"error": "no_amount_stated"}

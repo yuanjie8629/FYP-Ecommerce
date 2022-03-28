@@ -41,7 +41,6 @@ class CartRetrieveView(generics.RetrieveAPIView):
                 discount = calculate_disocunt_by_code(
                     subtotal_price, voucher, request.user
                 )
-                print(discount)
                 response.data.update({"discount": discount})
                 if not float(discount):
                     discount = 0
@@ -228,7 +227,6 @@ def CartDetailsView(request):
             return response
 
     item_list = list(Item.objects.select_related().filter(id__in=ids))
-    print(item_list)
     new_list = []
     subtotal_price = 0
     total_weight = 0
