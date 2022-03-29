@@ -6,6 +6,7 @@ import {
   HiClipboardCheck,
   HiCube,
   HiTruck,
+  HiXCircle,
 } from 'react-icons/hi';
 
 interface OrderInfoProps extends CardProps {
@@ -48,7 +49,11 @@ const OrderStatus = ({
         </Row>
 
         {loading ? (
-          <Skeleton active title={null} paragraph={{ rows: 2, width: '100%' }} />
+          <Skeleton
+            active
+            title={null}
+            paragraph={{ rows: 2, width: '100%' }}
+          />
         ) : shipmentType === 'shipping' ? (
           <Steps
             labelPlacement='vertical'
@@ -57,11 +62,15 @@ const OrderStatus = ({
               shipmentSteps.find((step) => step.status === status)?.value
             }
           >
-            <Step
-              icon={<HiClipboardCheck />}
-              title={status !== 'unpaid' ? 'Paid' : 'Unpaid'}
-              status={status === 'unpaid' ? 'error' : undefined}
-            />
+            {status === 'cancel' ? (
+              <Step icon={<HiXCircle />} title='Cancelled' status='error' />
+            ) : (
+              <Step
+                icon={<HiClipboardCheck />}
+                title={status !== 'unpaid' ? 'Paid' : 'Unpaid'}
+                status={status === 'unpaid' ? 'error' : undefined}
+              />
+            )}
             <Step icon={<HiTruck />} title='Shipped' />
             <Step icon={<HiCheckCircle />} title='Completed' />
           </Steps>
@@ -70,11 +79,15 @@ const OrderStatus = ({
             labelPlacement='vertical'
             current={pickupSteps.find((step) => step.status === status)?.value}
           >
-            <Step
-              icon={<HiClipboardCheck />}
-              title={status !== 'unpaid' ? 'Paid' : 'Unpaid'}
-              status={status === 'unpaid' ? 'error' : undefined}
-            />
+            {status === 'cancel' ? (
+              <Step icon={<HiXCircle />} title='Cancelled' status='error' />
+            ) : (
+              <Step
+                icon={<HiClipboardCheck />}
+                title={status !== 'unpaid' ? 'Paid' : 'Unpaid'}
+                status={status === 'unpaid' ? 'error' : undefined}
+              />
+            )}
             <Step icon={<HiCube />} title='To Pickup' />
             <Step icon={<HiCheckCircle />} title='Completed' />
           </Steps>

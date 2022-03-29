@@ -54,14 +54,9 @@ const OrderItems = ({
               className='full-width'
               style={{ textAlign: 'start' }}
             >
-              <div className='text-button-wrapper'>
-                <Text
-                  strong
-                  className={`text-button${screens.md ? ' text-lg' : ''}`}
-                >
-                  {item.name}
-                </Text>
-              </div>
+              <Text strong className={`${screens.md ? ' text-lg' : ''}`}>
+                {item.name}
+              </Text>
               <Space size={10} className='full-width'>
                 <Text type='secondary'>{screens.sm ? 'Quantity' : 'Qty'}:</Text>
                 <Text strong className={`${screens.md ? 'text-lg' : ''}`}>
