@@ -110,6 +110,7 @@ const ChangePassDrawer = (props: ChangePassDrawerProps) => {
       .then((res) => {
         setSuccessModal(true);
         setSubmitLoading(false);
+        changePassForm.resetFields()
       })
       .catch((err) => {
         if (err.response?.status !== 401) {

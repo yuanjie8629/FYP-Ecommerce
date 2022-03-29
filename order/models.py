@@ -8,9 +8,12 @@ from item.models import Item
 from order.choices import ORDER_STATUS
 from shipment.models import OrderShipment
 from voucher.models import Voucher
+from django.db.models import Sum, F, Case, When
+
 
 def create_id():
-        return "".join(random.choices(string.digits, k=15))
+    return "".join(random.choices(string.digits, k=15))
+
 
 def create_unique_id():
     id = create_id()
@@ -21,6 +24,7 @@ def create_unique_id():
             return id
         else:
             id = create_id()
+
 
 class Order(SoftDeleteModel):
     id = models.CharField(primary_key=True, max_length=40, default=create_unique_id)
@@ -40,13 +44,29 @@ class Order(SoftDeleteModel):
         db_table = "order"
         managed = False
 
+    @property
+    def get_subtotal_price(self):
+        result = self.order_line.aggregate(
+            total_price=Sum(
+                Case(
+                    When(
+                        item__special_price__isnull=True,
+                        then=(F("quantity") * F("item__price")),
+                    ),
+                    When(
+                        item__special_price__isnull=False,
+                        then=(F("quantity") * F("item__special_price")),
+                    ),
+                )
+            )
+        )
+        return result.get("total_price")
+
     def save(self, *args, **kwargs):
         if self.status is None:
             self.status = "unpaid"
         super(Order, self).save(*args, **kwargs)
         return self
-
-    
 
 
 class OrderLine(models.Model):

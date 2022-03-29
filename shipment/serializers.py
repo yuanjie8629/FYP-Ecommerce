@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from postcode.models import State
-from shipment.models import Pickup, PickupLoc, ShippingFee
+from postcode.serializers import PostcodeSerializer
+from shipment.models import Pickup, PickupLoc, Shipment, ShippingFee
 
 
 class ShippingFeeSerializer(serializers.ModelSerializer):
@@ -29,4 +30,25 @@ class PickupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pickup
-        exclude = ["type", "is_deleted", "pickup_loc"]
+        exclude = [
+            "created_at",
+            "last_update",
+            "polymorphic_ctype",
+            "type",
+            "is_deleted",
+            "pickup_loc",
+        ]
+
+
+class ShipmentSerializer(serializers.ModelSerializer):
+    postcode = PostcodeSerializer(read_only=True)
+
+    class Meta:
+        model = Shipment
+        exclude = [
+            "created_at",
+            "last_update",
+            "type",
+            "is_deleted",
+            "polymorphic_ctype",
+        ]

@@ -57,7 +57,7 @@ const AddressAddDrawer = ({
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-
+        addressForm.resetFields()
         onUpdate();
       })
       .catch((err) => {

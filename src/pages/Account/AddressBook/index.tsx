@@ -2,7 +2,6 @@ import { addressListAPI, postcodeListAPI } from '@api/services/addressAPI';
 import Button from '@components/Button';
 import AddressCard from '@components/Card/AddressCard';
 import Layout from '@components/Layout';
-import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { Card, Grid, List, Row, Space, Typography } from 'antd';
@@ -44,7 +43,20 @@ const AddressBook = () => {
     addressListAPI()
       .then((res) => {
         if (isMounted) {
-          setData(res.data);
+          let list = [];
+          res.data.forEach((address) => {
+            list.push({
+              id: address?.id,
+              contact_name: address?.contact_name,
+              contact_num: address?.contact_num,
+              address: address?.address,
+              state: address?.postcode?.state,
+              city: address?.postcode?.city,
+              postcode: address?.postcode?.postcode,
+              default: address?.default,
+            });
+          });
+          setData(list);
           setLoading(false);
         }
       })
@@ -94,6 +106,17 @@ const AddressBook = () => {
     );
   };
 
+  const SkeletonCard = () => {
+    const getSekeletons = () => {
+      let skeletons = [];
+      for (var i = 0; i < 3; i++) {
+        skeletons.push(<AddressCard loading={loading} />);
+      }
+      return skeletons;
+    };
+    return <>{getSekeletons()}</>;
+  };
+
   return (
     <Layout>
       <Row justify='center' style={{ padding: 20 }}>
@@ -109,19 +132,21 @@ const AddressBook = () => {
         >
           <Title level={screens.md ? 3 : 5}>Address Book</Title>
           <Space direction='vertical' size={20} className='full-width'>
-            <SpinCircle spinning={loading}>
-              <Card
-                hoverable
-                onClick={() => {
-                  setShowAdd(true);
-                }}
-              >
-                <Text strong className='color-primary'>
-                  + Add Address
-                </Text>
-              </Card>
+            <Card
+              hoverable
+              onClick={() => {
+                setShowAdd(true);
+              }}
+            >
+              <Text strong className='color-primary'>
+                + Add Address
+              </Text>
+            </Card>
+            {loading ? (
+              SkeletonCard()
+            ) : (
               <List rowKey='id' dataSource={data} renderItem={ListItem} />
-            </SpinCircle>
+            )}
           </Space>
         </Space>
       </Row>

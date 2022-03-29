@@ -2,12 +2,13 @@ import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
 import { AddressInfo } from '@components/Card/AddressCard';
 import Layout from '@components/Layout';
 import { drawerOpenProps } from '@components/Layout/Header';
+import PaymentModal from '@components/Modal/PaymentModal';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { findRoutePath } from '@utils/routingUtils';
 import { getCartItem, getUserId, refreshCart } from '@utils/storageUtils';
-import { Col, Modal, Row, Space, Spin, Typography } from 'antd';
+import { Col, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderSummary from './Order Summary';
@@ -17,7 +18,6 @@ import ShippingAddress, { PickupInfo } from './ShippingAddress';
 import Voucher from './Voucher';
 
 const Checkout = () => {
-  const { Text } = Typography;
   const [address, setAddress] = useState<AddressInfo>();
   const [pickup, setPickup] = useState<PickupInfo>();
   const [drawerOpen, setDrawerOpen] = useState<drawerOpenProps>();
@@ -186,6 +186,7 @@ const Checkout = () => {
                 subTotal={cartPrice}
                 shipping={shippingFee}
                 discount={discount}
+                voucher={voucher}
                 loading={loading}
                 oos={outOfStock}
                 onCartClick={() => {
@@ -216,19 +217,7 @@ const Checkout = () => {
           </Col>
         </Row>
       </Space>
-      <Modal
-        footer={null}
-        closable={false}
-        maskClosable={false}
-        centered
-        visible={showPaymentRedirect}
-        width={220}
-      >
-        <Space direction='vertical' className='full-width center-flex'>
-          <Spin spinning />
-          <Text>Redirecting to payment...</Text>
-        </Space>
-      </Modal>
+      <PaymentModal visible={showPaymentRedirect} />
     </Layout>
   );
 };

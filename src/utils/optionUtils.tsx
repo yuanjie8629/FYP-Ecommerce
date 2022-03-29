@@ -40,6 +40,7 @@ export const orderStatList = [
   { status: 'unpaid', label: 'Unpaid', color: 'error' },
   { status: 'toShip', label: 'To Ship', color: 'warning' },
   { status: 'shipping', label: 'Shipping', color: 'processing' },
+  { status: 'toPick', label: 'To Pickup', color: 'processing' },
 ];
 
 export const custStatList = [

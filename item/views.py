@@ -34,8 +34,7 @@ class ItemView(generics.RetrieveAPIView):
     serializer_class = ItemSerializer
 
     def get(self, request, *args, **kwargs):
-        pk = kwargs.get("pk")
-        item = Item.objects.get(pk=pk)
+        item = self.get_object()
         if item.type == "prod":
             print("prod")
             serializer = ProductSerializer(item.product)

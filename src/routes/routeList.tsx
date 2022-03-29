@@ -13,6 +13,7 @@ import PaymentSuccess from '@pages/Payment/PaymentSuccess';
 import PaymentCancel from '@pages/Payment/PaymentCancel';
 import OrderSearch from '@pages/Order/OrderSearch';
 import OrderHistory from '@pages/Order/OrderHistory';
+import OrderDetails from '@pages/Order/OrderDetails';
 
 const routeList: {
   label: string;
@@ -108,6 +109,12 @@ const routeList: {
     label: 'orderSearch',
     path: '/order/search',
     component: <OrderSearch />,
+    protected: false,
+  },
+  {
+    label: 'orderDetails',
+    path: '/order/:id',
+    component: <OrderDetails />,
     protected: false,
   },
   {

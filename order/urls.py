@@ -1,6 +1,16 @@
 from django.urls import include, path
-from order.views import OrderView
+from rest_framework.routers import DefaultRouter
+from order.views import OrderDetailsView, OrderViewSet
+
+router = DefaultRouter()
+router.register(r"", OrderViewSet)
 
 urlpatterns = [
-    path("", OrderView.as_view(), name="orderView"),
+    path(
+        "search/",
+        OrderDetailsView.as_view(),
+        name="orderDetailsView",
+    ),
 ]
+
+urlpatterns += router.urls

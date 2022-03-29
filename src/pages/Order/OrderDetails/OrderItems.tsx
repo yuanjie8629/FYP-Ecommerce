@@ -1,6 +1,5 @@
 import MainCard from '@components/Card/MainCard';
 import {
-  Alert,
   CardProps,
   Col,
   Divider,
@@ -11,48 +10,32 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { useEffect, useState } from 'react';
-import { MdEdit } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 
 interface OrderSummaryProps extends CardProps {
   loading?: boolean;
-  cart?: any[];
+  items?: any[];
   subTotal?: number;
   discount?: number;
   voucher?: string;
   shipping?: number;
   total?: number;
   pickup?: boolean;
-  oos?: boolean;
-  onCartClick?: () => void;
 }
 
-const OrderSummary = ({
+const OrderItems = ({
   loading,
-  cart,
+  items,
   subTotal,
   total,
   discount = 0,
   voucher,
   shipping = 0,
   pickup,
-  oos,
-  onCartClick,
   ...props
 }: OrderSummaryProps) => {
   const { Text, Title } = Typography;
-  const navigate = useNavigate();
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
-  const [load, setLoad] = useState(0);
-
-  useEffect(() => {
-    if (loading) {
-      setLoad(load + 1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
 
   const ListItem = (item) => (
     <List.Item>
@@ -65,15 +48,15 @@ const OrderSummary = ({
               width={screens.md ? 124 : 70}
               style={{ border: '1px solid #e5e7eb' }}
             />
-            <Space direction='vertical' size={10} className='full-width'>
+            <Space
+              direction='vertical'
+              size={10}
+              className='full-width'
+              style={{ textAlign: 'start' }}
+            >
               <div className='text-button-wrapper'>
                 <Text
                   strong
-                  onClick={() => {
-                    if (item.stock > 0) {
-                      navigate(`/item/${item.id}`);
-                    }
-                  }}
                   className={`text-button${screens.md ? ' text-lg' : ''}`}
                 >
                   {item.name}
@@ -85,11 +68,6 @@ const OrderSummary = ({
                   {item.quantity}
                 </Text>
               </Space>
-              {item.stock <= 0 && (
-                <Text strong type='danger'>
-                  Out of Stock
-                </Text>
-              )}
             </Space>
           </Space>
         </Col>
@@ -129,35 +107,16 @@ const OrderSummary = ({
           <Col>
             <Title level={5}>Order Summary</Title>
           </Col>
-
-          <Col>
-            <MdEdit
-              size={20}
-              onClick={() => {
-                onCartClick();
-              }}
-              style={{ cursor: 'pointer' }}
-            />
-          </Col>
         </Row>
-        {oos && (
-          <Alert
-            showIcon
-            type='error'
-            message={
-              <Text type='danger'>Please remove out of stock items.</Text>
-            }
-          />
-        )}
         <Divider style={{ margin: 0 }} />
-        {loading && load <= 1 ? (
+        {loading ? (
           <Skeleton
             active
             avatar={{ shape: 'square', size: screens.md ? 124 : 70 }}
             paragraph={{ rows: 2 }}
           />
         ) : (
-          <List dataSource={cart} renderItem={ListItem} />
+          <List dataSource={items} renderItem={ListItem} />
         )}
 
         <Divider style={{ margin: 0 }} />
@@ -168,7 +127,7 @@ const OrderSummary = ({
             </Col>
             <Col>
               <Text strong className='text-lg'>
-                {loading ? 'Calculating...' : `RM ${subTotal}`}
+                {loading || !subTotal ? 'Loading...' : `RM ${subTotal}`}
               </Text>
             </Col>
           </Row>
@@ -182,17 +141,13 @@ const OrderSummary = ({
                 <Text className='text-lg'>Shipping</Text>
               </Col>
               <Col>
-                {loading ? (
+                {loading || !shipping ? (
                   <Text strong className='text-lg'>
-                    Calculating...
-                  </Text>
-                ) : shipping ? (
-                  <Text strong className='text-lg'>
-                    RM {shipping}
+                    Loading...
                   </Text>
                 ) : (
-                  <Text type='secondary'>
-                    Please confirm your shipping address.
+                  <Text strong className='text-lg'>
+                    RM {shipping}
                   </Text>
                 )}
               </Col>
@@ -207,7 +162,7 @@ const OrderSummary = ({
               </Col>
               <Col>
                 <Text strong className='text-lg'>
-                  {loading ? 'Calculating...' : `- RM ${discount}`}
+                  {loading || !discount ? 'Loading...' : `- RM ${discount}`}
                 </Text>
               </Col>
             </Row>
@@ -221,7 +176,7 @@ const OrderSummary = ({
             </Col>
             <Col>
               <Text strong className='text-lg color-primary'>
-                {loading || !total ? 'Calculating...' : `RM ${total}`}
+                {loading || !total ? 'Loading...' : `RM ${total}`}
               </Text>
             </Col>
           </Row>
@@ -231,4 +186,4 @@ const OrderSummary = ({
   );
 };
 
-export default OrderSummary;
+export default OrderItems;

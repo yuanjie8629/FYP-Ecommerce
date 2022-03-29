@@ -105,7 +105,10 @@ class StripeWebhookView(APIView):
             )
             payment.paid = True
             payment.save()
-            payment.order.status = "toShip"
+            if payment.order.shipment.type=='pickup':
+                payment.order.status = "toPick"
+            else:
+                payment.order.status = "toShip"
             payment.order.save()
 
         if event["type"] == "checkout.session.async_payment_failed":

@@ -5,9 +5,11 @@ import { AddressInfo } from '@components/Card/AddressCard';
 import MainCard from '@components/Card/MainCard';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import { clearCart } from '@utils/storageUtils';
 import { CardProps, Col, Row, Space, Typography } from 'antd';
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { paymentMethodType } from '../Payment';
 import { PickupInfo } from '../ShippingAddress';
 
@@ -42,6 +44,7 @@ const PlaceOrder = ({
   const { Text } = Typography;
   const [messageApi] = useContext(MessageContext);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handlePlaceOrder = () => {
     setSubmitLoading(true);
@@ -60,11 +63,15 @@ const PlaceOrder = ({
           parseFloat(res.data?.total_amt),
           paymentMethod,
           res.data?.id
-        ).then((res) => {
-          if (res.data?.url) {
-            window.open(res.data?.url, '_self');
-          }
-        });
+        )
+          .then((res) => {
+            if (res.data?.url) {
+              window.open(res.data?.url, '_self');
+            }
+          })
+          .catch((err) => {
+            navigate(findRoutePath('paymentCancel'));
+          });
         setSubmitLoading(false);
       })
       .catch((err) => {
@@ -104,22 +111,39 @@ const PlaceOrder = ({
   return (
     <MainCard bodyStyle={{ padding: 15 }} {...props}>
       <Row justify='space-between' align='middle'>
-        <Col>
-          <Space direction='vertical' size={0}>
-            <Text strong>Total Payment</Text>
-            {loading ? (
-              <Text strong className='text-lg'>
-                Calculating...
-              </Text>
-            ) : (
-              totalPrice && (
-                <Text strong className='color-primary text-lg'>
-                  RM {totalPrice}
+        {!(paymentMethod && (address || pickup)) ? (
+          <Col>
+            <Space direction='vertical'>
+              {!(address || pickup) && (
+                <Text strong type='danger'>
+                  Please confirm your shipping address.
                 </Text>
-              )
-            )}
-          </Space>
-        </Col>
+              )}
+              {!paymentMethod && (
+                <Text strong type='danger'>
+                  Please select one payment method.
+                </Text>
+              )}
+            </Space>
+          </Col>
+        ) : (
+          <Col>
+            <Space direction='vertical' size={0}>
+              <Text strong>Total Payment</Text>
+              {loading ? (
+                <Text strong className='text-lg'>
+                  Calculating...
+                </Text>
+              ) : (
+                totalPrice && (
+                  <Text strong className='color-primary text-lg'>
+                    RM {totalPrice}
+                  </Text>
+                )
+              )}
+            </Space>
+          </Col>
+        )}
         <Col>
           <Button
             type='primary'

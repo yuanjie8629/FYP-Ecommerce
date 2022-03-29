@@ -7,7 +7,7 @@ from item.models import Item
 from order.models import Order, OrderLine
 from postcode.models import Postcode
 from shipment.models import Pickup, Shipment
-from shipment.serializers import PickupSerializer
+from shipment.serializers import PickupSerializer, ShipmentSerializer
 from voucher.models import Voucher
 from django.db.models import Prefetch, Sum, F
 
@@ -57,8 +57,8 @@ class OrderAddressSerializer(serializers.Serializer):
     )
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
+class OrderWriteSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False)
     voucher = serializers.SlugRelatedField(
         slug_field="code",
         queryset=Voucher.objects.all().filter(
@@ -68,7 +68,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ),
         required=False,
     )
-    items = OrderLineSerializer(many=True, source="order_line")
+    item = OrderLineSerializer(many=True, source="order_line")
     address = OrderAddressSerializer(required=False)
     pickup = PickupSerializer(required=False)
 
@@ -139,14 +139,12 @@ class OrderSerializer(serializers.ModelSerializer):
             order_line = validated_data.get("order_line")
             total_weight = 0
             subtotal = 0
-            total_special_discount = 0
             for ol in order_line:
                 item = ol.get("item")
                 quantity = ol.get("quantity")
                 total_weight += item.weight * quantity
                 if item.special_price:
                     price = item.special_price * quantity
-                    total_special_discount += item.price - item.special_price
                 else:
                     price = item.price * quantity
                 subtotal += price
@@ -183,3 +181,61 @@ class OrderSerializer(serializers.ModelSerializer):
                 order_item.save()
             print(order)
             return order
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    date = serializers.DateTimeField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", source="created_at"
+    )
+    shipment = serializers.SlugRelatedField(slug_field="type", read_only=True)
+
+    class Meta:
+        model = Order
+        exclude = [
+            "created_at",
+            "last_update",
+            "is_deleted",
+            "item",
+            "voucher",
+            "cust",
+        ]
+
+
+class OrderWithShipmentSerializer(serializers.ModelSerializer):
+    voucher = serializers.SlugRelatedField(
+        slug_field="code",
+        read_only=True,
+        required=False,
+    )
+    item = OrderLineSerializer(many=True, source="order_line")
+    shipment = ShipmentSerializer(source="shipment.shipment")
+    subtotal = serializers.DecimalField(
+        max_digits=10, decimal_places=2, source="get_subtotal_price"
+    )
+    date = serializers.DateTimeField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", source="created_at"
+    )
+
+    class Meta:
+        model = Order
+        exclude = ["created_at", "last_update", "is_deleted"]
+
+
+class OrderWithPickupSerializer(serializers.ModelSerializer):
+    voucher = serializers.SlugRelatedField(
+        slug_field="code",
+        read_only=True,
+        required=False,
+    )
+    item = OrderLineSerializer(many=True, source="order_line")
+    pickup = PickupSerializer(source="shipment.pickup")
+    subtotal = serializers.DecimalField(
+        max_digits=10, decimal_places=2, source="get_subtotal_price"
+    )
+    date = serializers.DateTimeField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", source="created_at"
+    )
+
+    class Meta:
+        model = Order
+        exclude = ["created_at", "last_update", "is_deleted", "shipment"]

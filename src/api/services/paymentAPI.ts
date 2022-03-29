@@ -4,7 +4,7 @@ import { paymentMethodType } from '@pages/Checkout/Payment';
 export const createPaymentSessionAPI = (
   totalAmt: number,
   paymentMethod: paymentMethodType,
-  orderID: number
+  orderID: string
 ) =>
   axios.post(`payment/create_checkout_session/`, {
     total_amt: totalAmt,

@@ -44,7 +44,7 @@ const AddressCard = ({
               <Text strong>{address.contact_name}</Text>
               <Text type='secondary'>{address.contact_num}</Text>
               <Text>{address.address}</Text>
-              <Text>{`${address.state}, ${address.city}, ${address.postcode}`}</Text>
+              <Text>{`${address.postcode}, ${address.city}, ${address.state}.`}</Text>
               {address.default && showDefault && (
                 <Tag color='success'>Default</Tag>
               )}

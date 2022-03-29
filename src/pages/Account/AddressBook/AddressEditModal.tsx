@@ -57,7 +57,7 @@ const AddressEditModal = ({
           content: 'Your address has been updated.',
         });
         setSubmitLoading(false);
-
+        addressForm.resetFields();
         onUpdate();
       })
       .catch((err) => {

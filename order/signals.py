@@ -55,24 +55,28 @@ def send_order_confirmation(sender, instance, **kwargs):
 
         total_discount = 0
 
-        voucher_version = (
-            Version.objects.get_for_object(instance.voucher)
-            .filter(revision__date_created__lte=instance.created_at)
-            .order_by("-revision__date_created")
-            .first()
-        )
+        if instance.voucher:
+            voucher_version = (
+                Version.objects.get_for_object(instance.voucher)
+                .filter(revision__date_created__lte=instance.created_at)
+                .order_by("-revision__date_created")
+                .first()
+            )
 
-        if voucher_version:
-            if voucher_version.field_dict["type"] == "percentage":
-                total_discount = subtotal * voucher_version.field_dict["discount"]
-            else:
-                total_discount = voucher_version.field_dict["discount"]
+            code = instance.voucher.code
 
-        elif instance.voucher:
-            if instance.voucher.type == "percentage":
-                total_discount = subtotal * instance.voucher.discount
+            if voucher_version:
+                code = voucher_version.field_dict["code"]
+                if voucher_version.field_dict["type"] == "percentage":
+                    total_discount = subtotal * voucher_version.field_dict["discount"]
+                else:
+                    total_discount = voucher_version.field_dict["discount"]
+
             else:
-                total_discount = instance.voucher.discount
+                if instance.voucher.type == "percentage":
+                    total_discount = subtotal * instance.voucher.discount
+                else:
+                    total_discount = instance.voucher.discount
 
         context = {
             "email": instance.email,
@@ -89,9 +93,12 @@ def send_order_confirmation(sender, instance, **kwargs):
             "shipping_fee": shipment.ship_fee
             if hasattr(shipment, "ship_fee")
             else None,
-            "discount": "{:.2f}".format(float(total_discount)),
+            "discount": "{:.2f}".format(float(total_discount))
+            if instance.voucher
+            else None,
             "subtotal": subtotal,
             "order_line": order_line,
+            "voucher": code if instance.voucher else None,
         }
 
         # render email text

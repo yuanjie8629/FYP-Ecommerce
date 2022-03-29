@@ -200,7 +200,9 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
         }}
         onMenuClick={(route) => {
           setShowDrawer(false);
-          if (route === 'login') {
+          if (!route) {
+            return;
+          } else if (route === 'login') {
             setShowLogin(true);
           } else if (route === 'register') {
             setShowRegister(true);

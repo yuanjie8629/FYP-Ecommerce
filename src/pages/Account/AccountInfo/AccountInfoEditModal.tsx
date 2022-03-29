@@ -56,6 +56,7 @@ const AccountInfoEditModal = ({
           content: 'Your account information is updated.',
         });
         setSubmitLoading(false);
+        accountForm.resetFields()
       })
       .catch((err) => {
         if (err.response?.status !== 401) {
