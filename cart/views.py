@@ -198,9 +198,8 @@ class CartSetItemView(generics.CreateAPIView):
 
 @api_view(["POST"])
 def CartDetailsView(request):
-
     state = request.data.get("state", None)
-
+    
     if "list" in request.data:
         data_list = request.data.get("list")
     else:

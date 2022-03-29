@@ -5,7 +5,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { Alert, Form, Grid, Input, Row, Space, Typography } from 'antd';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 const OrderSearch = () => {
   const { Text, Title } = Typography;
@@ -22,7 +22,10 @@ const OrderSearch = () => {
       .then((res) => {
         setInvalid(false);
         setLoading(false);
-        navigate(`/order/${values.id}`);
+        navigate({
+          pathname: `/order/${values.id}`,
+          search: createSearchParams({ email: values.email }).toString(),
+        });
       })
       .catch((err) => {
         if (err.response?.status !== 401) {

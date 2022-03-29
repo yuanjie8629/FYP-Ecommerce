@@ -11,18 +11,23 @@ from shipment.models import Shipment
 from reversion.models import Version
 
 
-@receiver(pre_save, sender=OrderLine)
-def deduct_product_quantity(sender, instance, **kwargs):
-    item = instance.item
-    if item.stock <= 0 or instance.quantity > item.stock:
-        raise serializers.ValidationError({"detail": "no_stock"})
-    item.stock = item.stock - instance.quantity
-    item.save()
+# @receiver(pre_save, sender=OrderLine)
+# def deduct_product_quantity(sender, instance, **kwargs):
+#     item = instance.item
+#     if item.stock <= 0 or instance.quantity > item.stock:
+#         raise serializers.ValidationError({"detail": "no_stock"})
+#     item.stock = item.stock - instance.quantity
+#     item.save()
 
 
 @receiver(post_save, sender=Order)
 def send_order_confirmation(sender, instance, **kwargs):
-    if instance.status == "toShip":
+    update_fields = kwargs["update_fields"]
+    if (
+        update_fields is not None
+        and "status" in update_fields
+        and (instance.status == "toShip" or instance.status == "toPick")
+    ):
         check_shipment = Shipment.objects.filter(order=instance).exists()
         if check_shipment:
             shipment = instance.shipment.shipment

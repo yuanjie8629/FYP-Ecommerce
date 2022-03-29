@@ -57,7 +57,11 @@ const ShipmentInfo = ({
           </Col>
         </Row>
         {loading ? (
-          <Skeleton title={null} paragraph={{ rows: 6, width: '100%' }} />
+          <Skeleton
+            active
+            title={null}
+            paragraph={{ rows: 6, width: '100%' }}
+          />
         ) : pickup ? (
           <Descriptions column={1} bordered>
             <Descriptions.Item

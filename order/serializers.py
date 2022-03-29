@@ -131,6 +131,7 @@ class OrderWriteSerializer(serializers.ModelSerializer):
                     weight=ol.item.weight,
                     quantity=ol.quantity,
                 )
+                self.deduct_product_quantity(order_item)
                 order_item.save()
             cart.delete()
             return order
@@ -178,9 +179,17 @@ class OrderWriteSerializer(serializers.ModelSerializer):
                     weight=item.weight,
                     quantity=quantity,
                 )
+                self.deduct_product_quantity(order_item)
                 order_item.save()
-            print(order)
+
             return order
+
+    def deduct_product_quantity(self, instance):
+        item = instance.item
+        if item.stock <= 0 or instance.quantity > item.stock:
+            raise serializers.ValidationError({"detail": "no_stock"})
+        item.stock = item.stock - instance.quantity
+        item.save()
 
 
 class OrderSerializer(serializers.ModelSerializer):

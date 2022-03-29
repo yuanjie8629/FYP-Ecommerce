@@ -3,10 +3,16 @@ import OrderCard from '@components/Card/OrderCard';
 import Layout from '@components/Layout';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
+import { getUserEmail } from '@utils/storageUtils';
 import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
-import { Grid, List, Row, Space, Typography } from 'antd';
+import { Grid, Input, List, Row, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 const OrderHistory = () => {
   const { Title } = Typography;
@@ -88,7 +94,10 @@ const OrderHistory = () => {
         <OrderCard
           order={item}
           onClick={() => {
-            navigate(`/order/${item.id}`);
+            navigate({
+              pathname: `/order/${item.id}`,
+              search: createSearchParams({ email: getUserEmail() }).toString(),
+            });
           }}
         />
       </List.Item>
@@ -121,6 +130,16 @@ const OrderHistory = () => {
         >
           <Title level={screens.md ? 3 : 5}>Order History</Title>
           <Space direction='vertical' size={20} className='full-width'>
+            <Input.Search
+              placeholder='Search Order (ID)'
+              onSearch={(value) => {
+                if (value) {
+                  setSearchParams(addSearchParams(searchParams, { id: value }));
+                } else {
+                  setSearchParams(removeSearchParams(searchParams, 'id'));
+                }
+              }}
+            />
             {loading ? (
               SkeletonCard()
             ) : (

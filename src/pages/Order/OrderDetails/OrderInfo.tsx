@@ -37,7 +37,7 @@ const OrderInfo = ({ id, date, status, loading, ...props }: OrderInfoProps) => {
           </Col>
         </Row>
         {loading ? (
-          <Skeleton title={null} paragraph={{ rows: 4, width: '100%' }} />
+          <Skeleton active title={null} paragraph={{ rows: 4, width: '100%' }} />
         ) : (
           <Descriptions column={1} bordered>
             <Descriptions.Item

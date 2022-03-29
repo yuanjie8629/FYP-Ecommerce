@@ -1,12 +1,13 @@
-import { orderDetailsAPI } from '@api/services/orderAPI';
+import { orderDetailsAPI, orderSearchAPI } from '@api/services/orderAPI';
 import Layout from '@components/Layout';
 import PaymentModal from '@components/Modal/PaymentModal';
 import { MessageContext } from '@contexts/MessageContext';
 import Payment, { paymentMethodType } from '@pages/Checkout/Payment';
 import { serverErrMsg } from '@utils/messageUtils';
+import { findRoutePath } from '@utils/routingUtils';
 import { Grid, Row, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import OrderInfo from './OrderInfo';
 import OrderItems from './OrderItems';
 import OrderStatus from './OrderStatus';
@@ -23,6 +24,27 @@ const OrderDetails = () => {
   const [messageApi] = useContext(MessageContext);
   const [paymentMethod, setPaymentMethod] = useState<paymentMethodType>();
   const [showPaymentRedirect, setShowPaymentRedirect] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.has('email')) {
+      setLoading(true);
+      orderSearchAPI(searchParams.get('email'), id).catch((err) => {
+        if (err.response?.status !== 401) {
+          if (err.response?.status === 404) {
+            navigate(findRoutePath('home'));
+            return;
+          }
+          showServerErrMsg();
+        }
+      });
+    } else {
+      navigate(findRoutePath('home'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, navigate, searchParams]);
 
   useEffect(() => {
     let isMounted = true;

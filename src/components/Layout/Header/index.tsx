@@ -99,7 +99,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
           <Col span={8} className='center-flex'>
             <Input.Search
               defaultValue={search}
-              placeholder='Search'
+              placeholder='Search Item'
               onSearch={(value) => {
                 if (value) {
                   navigate({

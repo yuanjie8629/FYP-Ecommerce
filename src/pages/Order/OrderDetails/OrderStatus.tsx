@@ -48,7 +48,7 @@ const OrderStatus = ({
         </Row>
 
         {loading ? (
-          <Skeleton title={null} paragraph={{ rows: 2, width: '100%' }} />
+          <Skeleton active title={null} paragraph={{ rows: 2, width: '100%' }} />
         ) : shipmentType === 'shipping' ? (
           <Steps
             labelPlacement='vertical'

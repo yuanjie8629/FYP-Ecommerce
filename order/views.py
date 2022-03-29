@@ -3,6 +3,7 @@ from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.views import APIView
+from order.filters import OrderFilter
 from order.models import Order
 from order.serializers import (
     OrderSerializer,
@@ -22,6 +23,7 @@ class OrderViewSet(
 ):
     queryset = Order.objects.all().prefetch_related("item").order_by("-created_at")
     serializer_class = OrderSerializer
+    filterset_class = OrderFilter
 
     def get_queryset(self):
         if self.action == "list":
