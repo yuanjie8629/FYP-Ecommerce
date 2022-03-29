@@ -45,10 +45,12 @@ class StripeCheckoutView(APIView):
             customer_email=request.user.email
             if hasattr(request.user, "email")
             else None,
-            # success_url="https://fyp-shrf-ecommerce.herokuapp.com/?success=true&session_id={CHECKOUT_SESSION_ID}",
-            # cancel_url="https://fyp-shrf-ecommerce.herokuapp.com/?cancel=true",
-            success_url="http://127.0.0.1:3000/payment/success?session_id={CHECKOUT_SESSION_ID}&order_id={order_id}&amount={amount}",
-            cancel_url="http://127.0.0.1:3000/payment/cancel?order_id={order_id}",
+            success_url="https://fyp-shrf-ecommerce.herokuapp.com/payment/success?session_id={CHECKOUT_SESSION_ID}&order_id={order_id}&amount={amount}"
+            if settings.DEBUG == False
+            else "http://127.0.0.1:3000/payment/success?session_id={CHECKOUT_SESSION_ID}&order_id={order_id}&amount={amount}",
+            cancel_url="https://fyp-shrf-ecommerce.herokuapp.com/payment/cancel?order_id={order_id}"
+            if settings.DEBUG == False
+            else "http://127.0.0.1:3000/payment/cancel?order_id={order_id}",
         )
 
         print(payment_method)
