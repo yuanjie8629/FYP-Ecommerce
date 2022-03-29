@@ -57,7 +57,7 @@ const AddressAddDrawer = ({
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-        addressForm.resetFields()
+        addressForm.resetFields();
         onUpdate();
       })
       .catch((err) => {
@@ -124,7 +124,7 @@ const AddressAddDrawer = ({
                   },
                 ]}
               >
-                <Input placeholder='012-3456789' />
+                <Input placeholder='0123456789' />
               </Form.Item>
 
               <Form.Item

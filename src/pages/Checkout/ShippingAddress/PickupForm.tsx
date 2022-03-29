@@ -95,7 +95,7 @@ const PickupForm = ({
                 },
               ]}
             >
-              <Input placeholder='012-3456789' />
+              <Input placeholder='0123456789' />
             </Form.Item>
             {!getUserId() && (
               <Form.Item
