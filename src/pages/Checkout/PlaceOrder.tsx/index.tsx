@@ -89,8 +89,10 @@ const PlaceOrder = ({
         }
       })
       .finally(() => {
-        clearCart();
-        resetCart();
+        setTimeout(() => {
+          clearCart();
+          resetCart();
+        }, 1000);
         onPaymentRedirect(false);
       });
   };
