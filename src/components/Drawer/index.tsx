@@ -72,7 +72,10 @@ const Drawer = ({
           <Col span={23} style={{ textAlign: 'center' }}>
             <div
               className='header-logo'
-              onClick={() => navigate(findRoutePath('home'))}
+              onClick={() => {
+                navigate(findRoutePath('home'));
+                props.onClose(null);
+              }}
             >
               <Image
                 src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'

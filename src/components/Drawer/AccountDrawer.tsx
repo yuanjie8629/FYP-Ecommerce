@@ -41,7 +41,7 @@ const AccountDrawer = ({
               className='color-grey'
               size={30}
               onClick={() => {
-                onMenuClick();
+                props.onClose(null);
               }}
             />
           </Col>

@@ -85,7 +85,9 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
         <Col span={3}>
           <div
             className='header-logo'
-            onClick={() => navigate(findRoutePath('home'))}
+            onClick={() => {
+              navigate(findRoutePath('home'));
+            }}
           >
             <Image
               src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'

@@ -190,9 +190,13 @@ const OrderSummary = ({
                   <Text strong className='text-lg'>
                     RM {shipping}
                   </Text>
-                ) : (
-                  <Text type='secondary'>
+                ) : screens.sm ? (
+                  <Text type='secondary' className='text-sm'>
                     Please confirm your shipping address.
+                  </Text>
+                ) : (
+                  <Text type='secondary' className='text-sm'>
+                    Confirm shipping address.
                   </Text>
                 )}
               </Col>

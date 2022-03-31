@@ -110,12 +110,12 @@ const PlaceOrder = ({
 
   return (
     <MainCard bodyStyle={{ padding: 15 }} {...props}>
-      <Row justify='space-between' align='middle'>
+      <Row gutter={[10, 10]} justify='space-between' align='middle'>
         {!(paymentMethod && (address || pickup)) ? (
           <Col>
             <Space direction='vertical'>
               {!(address || pickup) && (
-                <Text strong type='danger'>
+                <Text strong type='danger' >
                   Please confirm your shipping address.
                 </Text>
               )}
@@ -144,7 +144,7 @@ const PlaceOrder = ({
             </Space>
           </Col>
         )}
-        <Col>
+        <Col xs={24} sm={6} className='justify-end'>
           <Button
             type='primary'
             size='large'

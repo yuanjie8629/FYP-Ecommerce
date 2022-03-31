@@ -140,7 +140,7 @@ const Voucher = ({
           <Space direction='vertical' size={20} className='full-width'>
             <Title level={5}>Voucher</Title>
             {getUserId() ? (
-              <Row gutter={[10, 20]} justify={screens.xs ? 'end' : 'start'}>
+              <Row gutter={[10, 5]} justify={screens.xs ? 'end' : 'start'}>
                 {!validVoucher ? (
                   <>
                     <Col xs={24} sm={18}>
@@ -181,7 +181,11 @@ const Voucher = ({
                         <Input value={voucher} disabled />
                       </Form.Item>
                     </Col>
-                    <Col xs={12} sm={6}>
+                    <Col
+                      xs={12}
+                      sm={6}
+                      className={screens.sm ? '' : 'justify-end align-center'}
+                    >
                       <Button
                         type='link'
                         color='error'

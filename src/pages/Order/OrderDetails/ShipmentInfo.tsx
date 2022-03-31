@@ -1,3 +1,4 @@
+import Button from '@components/Button';
 import MainCard from '@components/Card/MainCard';
 import {
   CardProps,
@@ -149,7 +150,15 @@ const ShipmentInfo = ({
               style={{ fontWeight: 600 }}
             >
               {shipment?.track_num ? (
-                shipment?.track_num
+                <Button
+                  type='link'
+                  color='info'
+                  onClick={() => {
+                    window['linkTrack'](shipment?.track_num);
+                  }}
+                >
+                  {shipment?.track_num}
+                </Button>
               ) : (
                 <Text type='secondary'>Pending</Text>
               )}
