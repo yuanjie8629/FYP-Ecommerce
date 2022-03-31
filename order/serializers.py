@@ -3,7 +3,7 @@ from rest_framework import serializers
 from cart.models import Cart
 from core.utils import calculate_discount, calculate_ship_fee
 from customer.models import Cust
-from item.models import Item
+from item.models import Item, PackageItem, Product
 from order.models import Order, OrderLine
 from postcode.models import Postcode
 from shipment.models import Pickup, Shipment
@@ -123,11 +123,24 @@ class OrderWriteSerializer(serializers.ModelSerializer):
             )
 
             for ol in order_line:
+                cost_per_unit = 0
+                if Product.objects.filter(pk=ol.item.id).exists():
+                    cost_per_unit = ol.item.product.cost_per_unit
+                else:
+                    cost_per_unit = (
+                        PackageItem.objects.filter(pack=ol.item.package)
+                        .aggregate(
+                            cost_per_unit=Sum(F("quantity") * F("prod__cost_per_unit"))
+                        )
+                        .get("cost_per_unit")
+                    )
+
                 order_item = OrderLine(
                     order=order,
                     item=ol.item,
                     price=ol.item.price,
                     special_price=ol.item.special_price,
+                    cost_per_unit=cost_per_unit,
                     weight=ol.item.weight,
                     quantity=ol.quantity,
                 )
@@ -168,13 +181,30 @@ class OrderWriteSerializer(serializers.ModelSerializer):
                 status="unpaid",
             )
 
+            print(order_line)
             for ol in order_line:
+                print(ol)
                 item = ol.get("item")
                 quantity = ol.get("quantity")
+
+                cost_per_unit = 0
+
+                if isinstance(item.product, Product):
+                    cost_per_unit = item.product.cost_per_unit
+                else:
+                    cost_per_unit = (
+                        PackageItem.objects.filter(pack=item)
+                        .aggregate(
+                            cost_per_unit=Sum(F("quantity") * F("prod__cost_per_unit"))
+                        )
+                        .get("cost_per_unit")
+                    )
+
                 order_item = OrderLine(
                     order=order,
                     item=item,
                     price=item.price,
+                    cost_per_unit=cost_per_unit,
                     special_price=item.special_price,
                     weight=item.weight,
                     quantity=quantity,
