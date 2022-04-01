@@ -192,6 +192,7 @@ const Cart = ({
                 onClick={() => {
                   if (item.stock > 0) {
                     navigate(`/item/${item.id}`);
+                    props.onClose(null);
                   }
                 }}
                 className='text-button'
