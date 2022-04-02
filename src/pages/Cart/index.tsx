@@ -217,27 +217,19 @@ const Cart = ({
                   cart.find((cartItem) => cartItem.id === item.id).stock !==
                     0 ? (
                     <Button
-                      icon={
-                        <MinusOutlined
-                          className='color-grey'
-                          onClick={() => {
-                            handleCartMinus(item);
-                          }}
-                        />
-                      }
+                      icon={<MinusOutlined className='color-grey' />}
+                      onClick={() => {
+                        handleCartMinus(item);
+                      }}
                     />
                   ) : (
                     <Button
                       size='small'
                       color='error'
-                      icon={
-                        <DeleteOutlined
-                          className='color-error'
-                          onClick={() => {
-                            handleCartMinus(item);
-                          }}
-                        />
-                      }
+                      icon={<DeleteOutlined className='color-error' />}
+                      onClick={() => {
+                        handleCartMinus(item);
+                      }}
                       style={{ border: '1px solid #f05252' }}
                     />
                   )}
@@ -273,14 +265,10 @@ const Cart = ({
                   <Button
                     size='small'
                     disabled={item.quantity >= item.stock}
-                    icon={
-                      <PlusOutlined
-                        className='color-grey'
-                        onClick={() => {
-                          handleCartAdd(item);
-                        }}
-                      />
-                    }
+                    icon={<PlusOutlined className='color-grey' />}
+                    onClick={() => {
+                      handleCartAdd(item);
+                    }}
                   />
                 </Space>
               </Col>
