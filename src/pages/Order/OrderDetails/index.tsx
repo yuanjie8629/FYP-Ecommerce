@@ -91,6 +91,7 @@ const OrderDetails = () => {
             id={data['id']}
             date={data['date']}
             status={data['status']}
+            email={data['email']}
             loading={loading}
           />
           {screens.md && (

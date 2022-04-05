@@ -14,11 +14,19 @@ import {
 interface OrderInfoProps extends CardProps {
   id?: string;
   date?: string;
+  email?: string;
   status?: string;
   loading?: boolean;
 }
 
-const OrderInfo = ({ id, date, status, loading, ...props }: OrderInfoProps) => {
+const OrderInfo = ({
+  id,
+  date,
+  status,
+  loading,
+  email,
+  ...props
+}: OrderInfoProps) => {
   const { Text, Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
@@ -37,7 +45,11 @@ const OrderInfo = ({ id, date, status, loading, ...props }: OrderInfoProps) => {
           </Col>
         </Row>
         {loading ? (
-          <Skeleton active title={null} paragraph={{ rows: 4, width: '100%' }} />
+          <Skeleton
+            active
+            title={null}
+            paragraph={{ rows: 4, width: '100%' }}
+          />
         ) : (
           <Descriptions column={1} bordered>
             <Descriptions.Item
@@ -53,6 +65,13 @@ const OrderInfo = ({ id, date, status, loading, ...props }: OrderInfoProps) => {
               style={{ fontWeight: 600 }}
             >
               {date}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label='Contact Email'
+              span={12}
+              style={{ fontWeight: 600 }}
+            >
+              {email}
             </Descriptions.Item>
             {!screens.md && (
               <Descriptions.Item
