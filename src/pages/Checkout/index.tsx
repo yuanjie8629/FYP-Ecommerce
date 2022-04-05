@@ -126,7 +126,6 @@ const Checkout = () => {
 
   const showVoucherErrMsg = (message) => {
     messageApi.open({
-      key: 'voucherErr',
       type: 'error',
       content: message,
     });

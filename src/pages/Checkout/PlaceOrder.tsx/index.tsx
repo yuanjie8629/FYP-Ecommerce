@@ -101,7 +101,6 @@ const PlaceOrder = ({
 
   const showNoStockMsg = () => {
     messageApi.open({
-      key: 'no_stock',
       type: 'error',
       content:
         'Some items in your order are out of stock. Please refresh the page.',

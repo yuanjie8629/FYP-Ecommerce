@@ -52,7 +52,6 @@ const AddressEditModal = ({
     addressUpdAPI(data.id, record)
       .then((res) => {
         messageApi.open({
-          key: 'addressUpdSuccess',
           type: 'success',
           content: 'Your address has been updated.',
         });
@@ -73,7 +72,6 @@ const AddressEditModal = ({
     addressDelAPI(data.id)
       .then((res) => {
         messageApi.open({
-          key: 'addressDelSuccess',
           type: 'success',
           content: 'Your address has been deleted.',
         });

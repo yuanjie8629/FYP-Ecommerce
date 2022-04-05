@@ -78,7 +78,6 @@ const ItemDetails = () => {
           if (err.response?.status !== 401) {
             if (err.response?.data?.error === 'no_stock') {
               messageApi.open({
-                key: 'no_stock',
                 type: 'warning',
                 content: 'The item has reached the maximum stock in your cart',
               });
@@ -96,7 +95,6 @@ const ItemDetails = () => {
       if (cart === 'no_stock') {
         setCartLoading(false);
         messageApi.open({
-          key: 'no_stock',
           type: 'warning',
           content: 'The item has reached the maximum stock in your cart',
         });

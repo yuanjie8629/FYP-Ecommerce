@@ -72,7 +72,6 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
     logoutAPI();
     setCart([]);
     messageApi.open({
-      key: 'successLogout',
       type: 'success',
       content: 'You have logout successfully',
     });

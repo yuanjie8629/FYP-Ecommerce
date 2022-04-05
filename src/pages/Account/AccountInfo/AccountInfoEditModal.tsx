@@ -51,12 +51,11 @@ const AccountInfoEditModal = ({
       .then((res) => {
         onUpdate();
         messageApi.open({
-          key: 'accUpdSuccess',
           type: 'success',
           content: 'Your account information is updated.',
         });
         setSubmitLoading(false);
-        accountForm.resetFields()
+        accountForm.resetFields();
       })
       .catch((err) => {
         if (err.response?.status !== 401) {

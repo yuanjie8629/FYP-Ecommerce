@@ -96,7 +96,6 @@ const RegisterModal = memo(
         .then((res) => {
           onSubmit(true);
           messageApi.open({
-            key: 'successRegister',
             type: 'success',
             content: 'You have successfully register.',
           });
@@ -113,7 +112,6 @@ const RegisterModal = memo(
               setErrMsg(err.response?.data?.password);
           } else {
             messageApi.open({
-              key: 'err',
               type: 'error',
               content: 'Something went wrong. Please try again.',
             });

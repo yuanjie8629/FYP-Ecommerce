@@ -119,7 +119,6 @@ const Voucher = ({
 
   const showVoucherAppliedMsg = () => {
     messageApi.open({
-      key: 'voucherApplied',
       type: 'success',
       content: 'The voucher redeeemed successfully.',
     });
@@ -127,7 +126,6 @@ const Voucher = ({
 
   const showVoucherRemovedMsg = () => {
     messageApi.open({
-      key: 'voucherRemoved',
       type: 'info',
       content: 'The voucher has been removed.',
     });

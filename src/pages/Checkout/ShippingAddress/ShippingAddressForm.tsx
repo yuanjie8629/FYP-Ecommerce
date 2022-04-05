@@ -79,7 +79,6 @@ const ShippingAddressForm = ({
     await addressAddAPI(data)
       .then((res) => {
         messageApi.open({
-          key: 'addressUpdSuccess',
           type: 'success',
           content: 'New address has been added.',
         });

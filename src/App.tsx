@@ -2,7 +2,7 @@ import ConfigProvider from 'antd/es/config-provider';
 import './App.less';
 import Routes from '@routes/AppRoutes';
 import { IconContext } from 'react-icons/lib';
-import { Grid, message, notification } from 'antd';
+import { message } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
@@ -16,31 +16,15 @@ import moment from 'moment';
 import { CartContext } from '@contexts/CartContext';
 import { useEffect, useState } from 'react';
 import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
-import { MessageContext } from '@contexts/MessageContext';
-import { NotificationContext } from '@contexts/NotificationContext';
+import { MessageProvider } from '@contexts/MessageContext';
+import { NotificationProvider } from '@contexts/NotificationContext';
 import { serverErrMsg } from '@utils/messageUtils';
 
 function App() {
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
   const [cart, setCart] = useState([]);
   const [cartPrice, setCartPrice] = useState<number>();
-  const [messageApi, messageContext] = message.useMessage();
-  const [notificationAPI, notiContext] = notification.useNotification();
   const idleTimer = useIdleTimer({
     timeout: 10000,
-  });
-
-  notification.config({
-    maxCount: 1,
-    placement: screens.md ? 'bottomRight' : 'top',
-    duration: 3,
-  });
-
-  message.config({
-    maxCount: 1,
-    duration: 3,
-    top: screens.md && 50,
   });
 
   const timer = useTimer({
@@ -96,7 +80,7 @@ function App() {
   }, [getUserId()]);
 
   const showServerErrMsg = () => {
-    messageApi.open(serverErrMsg);
+    message.open(serverErrMsg);
   };
 
   return (
@@ -104,17 +88,15 @@ function App() {
       <IconContext.Provider
         value={{ style: { verticalAlign: 'middle', textAlign: 'center' } }}
       >
-        <MessageContext.Provider value={[messageApi]}>
-          {messageContext}
-          <NotificationContext.Provider value={[notificationAPI]}>
-            {notiContext}
+        <MessageProvider>
+          <NotificationProvider>
             <CartContext.Provider
               value={[cart, setCart, cartPrice, setCartPrice]}
             >
               <Routes />
             </CartContext.Provider>
-          </NotificationContext.Provider>
-        </MessageContext.Provider>
+          </NotificationProvider>
+        </MessageProvider>
       </IconContext.Provider>
     </ConfigProvider>
   );

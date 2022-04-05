@@ -45,7 +45,6 @@ const Login = ({
     })
       .then((res) => {
         messageApi.open({
-          key: 'successLogin',
           type: 'success',
           content: 'You have successfully login.',
         });
@@ -58,7 +57,6 @@ const Login = ({
           setLoginErr('Invalid username or password. Please try again.');
         } else {
           messageApi.open({
-            key: 'err',
             type: 'error',
             content: 'Something went wrong. Please try again.',
           });

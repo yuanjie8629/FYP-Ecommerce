@@ -45,12 +45,11 @@ const AddressAddModal = ({
     addressAddAPI(data)
       .then((res) => {
         messageApi.open({
-          key: 'addressAddSuccess',
           type: 'success',
           content: 'New address has been added.',
         });
         setSubmitLoading(false);
-        addressForm.resetFields()
+        addressForm.resetFields();
         onUpdate();
       })
       .catch((err) => {

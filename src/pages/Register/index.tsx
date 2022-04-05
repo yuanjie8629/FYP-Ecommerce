@@ -122,7 +122,6 @@ const Register = (props: RegisterProps) => {
             setErrMsg(err.response?.data?.password);
         } else {
           messageApi.open({
-            key: 'err',
             type: 'error',
             content: 'Something went wrong. Please try again.',
           });
