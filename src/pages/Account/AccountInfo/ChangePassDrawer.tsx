@@ -288,7 +288,7 @@ const ChangePassDrawer = (props: ChangePassDrawerProps) => {
                 block
                 loading={submitLoading}
               >
-                Reset Password
+                Change Password
               </Button>
             </Space>
           </Form>

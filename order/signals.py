@@ -124,6 +124,8 @@ def send_order_confirmation(sender, instance, **kwargs):
         msg.send()
 
         title = "New Order"
-        description = "<p><span>{} has placed new order!</span></p><p><span>Please proceed with his order.</span></p>".format(instance.email)
-        type = 'order'
+        description = "<span style={}>{} has placed new order!<br/>Please proceed with the order.</span>".format(
+            "word-wrap:break-word", instance.email
+        )
+        type = "order"
         Notification.objects.create(title=title, description=description, type=type)

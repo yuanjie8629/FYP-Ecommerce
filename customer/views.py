@@ -1,9 +1,8 @@
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from customer.models import Cust, CustPosReg
-from rest_framework import generics
+from rest_framework import generics,status
 from rest_framework.response import Response
-from rest_framework import status
 from customer.serializers import (
     ChangePassSerializer,
     CustPosRegSerializer,

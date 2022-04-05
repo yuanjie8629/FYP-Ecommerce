@@ -101,8 +101,8 @@ class CustPosRegSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         title = "New Registration"
-        description = "<p><span>{} has submitted registration for agent/dropshipper.</span></p><p><span>Please review the registration form.</span></p>".format(
-            validated_data.get("name")
+        description = "<span style={}>{} has submitted registration for agent/dropshipper.<br/>Please review the registration form.</span>".format(
+            "word-wrap:break-word", validated_data.get("name")
         )
         type = "customer"
         Notification.objects.create(title=title, description=description, type=type)
