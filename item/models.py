@@ -50,8 +50,7 @@ class Item(PolySoftDeleteModel, PolymorphicModel):
 
     class Meta:
         db_table = "item"
-        managed=False
-
+        managed = False
 
     def __str__(self):
         return "{}: {}".format(self.type, self.name)

@@ -1,8 +1,7 @@
-from opcode import hasconst
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
+from notification.models import Notification
 from order.models import Order, OrderLine
-from rest_framework import serializers
 from django.utils.translation import gettext as _
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -123,3 +122,8 @@ def send_order_confirmation(sender, instance, **kwargs):
         )
         msg.attach_alternative(email_html_message, "text/html")
         msg.send()
+
+        title = "New Order"
+        description = "<p><span>{} has placed new order!</span></p><p><span>Please proceed with his order.</span></p>".format(instance.email)
+        type = 'order'
+        Notification.objects.create(title=title, description=description, type=type)
