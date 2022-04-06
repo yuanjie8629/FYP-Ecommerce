@@ -108,17 +108,6 @@ self.addEventListener('message', (event) => {
 
 const cacheNm = 'shrf-cahce';
 
-// these are the routes we are going to cache for offline support
-const cacheFiles = [
-  '/',
-  'home/',
-  'item/',
-  'about/',
-  'contact/',
-  'https://res.cloudinary.com/yuanjie/image/upload/v1647630462/hqjkSL3DzH2Ee6DD3rlJIUzp3uxNClUkFMnJ4cWz_pjpdsh.jpg',
-  'https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg',
-];
-
 self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
@@ -138,23 +127,48 @@ self.addEventListener('activate', function (event) {
   );
 });
 // on install we download the routes we want to cache for offline
-self.addEventListener('install', (evt) =>
-  evt.waitUntil(
+self.addEventListener('install', (event) =>
+  event.waitUntil(
     caches.open(cacheNm).then((cache) => {
-      return cache.addAll(cacheFiles);
+      return cache.addAll(['api/item/active/']);
     })
   )
 );
+
+// fetch the resource from the network
+const fromNetwork = (request, timeout) =>
+  new Promise((fulfill, reject) => {
+    const timeoutId = setTimeout(reject, timeout);
+    fetch(request).then((response) => {
+      clearTimeout(timeoutId);
+      fulfill(response);
+      update(request);
+    }, reject);
+  });
+
+// fetch the resource from the browser cache
+const fromCache = (request) =>
+  caches
+    .open(cacheNm)
+    .then((cache) =>
+      cache
+        .match(request)
+        .then((matching) => matching || cache.match('/offline/'))
+    );
+
+const update = (request) =>
+  caches
+    .open(cacheNm)
+    .then((cache) =>
+      fetch(request).then((response) => cache.put(request, response))
+    );
 
 self.addEventListener('fetch', function (event) {
   if (!(event.request.url.indexOf('http') === 0)) return; // skip the request. if request is not made with http protocol
 
   event.respondWith(
-    caches.open(cacheNm).then(function (cache) {
-      return fetch(event.request).then(function (response) {
-        cache.put(event.request, response.clone());
-        return response;
-      });
-    })
+    /* @ts-ignore */
+    fromNetwork(event.request, 10000).catch(() => fromCache(event.request))
   );
+  event.waitUntil(update(event.request));
 });
