@@ -2,7 +2,6 @@ import ConfigProvider from 'antd/es/config-provider';
 import './App.less';
 import Routes from '@routes/AppRoutes';
 import { IconContext } from 'react-icons/lib';
-import { message } from 'antd';
 import { useIdleTimer } from 'react-idle-timer';
 import { useTimer } from 'react-timer-hook';
 import { refreshTknAPI } from '@api/services/authAPI';
@@ -18,7 +17,6 @@ import { useEffect, useState } from 'react';
 import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
 import { MessageProvider } from '@contexts/MessageContext';
 import { NotificationProvider } from '@contexts/NotificationContext';
-import { serverErrMsg } from '@utils/messageUtils';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -53,7 +51,7 @@ function App() {
           })
           .catch((err) => {
             if (![401, 404].includes(err.response?.status)) {
-              showServerErrMsg();
+              return Promise.resolve();
             }
           });
       } else if (getCartItem()) {
@@ -71,17 +69,13 @@ function App() {
           })
           .catch((err) => {
             if (err.response?.status !== 401) {
-              showServerErrMsg();
+              return Promise.resolve();
             }
           });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getUserId()]);
-
-  const showServerErrMsg = () => {
-    message.open(serverErrMsg);
-  };
 
   return (
     <ConfigProvider prefixCls='shrf'>
