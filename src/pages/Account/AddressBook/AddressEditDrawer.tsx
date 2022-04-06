@@ -113,7 +113,7 @@ const AddressEditDrawer = ({
             />
           </Col>
           <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Edit Account Information</Title>
+            <Title level={5}>Edit Address Information</Title>
           </Col>
         </Row>
         <SpinCircle spinning={loading || submitLoading}>

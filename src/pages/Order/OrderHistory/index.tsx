@@ -131,7 +131,7 @@ const OrderHistory = () => {
           <Title level={screens.md ? 3 : 5}>Order History</Title>
           <Space direction='vertical' size={20} className='full-width'>
             <Input.Search
-              placeholder='Search Order (ID)'
+              placeholder='Search Order Number'
               onSearch={(value) => {
                 if (value) {
                   setSearchParams(addSearchParams(searchParams, { id: value }));

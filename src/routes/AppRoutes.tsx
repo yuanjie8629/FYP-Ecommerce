@@ -15,11 +15,12 @@ export default function AppRoute() {
   window.addEventListener('offline', function (e) {
     notiApi.warning({
       message: 'Offline',
-      description: 'You are now offline. You can only view the cached products.',
+      description:
+        'You are now offline. You can only view the item catelog cached item details',
       duration: 10,
     });
   });
-  
+
   return (
     <Router>
       <Routes>

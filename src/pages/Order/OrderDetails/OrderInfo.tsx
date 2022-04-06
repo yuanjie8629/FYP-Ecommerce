@@ -53,7 +53,7 @@ const OrderInfo = ({
         ) : (
           <Descriptions column={1} bordered>
             <Descriptions.Item
-              label='Order ID'
+              label='Order Number'
               span={12}
               style={{ fontWeight: 600 }}
             >

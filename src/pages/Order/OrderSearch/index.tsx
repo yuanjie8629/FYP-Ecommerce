@@ -69,7 +69,7 @@ const OrderSearch = () => {
                   type='error'
                   showIcon
                   message={
-                    <Text type='danger'>Invalid Order ID or Email.</Text>
+                    <Text type='danger'>Invalid Order Number or Email.</Text>
                   }
                 />
               )}
@@ -78,11 +78,12 @@ const OrderSearch = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter the order ID sent to your email.',
+                    message:
+                      'Please enter the Order Number sent to your email.',
                   },
                 ]}
               >
-                <Input placeholder='Order ID' />
+                <Input placeholder='Order Number' />
               </Form.Item>
               <Form.Item
                 name='email'

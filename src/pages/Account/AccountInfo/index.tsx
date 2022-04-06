@@ -74,12 +74,13 @@ const AccountInfo = () => {
             {loading ? (
               <>
                 <Skeleton
+                  active={loading}
                   title={null}
                   paragraph={{ rows: 10, width: '100%' }}
                 />
                 <Row justify='end' align='middle'>
                   <Col span={8}>
-                    <Skeleton.Button block />
+                    <Skeleton.Button active={loading} block />
                   </Col>
                 </Row>
               </>
