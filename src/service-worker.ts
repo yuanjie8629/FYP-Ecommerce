@@ -80,6 +80,18 @@ self.addEventListener('message', (event) => {
 
 // Any other custom service worker logic can go here.
 
+// self.addEventListener('fetch', (event) => {
+//   event.respondWith(
+//     (async function () {
+//       try {
+//         return await fetch(event.request);
+//       } catch (err) {
+//         return caches.match(event.request);
+//       }
+//     })()
+//   );
+// });
+
 // self.addEventListener('activate', (event) => {
 //   event.waitUntil(async function() {
 //     const cacheNames = await caches.keys();
@@ -94,9 +106,7 @@ self.addEventListener('message', (event) => {
 //   }());
 // });
 
-// the cache version gets updated every time there is a new deployment
-const CACHE_VERSION = 10;
-const CURRENT_CACHE = `main-${CACHE_VERSION}`;
+const cacheNm = 'shrf-cahce'
 
 // these are the routes we are going to cache for offline support
 const cacheFiles = [
@@ -110,54 +120,41 @@ const cacheFiles = [
   'https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg',
 ];
 
-// on activation we clean up the previously registered service workers
-self.addEventListener('activate', (evt) =>
-  evt.waitUntil(
-    caches.keys().then((cacheNames) => {
+self.addEventListener('activate', function (event) {
+  event.waitUntil(
+    caches.keys().then(function (cacheNames) {
       return Promise.all(
-        // eslint-disable-next-line array-callback-return
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CURRENT_CACHE) {
+        cacheNames
+          .filter(function (cacheName) {
+            // Return true if you want to remove this cache,
+            // but remember that caches are shared across
+            // the whole origin
+            return true;
+          })
+          .map(function (cacheName) {
             return caches.delete(cacheName);
-          }
-        })
+          }),
       );
-    })
-  )
-);
-
+    }),
+  );
+});
 // on install we download the routes we want to cache for offline
 self.addEventListener('install', (evt) =>
   evt.waitUntil(
-    caches.open(CURRENT_CACHE).then((cache) => {
+    caches.open(cacheNm).then((cache) => {
       return cache.addAll(cacheFiles);
     })
   )
 );
 
-// cache the current page to make it available for offline
-const update = (request) => {
-  if (!request.url.startsWith('http')) {
-    //skip request
-  }
-  return caches
-    .open(CURRENT_CACHE)
-    .then((cache) =>
-      fetch(request).then((response) => cache.put(request, response))
-    );
-};
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', function (event) {
   event.respondWith(
-    (async function () {
-      try {
-        return await fetch(event.request).then((response) => {
-          update(event.request);
-          return Promise.resolve(response);
-        });
-      } catch (err) {
-        return caches.match(event.request);
-      }
-    })()
+    caches.open('mysite-dynamic').then(function (cache) {
+      return fetch(event.request).then(function (response) {
+        cache.put(event.request, response.clone());
+        return response;
+      });
+    }),
   );
 });
