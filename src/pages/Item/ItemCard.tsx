@@ -1,4 +1,4 @@
-import { Row, Col, Card, Typography, Tag, CardProps } from 'antd';
+import { Row, Col, Card, Typography, Tag, CardProps, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 interface ItemCardProps extends CardProps {
@@ -9,6 +9,7 @@ const ItemCard = ({ info, ...props }: ItemCardProps) => {
   const { Text } = Typography;
   const { id, name, price, special_price, thumbnail } = info;
   const navigate = useNavigate();
+
   return (
     <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 6 }}>
       <Card
@@ -19,26 +20,33 @@ const ItemCard = ({ info, ...props }: ItemCardProps) => {
         }}
         {...props}
       >
-        <Row>
-          <Text strong>{name}</Text>
-          {special_price && (
-            <Tag style={{ marginLeft: 10 }} color='success'>
-              Sale
-            </Tag>
-          )}
-        </Row>
-        <Row>
-          <Text type='secondary' delete={special_price}>
-            {`RM ${price}`}
-          </Text>
-          {special_price && (
-            <Text
-              strong
-              style={{ marginLeft: 15 }}
-              className='color-primary'
-            >{`RM ${special_price}`}</Text>
-          )}
-        </Row>
+        <Space direction='vertical' size={5} className='full-width'>
+          <Row gutter={[10, 5]}>
+            <Col>
+              <Text strong>{name}</Text>
+            </Col>
+            {special_price && (
+              <Col>
+                <Tag color='success'>Sale</Tag>
+              </Col>
+            )}
+          </Row>
+          <Row gutter={[10, 5]}>
+            <Col>
+              <Text type='secondary' delete={special_price}>
+                {`RM ${price}`}
+              </Text>
+            </Col>
+            {special_price && (
+              <Col>
+                <Text
+                  strong
+                  className='color-primary'
+                >{`RM ${special_price}`}</Text>
+              </Col>
+            )}
+          </Row>
+        </Space>
       </Card>
     </Col>
   );
