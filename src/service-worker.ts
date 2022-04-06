@@ -165,7 +165,7 @@ const fromCache = (request) =>
     .then((cache) =>
       cache
         .match(request, { ignoreSearch: true })
-        .then((matching) => matching || cache.match('/offline/'))
+        .then((matching) => matching || cache.match('home/'))
     );
 
 // cache the current page to make it available for offline
