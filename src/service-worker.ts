@@ -13,6 +13,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkFirst } from 'workbox-strategies';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -78,6 +79,8 @@ self.addEventListener('message', (event) => {
   }
 });
 
+registerRoute(({ url }) => url.pathname.startsWith(''), new NetworkFirst());
+
 // Any other custom service worker logic can go here.
 
 // self.addEventListener('fetch', (event) => {
@@ -127,48 +130,23 @@ self.addEventListener('activate', function (event) {
   );
 });
 // on install we download the routes we want to cache for offline
-self.addEventListener('install', (event) =>
-  event.waitUntil(
+self.addEventListener('install', (evt) =>
+  evt.waitUntil(
     caches.open(cacheNm).then((cache) => {
       return cache.addAll(['api/item/active/']);
     })
   )
 );
 
-// fetch the resource from the network
-const fromNetwork = (request, timeout) =>
-  new Promise((fulfill, reject) => {
-    const timeoutId = setTimeout(reject, timeout);
-    fetch(request).then((response) => {
-      clearTimeout(timeoutId);
-      fulfill(response);
-      update(request);
-    }, reject);
-  });
-
-// fetch the resource from the browser cache
-const fromCache = (request) =>
-  caches
-    .open(cacheNm)
-    .then((cache) =>
-      cache
-        .match(request)
-        .then((matching) => matching || cache.match('/offline/'))
-    );
-
-const update = (request) =>
-  caches
-    .open(cacheNm)
-    .then((cache) =>
-      fetch(request).then((response) => cache.put(request, response))
-    );
-
 self.addEventListener('fetch', function (event) {
   if (!(event.request.url.indexOf('http') === 0)) return; // skip the request. if request is not made with http protocol
 
   event.respondWith(
-    /* @ts-ignore */
-    fromNetwork(event.request, 10000).catch(() => fromCache(event.request))
+    caches.open(cacheNm).then(function (cache) {
+      return fetch(event.request).then(function (response) {
+        cache.put(event.request, response.clone());
+        return response;
+      });
+    })
   );
-  event.waitUntil(update(event.request));
 });
