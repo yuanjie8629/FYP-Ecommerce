@@ -15,7 +15,7 @@ export const MessageProvider = (props) => {
   });
 
   return (
-    <MessageContext.Provider value={[messageApi]}>
+    <MessageContext.Provider value={[messageApi, MessageContext]}>
       {props.children}
     </MessageContext.Provider>
   );

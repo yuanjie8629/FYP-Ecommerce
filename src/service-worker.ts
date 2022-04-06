@@ -115,7 +115,6 @@ const cacheFiles = [
   'item/',
   'about/',
   'contact/',
-  'offline/',
   'https://res.cloudinary.com/yuanjie/image/upload/v1647630462/hqjkSL3DzH2Ee6DD3rlJIUzp3uxNClUkFMnJ4cWz_pjpdsh.jpg',
   'https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg',
 ];
@@ -148,15 +147,14 @@ self.addEventListener('install', (evt) =>
 );
 
 self.addEventListener('fetch', function (event) {
-  if (!event.request.url.startsWith('http')) {
-    return Promise.resolve();
+  if (event.request.url.startsWith('http')) {
+    event.respondWith(
+      caches.open(cacheNm).then(function (cache) {
+        return fetch(event.request).then(function (response) {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+    );
   }
-  event.respondWith(
-    caches.open(cacheNm).then(function (cache) {
-      return fetch(event.request).then(function (response) {
-        cache.put(event.request, response.clone());
-        return response;
-      });
-    })
-  );
 });

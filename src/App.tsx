@@ -13,14 +13,18 @@ import {
 } from '@utils/storageUtils';
 import moment from 'moment';
 import { CartContext } from '@contexts/CartContext';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
-import { MessageProvider } from '@contexts/MessageContext';
-import { NotificationProvider } from '@contexts/NotificationContext';
+import { MessageProvider, MessageContext } from '@contexts/MessageContext';
+import {
+  NotificationProvider,
+  NotificationContext,
+} from '@contexts/NotificationContext';
 
 function App() {
   const [cart, setCart] = useState([]);
   const [cartPrice, setCartPrice] = useState<number>();
+  const [notiApi, notiContext] = useContext(NotificationContext);
   const idleTimer = useIdleTimer({
     timeout: 10000,
   });
@@ -84,6 +88,7 @@ function App() {
       >
         <MessageProvider>
           <NotificationProvider>
+            {notiContext}
             <CartContext.Provider
               value={[cart, setCart, cartPrice, setCartPrice]}
             >
