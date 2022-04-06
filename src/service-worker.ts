@@ -111,15 +111,24 @@ const CACHE_VERSION = 10;
 const CURRENT_CACHE = `main-${CACHE_VERSION}`;
 
 // these are the routes we are going to cache for offline support
-const cacheFiles = ['/', 'home/', 'item/', 'about/','contact/','offline/'];
+const cacheFiles = [
+  '/',
+  'home/',
+  'item/',
+  'about/',
+  'contact/',
+  'offline/',
+  'https://res.cloudinary.com/yuanjie/image/upload/v1647630462/hqjkSL3DzH2Ee6DD3rlJIUzp3uxNClUkFMnJ4cWz_pjpdsh.jpg',
+  'https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg',
+];
 
 // on activation we clean up the previously registered service workers
-self.addEventListener('activate', evt =>
+self.addEventListener('activate', (evt) =>
   evt.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
         // eslint-disable-next-line array-callback-return
-        cacheNames.map(cacheName => {
+        cacheNames.map((cacheName) => {
           if (cacheName !== CURRENT_CACHE) {
             return caches.delete(cacheName);
           }
@@ -130,9 +139,9 @@ self.addEventListener('activate', evt =>
 );
 
 // on install we download the routes we want to cache for offline
-self.addEventListener('install', evt =>
+self.addEventListener('install', (evt) =>
   evt.waitUntil(
-    caches.open(CURRENT_CACHE).then(cache => {
+    caches.open(CURRENT_CACHE).then((cache) => {
       return cache.addAll(cacheFiles);
     })
   )
@@ -142,7 +151,7 @@ self.addEventListener('install', evt =>
 const fromNetwork = (request, timeout) =>
   new Promise((fulfill, reject) => {
     const timeoutId = setTimeout(reject, timeout);
-    fetch(request).then(response => {
+    fetch(request).then((response) => {
       clearTimeout(timeoutId);
       fulfill(response);
       update(request);
@@ -150,26 +159,26 @@ const fromNetwork = (request, timeout) =>
   });
 
 // fetch the resource from the browser cache
-const fromCache = request =>
+const fromCache = (request) =>
   caches
     .open(CURRENT_CACHE)
-    .then(cache =>
+    .then((cache) =>
       cache
-        .match(request,{ignoreSearch: true})
-        .then(matching => matching || cache.match('/offline/'))
+        .match(request, { ignoreSearch: true })
+        .then((matching) => matching || cache.match('/offline/'))
     );
 
 // cache the current page to make it available for offline
-const update = request =>
+const update = (request) =>
   caches
     .open(CURRENT_CACHE)
-    .then(cache =>
-      fetch(request).then(response => cache.put(request, response))
+    .then((cache) =>
+      fetch(request).then((response) => cache.put(request, response))
     );
 
 // general strategy when making a request (eg if online try to fetch it
 // from the network with a timeout, if something fails serve from cache)
-self.addEventListener('fetch', evt => {
+self.addEventListener('fetch', (evt) => {
   evt.respondWith(
     /* @ts-ignore */
     fromNetwork(evt.request, 10000).catch(() => fromCache(evt.request))
