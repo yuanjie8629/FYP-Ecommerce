@@ -15,7 +15,8 @@ export const NotificationProvider = (props) => {
   });
 
   return (
-    <NotificationContext.Provider value={[notificationAPI, notificationContext]}>
+    <NotificationContext.Provider value={[notificationAPI]}>
+      {notificationContext}
       {props.children}
     </NotificationContext.Provider>
   );

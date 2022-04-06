@@ -147,14 +147,14 @@ self.addEventListener('install', (evt) =>
 );
 
 self.addEventListener('fetch', function (event) {
-  if (event.request.url.startsWith('http')) {
-    event.respondWith(
-      caches.open(cacheNm).then(function (cache) {
-        return fetch(event.request).then(function (response) {
-          cache.put(event.request, response.clone());
-          return response;
-        });
-      })
-    );
-  }
+  if (!(event.request.url.indexOf('http') === 0)) return; // skip the request. if request is not made with http protocol
+
+  event.respondWith(
+    caches.open(cacheNm).then(function (cache) {
+      return fetch(event.request).then(function (response) {
+        cache.put(event.request, response.clone());
+        return response;
+      });
+    })
+  );
 });
