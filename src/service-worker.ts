@@ -106,7 +106,7 @@ self.addEventListener('message', (event) => {
 //   }());
 // });
 
-const cacheNm = 'shrf-cahce'
+const cacheNm = 'shrf-cahce';
 
 // these are the routes we are going to cache for offline support
 const cacheFiles = [
@@ -133,9 +133,9 @@ self.addEventListener('activate', function (event) {
           })
           .map(function (cacheName) {
             return caches.delete(cacheName);
-          }),
+          })
       );
-    }),
+    })
   );
 });
 // on install we download the routes we want to cache for offline
@@ -147,14 +147,16 @@ self.addEventListener('install', (evt) =>
   )
 );
 
-
 self.addEventListener('fetch', function (event) {
+  if (!event.request.url.startsWith('http')) {
+    //skip request
+  }
   event.respondWith(
-    caches.open('mysite-dynamic').then(function (cache) {
+    caches.open(cacheNm).then(function (cache) {
       return fetch(event.request).then(function (response) {
         cache.put(event.request, response.clone());
         return response;
       });
-    }),
+    })
   );
 });
