@@ -149,7 +149,7 @@ self.addEventListener('install', (evt) =>
 
 self.addEventListener('fetch', function (event) {
   if (!event.request.url.startsWith('http')) {
-    //skip request
+    return Promise.resolve();
   }
   event.respondWith(
     caches.open(cacheNm).then(function (cache) {
