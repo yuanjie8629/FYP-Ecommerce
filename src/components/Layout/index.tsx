@@ -13,7 +13,7 @@ export interface CustomLayoutProps extends RowProps {
 const Layout = ({
   justify = 'center',
   drawerOpen,
-  onDrawerClose,
+  onDrawerClose = () => null,
   ...props
 }: CustomLayoutProps) => {
   const { Content } = AntdLayout;

@@ -4,7 +4,7 @@ import React, { createContext } from 'react';
 export const MessageContext = createContext(null);
 
 export const MessageProvider = (props) => {
-  const [messageApi] = message.useMessage();
+  const [messageApi, messageContext] = message.useMessage();
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
 
@@ -15,7 +15,8 @@ export const MessageProvider = (props) => {
   });
 
   return (
-    <MessageContext.Provider value={[messageApi, MessageContext]}>
+    <MessageContext.Provider value={[messageApi]}>
+      {messageContext}
       {props.children}
     </MessageContext.Provider>
   );
