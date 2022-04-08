@@ -4,11 +4,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from cart.models import Cart, CartItem
 from cart.serializers import CartItemSerializer, CartSerializer
-from core.utils import calculate_disocunt_by_code, calculate_ship_fee, get_request_cust
+from core.utils import get_request_cust
 from item.models import Item
 from django.db.models import Prefetch, Sum, F
 from rest_framework import permissions
 from item.serializers import ItemSerializer
+from shipment.utils import calculate_ship_fee
+from voucher.utils import calculate_disocunt_by_code
 
 
 class CartRetrieveView(generics.RetrieveAPIView):
