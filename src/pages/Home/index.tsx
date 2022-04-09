@@ -1,9 +1,9 @@
 import Layout from '@components/Layout';
+import Pagination from '@components/Pagination';
 import AllItem from '@pages/Item/AllItem';
 import AllPackage from '@pages/Item/AllPackage';
 import AllProduct from '@pages/Item/AllProduct';
-import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
-import { Tabs, Pagination, Space, Row, Col } from 'antd';
+import { Tabs, Space, Row, Col } from 'antd';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -51,21 +51,7 @@ const Home = () => {
         {itemCount > 0 && (
           <Row justify='end' style={{ marginBottom: 10, marginRight: 10 }}>
             <Col>
-              <Pagination
-                defaultCurrent={1}
-                total={itemCount}
-                onChange={(page) => {
-                  if (page > 1) {
-                    setSearchParams(
-                      addSearchParams(searchParams, {
-                        offset: (page - 1) * 12,
-                      })
-                    );
-                  } else {
-                    setSearchParams(removeSearchParams(searchParams, 'offset'));
-                  }
-                }}
-              />
+              <Pagination total={itemCount} />
             </Col>
           </Row>
         )}

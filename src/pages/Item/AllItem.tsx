@@ -2,7 +2,7 @@ import { itemPrevAPI } from '@api/services/productAPI';
 import { serverErrMsg } from '@utils/messageUtils';
 import { Empty, Row } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import SkeletonItem from './SkeletonItem';
 import './ItemCard.less';
@@ -16,6 +16,7 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     let isMounted = true;
@@ -38,7 +39,7 @@ const AllItem = ({ onChange = () => null, ...props }: AllItemProps) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const showServerErrMsg = () => {
     messageApi.open(serverErrMsg);

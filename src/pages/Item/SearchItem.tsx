@@ -1,10 +1,9 @@
 import { itemPrevAPI } from '@api/services/productAPI';
 import Layout from '@components/Layout';
+import Pagination from '@components/Pagination';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
-
-import { addSearchParams, removeSearchParams } from '@utils/urlUtls';
-import { Pagination, Space, Row, Col, Empty } from 'antd';
+import { Space, Row, Col, Empty } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
@@ -12,7 +11,7 @@ import SkeletonItem from './SkeletonItem';
 
 const SearchItem = () => {
   const [itemCount, setItemCount] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [messageApi] = useContext(MessageContext);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
@@ -61,21 +60,7 @@ const SearchItem = () => {
         {itemCount > 0 && (
           <Row justify='end'>
             <Col>
-              <Pagination
-                defaultCurrent={1}
-                total={itemCount}
-                onChange={(page) => {
-                  if (page > 1) {
-                    setSearchParams(
-                      addSearchParams(searchParams, {
-                        offset: (page - 1) * 12,
-                      })
-                    );
-                  } else {
-                    setSearchParams(removeSearchParams(searchParams, 'offset'));
-                  }
-                }}
-              />
+              <Pagination total={itemCount} />
             </Col>
           </Row>
         )}
