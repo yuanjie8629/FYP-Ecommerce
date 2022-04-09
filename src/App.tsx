@@ -28,9 +28,9 @@ function App() {
   const timer = useTimer({
     expiryTimestamp: getSessionExp()
       ? moment.unix(getSessionExp()).subtract(15, 'second').toDate()
-      : new Date(null),
+      : new Date(),
     onExpire: () => {
-      if (!idleTimer.isIdle())
+      if (getUserId() && !idleTimer.isIdle())
         refreshTknAPI().then((res) => {
           timer.restart(
             moment.unix(getSessionExp()).subtract(15, 'second').toDate()
