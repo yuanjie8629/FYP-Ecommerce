@@ -105,13 +105,17 @@ class StripeWebhookView(APIView):
                     "payment_intent"
                 ]
             )
+            print(payment)
             payment.paid = True
             payment.save()
+            print(payment.order.status)
             if payment.order.shipment.type == "pickup":
                 payment.order.status = "toPick"
             else:
                 payment.order.status = "toShip"
+            print(payment.order.status)
             payment.order.save(update_fields=["last_update", "status"])
+            print(payment.order.status)
 
         if event["type"] == "checkout.session.async_payment_failed":
             print("payment failed")
