@@ -78,7 +78,7 @@ const Drawer = ({
               }}
             >
               <Image
-                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/logo_mvamgs.png'
+                src='https://res.cloudinary.com/yuanjie/image/upload/v1645908976/Shrf/logo_mvamgs.png'
                 alt='Logo'
                 preview={false}
                 width={screens.sm ? 120 : 80}

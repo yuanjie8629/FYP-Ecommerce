@@ -21,7 +21,7 @@ const AboutUs = () => {
             style={{ textAlign: 'justify' }}
           >
             <img
-              src='https://res.cloudinary.com/yuanjie/image/upload/v1647630462/hqjkSL3DzH2Ee6DD3rlJIUzp3uxNClUkFMnJ4cWz_pjpdsh.jpg'
+              src='https://res.cloudinary.com/yuanjie/image/upload/v1647630462/Shrf/hqjkSL3DzH2Ee6DD3rlJIUzp3uxNClUkFMnJ4cWz_pjpdsh.jpg'
               alt='about'
               width='100%'
             />

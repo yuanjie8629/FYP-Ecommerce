@@ -17,7 +17,7 @@ const ContactUs = () => {
         >
           <Title level={screens.md ? 2 : 3}>Contact Us</Title>
           <img
-            src='https://res.cloudinary.com/yuanjie/image/upload/v1647631178/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg'
+            src='https://res.cloudinary.com/yuanjie/image/upload/v1647631178/Shrf/CWsvQDdMzQXzyjWhAWpnspIglduIexnipPo1R8Oa_o3ebpw.jpg'
             alt='contact'
             width='100%'
           />
