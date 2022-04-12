@@ -158,6 +158,9 @@ const ShippingAddress = ({
           <ShippingAddressForm
             address={!userAddress ? address : undefined}
             onSelectAddress={() => {
+              if (!address) {
+                setNoAddress(true);
+              }
               setAddAddress(false);
               setAddressCard(true);
             }}
@@ -188,7 +191,9 @@ const ShippingAddress = ({
             }}
           />
         )}
-        {pickup && confirm && <PickupCard info={pickup} />}
+        {pickup && (confirm || (addressCard && noAddress)) && (
+          <PickupCard info={pickup} />
+        )}
         {showPickup && (
           <PickupForm
             onSelectAddress={() => {
