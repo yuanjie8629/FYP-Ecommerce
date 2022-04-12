@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Alert,
   Divider,
@@ -37,12 +37,6 @@ const Login = ({
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    loginForm.resetFields();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.onClose]);
-
   const handleLogin = async (values) => {
     setLoading(true);
     await loginAPI({

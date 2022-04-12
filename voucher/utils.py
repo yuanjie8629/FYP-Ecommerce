@@ -58,7 +58,7 @@ def calculate_disocunt_by_code(total_amt, code, user):
         .filter(
             code=code,
             status="active",
-            avail_start_dt__lte=datetime.today(),
+            avail_start_dt__lte=datetime.date.today(),
             avail_end_dt__gte=datetime.date.today(),
         )
         .prefetch_related("cust_type")
