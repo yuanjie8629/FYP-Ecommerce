@@ -8,20 +8,24 @@ from shipment.choices import SHIPMENT_TYPE
 class ShippingFee(SoftDeleteModel):
     id = models.AutoField(primary_key=True)
     location = models.ForeignKey(State, on_delete=models.DO_NOTHING)
-    weight_start = models.IntegerField()
-    weight_end = models.IntegerField()
+    weight_start = models.DecimalField(max_digits=8, decimal_places=2)
+    weight_end = models.DecimalField(max_digits=8, decimal_places=2)
     ship_fee = models.DecimalField(max_digits=10, decimal_places=2)
     sub_fee = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
-    sub_weight = models.IntegerField(blank=True, null=True)
+    sub_weight = models.DecimalField(
+        max_digits=8, decimal_places=2, blank=True, null=True
+    )
 
     class Meta:
         db_table = "shipping_fee"
         managed = False
-    
+
     def __str__(self):
-        return "{}: {}g - {}g, RM {}".format(self.location.name, self.weight_start,self.weight_end,self.ship_fee)
+        return "{}: {}g - {}g, RM {}".format(
+            self.location.name, self.weight_start, self.weight_end, self.ship_fee
+        )
 
 
 class OrderShipment(PolySoftDeleteModel, PolymorphicModel):
@@ -31,7 +35,7 @@ class OrderShipment(PolySoftDeleteModel, PolymorphicModel):
     class Meta:
         db_table = "order_shipment"
         managed = False
-    
+
     def __str__(self):
         return "{}: {}".format(self.id, self.type)
 
@@ -51,7 +55,7 @@ class Shipment(OrderShipment):
     def __init__(self, *args, **kwargs):
         super(Shipment, self).__init__(*args, **kwargs)
         self.type = "shipping"
-    
+
     def __str__(self):
         return "{}: {}".format(self.pk, "shipment")
 
@@ -63,7 +67,7 @@ class PickupLoc(SoftDeleteModel):
     class Meta:
         db_table = "pickup_loc"
         managed = False
-    
+
     def __str__(self):
         return "{}".format(self.location)
 
@@ -81,8 +85,6 @@ class Pickup(OrderShipment):
     def __init__(self, *args, **kwargs):
         super(Pickup, self).__init__(*args, **kwargs)
         self.type = "pickup"
-    
+
     def __str__(self):
         return "{}: {}".format(self.pk, "pickup")
-
-
