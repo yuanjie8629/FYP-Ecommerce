@@ -92,7 +92,7 @@ const AccountInfo = () => {
                   style={{ width: screens.md ? 500 : '100%' }}
                 >
                   <Descriptions.Item label='Email'>
-                    <Button type='link' href='mailto:fyp.shrf@gmail.com'>
+                    <Button type='link' style={{ pointerEvents: 'none' }}>
                       {data['email'] ? (
                         data['email']
                       ) : (

@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { cartDetailsAPI, cartDetailsForUserAPI } from '@api/services/cartAPI';
 import { MessageProvider } from '@contexts/MessageContext';
 import { NotificationProvider } from '@contexts/NotificationContext';
+import { sortByKey } from '@utils/arrayUtils';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -45,7 +46,7 @@ function App() {
         console.log('Retrieving cart items...');
         cartDetailsForUserAPI()
           .then((res) => {
-            setCart(res.data?.items);
+            setCart(sortByKey(res.data?.items, 'name'));
             setCartPrice(res.data?.subtotal_price);
             console.log('Retrieved cart items.');
           })
@@ -62,7 +63,7 @@ function App() {
           })
         )
           .then((res) => {
-            setCart(res.data?.items);
+            setCart(sortByKey(res.data?.items, 'name'));
             setCartPrice(res.data?.subtotal_price);
             refreshCart(res.data?.items);
             console.log('Retrieved cart items.');

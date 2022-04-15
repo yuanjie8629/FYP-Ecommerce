@@ -5,6 +5,7 @@ import Layout from '@components/Layout';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import { NotificationContext } from '@contexts/NotificationContext';
+import { sortByKey } from '@utils/arrayUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { prodCat } from '@utils/optionUtils';
 import { addItemToCart, getUserId, refreshCart } from '@utils/storageUtils';
@@ -69,7 +70,7 @@ const ItemDetails = () => {
       setCartLoading(true);
       cartAddAPI(id, 1)
         .then((res) => {
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           setCartLoading(false);
           addCartSuccessMsg();
@@ -104,7 +105,7 @@ const ItemDetails = () => {
 
       await cartDetailsAPI(cart)
         .then((res) => {
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           refreshCart(res.data?.items);
           setCartLoading(false);

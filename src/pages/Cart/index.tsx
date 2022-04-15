@@ -42,6 +42,7 @@ import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { getItemStatus } from '@pages/Item/ItemDetails';
+import { sortByKey } from '@utils/arrayUtils';
 
 interface CartProps extends DrawerProps {
   onLoginRemind?: () => void;
@@ -90,7 +91,7 @@ const Cart = ({
 
     await cartDetailsAPI(cart)
       .then((res) => {
-        setCart(res.data?.items);
+        setCart(sortByKey(res.data?.items, 'name'));
         setCartPrice(res.data?.subtotal_price);
         refreshCart(res.data?.items);
         console.log('Retrieved cart items.');
@@ -107,7 +108,7 @@ const Cart = ({
     if (user) {
       cartAddAPI(item.id, 1)
         .then((res) => {
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           setCartLoading(false);
         })
@@ -128,7 +129,7 @@ const Cart = ({
     if (user) {
       cartSetQuantityAPI(item.id, value)
         .then((res) => {
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           setCartLoading(false);
           setCartValue(undefined);
@@ -157,7 +158,7 @@ const Cart = ({
     if (user) {
       cartRemoveAPI(item.id, 1)
         .then((res) => {
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           setCartLoading(false);
         })

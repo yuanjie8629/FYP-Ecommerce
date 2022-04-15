@@ -12,6 +12,11 @@ export const sortByOrder = (obj: any, des: boolean = false) => {
   return des === true ? sorted.reverse() : sorted;
 };
 
+export const sortByKey = (obj: any, key: string, des: boolean = false) => {
+  let sorted = obj.sort((a: string, b: string) => a[key].localeCompare(b[key]));
+  return des === true ? sorted.reverse() : sorted;
+};
+
 export const removeInvalidData = (values) => {
   Object.keys(values).forEach(
     (key) =>

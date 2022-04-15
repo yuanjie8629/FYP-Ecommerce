@@ -5,10 +5,11 @@ import { drawerOpenProps } from '@components/Layout/Header';
 import PaymentModal from '@components/Modal/PaymentModal';
 import { CartContext } from '@contexts/CartContext';
 import { MessageContext } from '@contexts/MessageContext';
+import { sortByKey } from '@utils/arrayUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { findRoutePath } from '@utils/routingUtils';
 import { getCartItem, getUserId, refreshCart } from '@utils/storageUtils';
-import { Col, Row, Space } from 'antd';
+import { Col, Grid, Row, Space } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderSummary from './Order Summary';
@@ -18,6 +19,8 @@ import ShippingAddress, { PickupInfo } from './ShippingAddress';
 import Voucher from './Voucher';
 
 const Checkout = () => {
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
   const [address, setAddress] = useState<AddressInfo>();
   const [pickup, setPickup] = useState<PickupInfo>();
   const [drawerOpen, setDrawerOpen] = useState<drawerOpenProps>();
@@ -51,7 +54,7 @@ const Checkout = () => {
           if (res.data?.items?.length <= 0) {
             navigate(findRoutePath('home'));
           }
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
             setShippingFee(res.data?.ship_fee);
@@ -101,7 +104,7 @@ const Checkout = () => {
           if (res.data?.items?.length <= 0) {
             window.location.href = '';
           }
-          setCart(res.data?.items);
+          setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
           if (res.data?.ship_fee) {
             setShippingFee(res.data?.ship_fee);
@@ -175,6 +178,25 @@ const Checkout = () => {
                   setPaymentMethod(paymentMethod);
                 }}
               />
+              {screens.xl && (
+                <PlaceOrder
+                  loading={loading}
+                  cart={cart}
+                  totalPrice={totalPrice}
+                  address={address}
+                  pickup={pickup}
+                  voucher={voucher}
+                  paymentMethod={paymentMethod}
+                  oos={outOfStock}
+                  email={email}
+                  resetCart={() => {
+                    setCart([]);
+                  }}
+                  onPaymentRedirect={(load) => {
+                    setShowPaymentRedirect(load);
+                  }}
+                />
+              )}
             </Space>
           </Col>
           <Col xs={24} xl={12}>
@@ -195,25 +217,27 @@ const Checkout = () => {
               />
             </div>
           </Col>
-          <Col xs={24} xl={12}>
-            <PlaceOrder
-              loading={loading}
-              cart={cart}
-              totalPrice={totalPrice}
-              address={address}
-              pickup={pickup}
-              voucher={voucher}
-              paymentMethod={paymentMethod}
-              oos={outOfStock}
-              email={email}
-              resetCart={() => {
-                setCart([]);
-              }}
-              onPaymentRedirect={(load) => {
-                setShowPaymentRedirect(load);
-              }}
-            />
-          </Col>
+          {!screens.xl && (
+            <Col xs={24} xl={12}>
+              <PlaceOrder
+                loading={loading}
+                cart={cart}
+                totalPrice={totalPrice}
+                address={address}
+                pickup={pickup}
+                voucher={voucher}
+                paymentMethod={paymentMethod}
+                oos={outOfStock}
+                email={email}
+                resetCart={() => {
+                  setCart([]);
+                }}
+                onPaymentRedirect={(load) => {
+                  setShowPaymentRedirect(load);
+                }}
+              />
+            </Col>
+          )}
         </Row>
       </Space>
       <PaymentModal visible={showPaymentRedirect} />

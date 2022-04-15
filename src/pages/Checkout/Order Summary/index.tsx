@@ -57,7 +57,7 @@ const OrderSummary = ({
   const ListItem = (item) => (
     <List.Item>
       <Row justify='space-between' className='full-width'>
-        <Col xs={16}>
+        <Col xs={18}>
           <Space align='start' className='full-width'>
             <img
               src={item.thumbnail}
