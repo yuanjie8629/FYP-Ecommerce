@@ -182,9 +182,7 @@ class OrderWriteSerializer(serializers.ModelSerializer):
                 status="unpaid",
             )
 
-            print(order_line)
             for ol in order_line:
-                print(ol)
                 item = ol.get("item")
                 quantity = ol.get("quantity")
 
