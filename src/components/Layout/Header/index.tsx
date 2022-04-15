@@ -139,10 +139,10 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
                 <HiOutlineShoppingCart
                   style={{
                     fontSize: 25,
-                    cursor: location.pathname !== '/checkout' && 'pointer',
+                    cursor: 'pointer',
                   }}
                   onClick={() => {
-                    location.pathname !== '/checkout' && setShowCart(true);
+                    setShowCart(true);
                   }}
                 />
               </Badge>
