@@ -238,6 +238,7 @@ const Cart = ({
                   <InputNumber
                     size='small'
                     style={{ width: screens.md ? 50 : 40 }}
+                    min={0}
                     value={
                       cartValue?.id === item.id
                         ? cartValue?.value
