@@ -14,6 +14,7 @@ import PaymentCancel from '@pages/Payment/PaymentCancel';
 import OrderSearch from '@pages/Order/OrderSearch';
 import OrderHistory from '@pages/Order/OrderHistory';
 import OrderDetails from '@pages/Order/OrderDetails';
+import ResetPass from '@pages/Login/ResetPass';
 
 const routeList: {
   label: string;
@@ -116,6 +117,12 @@ const routeList: {
     path: '/order/:id',
     component: <OrderDetails />,
     protected: false,
+  },
+  {
+    label: 'resetPass',
+    path: '/pass_reset',
+    protected: false,
+    component: <ResetPass />,
   },
   {
     label: 'logout',
