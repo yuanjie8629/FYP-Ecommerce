@@ -2,7 +2,6 @@ import { accUpdAPI } from '@api/services/custAPI';
 import Button from '@components/Button';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
-import { removeInvalidData } from '@utils/arrayUtils';
 import { getDt } from '@utils/dateUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import { genderCat } from '@utils/optionUtils';
@@ -45,7 +44,6 @@ const AccountInfoEditModal = ({
     if (values.birthdate) {
       values.birthdate = getDt(values.birthdate);
     }
-    values = removeInvalidData(values);
     setSubmitLoading(true);
     accUpdAPI(values)
       .then((res) => {
@@ -55,7 +53,7 @@ const AccountInfoEditModal = ({
           content: 'Your account information is updated.',
         });
         setSubmitLoading(false);
-        accountForm.resetFields();
+        accountForm.resetFields(['password']);
       })
       .catch((err) => {
         if (err.response?.status !== 401) {

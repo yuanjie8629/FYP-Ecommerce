@@ -19,7 +19,9 @@ class CustSerializer(serializers.ModelSerializer):
         read_only=True,
         source="cust_type",
     )
-    birthdate = serializers.DateField(input_formats=["%d-%m-%Y"], format="%d-%m-%Y")
+    birthdate = serializers.DateField(
+        input_formats=["%d-%m-%Y"], format="%d-%m-%Y", allow_null=True
+    )
 
     class Meta:
         model = Cust
