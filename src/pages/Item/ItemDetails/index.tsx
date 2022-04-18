@@ -374,7 +374,10 @@ const ItemDetails = () => {
                 </TabPane>
               )}
               <TabPane tab='Description' key='description'>
-                <div dangerouslySetInnerHTML={{ __html: data.description }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                  className='item-details-description'
+                />
               </TabPane>
               {data.product && (
                 <TabPane tab='Products Included' key='product'>
