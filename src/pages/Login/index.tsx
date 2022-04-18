@@ -15,7 +15,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import { clearCart } from '@utils/storageUtils';
 import LoginDrawer from './LoginDrawer';
 import ForgotPass from './ForgotPass';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { CartContext } from '@contexts/CartContext';
 
@@ -40,6 +40,7 @@ const Login = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_cart, setCart, _cartPrice, setCartPrice] = useContext(CartContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const handleLogin = async (values) => {
     setLoading(true);
     await loginAPI({
@@ -55,7 +56,7 @@ const Login = ({
         setCart([]);
         setCartPrice(undefined);
         props.onClose(null);
-        navigate(findRoutePath('home'));
+        if (location.pathname === '/checkout') navigate(findRoutePath('home'));
       })
       .catch((e) => {
         if (e.response?.status === 401) {
