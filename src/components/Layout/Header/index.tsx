@@ -41,7 +41,8 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [showCart, setShowCart] = useState(false);
-  const [cart, setCart] = useContext(CartContext);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cart, setCart, _cartPrice, setCartPrice] = useContext(CartContext);
   const [messageApi] = useContext(MessageContext);
   const [showAcc, setShowAcc] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -71,6 +72,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
   const handleLogout = () => {
     logoutAPI();
     setCart([]);
+    setCartPrice(undefined);
     messageApi.open({
       type: 'success',
       content: 'You have logout successfully',

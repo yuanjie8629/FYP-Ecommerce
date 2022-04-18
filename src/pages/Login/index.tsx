@@ -17,6 +17,7 @@ import LoginDrawer from './LoginDrawer';
 import ForgotPass from './ForgotPass';
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
+import { CartContext } from '@contexts/CartContext';
 
 interface LoginProps extends DrawerProps {
   remind?: boolean;
@@ -36,6 +37,8 @@ const Login = ({
   const [loginErr, setLoginErr] = useState<React.ReactNode>();
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [messageApi] = useContext(MessageContext);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_cart, setCart, _cartPrice, setCartPrice] = useContext(CartContext);
   const navigate = useNavigate();
   const handleLogin = async (values) => {
     setLoading(true);
@@ -49,6 +52,8 @@ const Login = ({
           content: 'You have successfully login.',
         });
         clearCart();
+        setCart([]);
+        setCartPrice(undefined);
         props.onClose(null);
         navigate(findRoutePath('home'));
       })
