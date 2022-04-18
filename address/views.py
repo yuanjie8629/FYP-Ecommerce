@@ -27,8 +27,9 @@ class AddressViewset(viewsets.ModelViewSet):
                 .exclude(id=instance.id)
                 .first()
             )
-            address.default = True
-            address.save()
+            if address:
+                address.default = True
+                address.save()
         return super().destroy(request, *args, **kwargs)
 
     @action(methods=["get"], detail=False)

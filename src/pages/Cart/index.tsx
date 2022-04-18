@@ -1,7 +1,6 @@
 import Button from '@components/Button';
 import { findRoutePath } from '@utils/routingUtils';
 import {
-  CloseOutlined,
   PlusOutlined,
   MinusOutlined,
   DeleteOutlined,
@@ -11,7 +10,6 @@ import {
   Col,
   ConfigProvider,
   Divider,
-  Drawer,
   DrawerProps,
   Grid,
   InputNumber,
@@ -43,6 +41,7 @@ import { MessageContext } from '@contexts/MessageContext';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { getItemStatus } from '@pages/Item/ItemDetails';
 import { sortByKey } from '@utils/arrayUtils';
+import Drawer from '@components/Drawer';
 
 interface CartProps extends DrawerProps {
   onLoginRemind?: () => void;
@@ -292,25 +291,12 @@ const Cart = ({
   );
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer
+      title='Shopping Cart'
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
       <Space direction='vertical' className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={23} style={{ textAlign: 'center' }}>
-            <Title level={5}>Shopping Cart</Title>
-          </Col>
-        </Row>
         {!checkout && (
           <Alert
             showIcon

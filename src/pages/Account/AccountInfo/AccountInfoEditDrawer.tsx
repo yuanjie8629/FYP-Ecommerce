@@ -1,5 +1,6 @@
 import { accUpdAPI } from '@api/services/custAPI';
 import Button from '@components/Button';
+import Drawer from '@components/Drawer';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
 import { getDt } from '@utils/dateUtils';
@@ -9,7 +10,6 @@ import {
   Alert,
   Col,
   DatePicker,
-  Drawer,
   DrawerProps,
   Form,
   Grid,
@@ -19,7 +19,6 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import moment from 'moment';
 import { useContext, useState } from 'react';
@@ -36,7 +35,7 @@ const AccountInfoEditDrawer = ({
   onUpdate = () => null,
   ...props
 }: AccountInfoEditProps) => {
-  const { Text, Title } = Typography;
+  const { Text } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const [accountForm] = useForm();
@@ -77,25 +76,12 @@ const AccountInfoEditDrawer = ({
   };
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer
+      title='Edit Account Information'
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
       <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Edit Account Information</Title>
-          </Col>
-        </Row>
         <SpinCircle spinning={loading}>
           <Form
             form={accountForm}

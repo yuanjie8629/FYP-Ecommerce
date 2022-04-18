@@ -123,6 +123,8 @@ const PickupForm = ({
               ]}
             >
               <Select
+                showSearch
+                filterOption
                 placeholder='Select Pickup Location'
                 options={data.map((data) => {
                   return { value: data.location, label: data.location };

@@ -1,11 +1,11 @@
-import { Drawer, Row, Col, Space, DrawerProps, Typography, Grid } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { Space, DrawerProps, Grid } from 'antd';
 import AddressCard from '@components/Card/AddressCard';
 import { useContext, useEffect, useState } from 'react';
 import { addressListAPI } from '@api/services/addressAPI';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { getUserId } from '@utils/storageUtils';
+import Drawer from '@components/Drawer';
 
 interface AddressSelectDrawerProps extends DrawerProps {
   selected: number;
@@ -17,7 +17,6 @@ const AddressSelectDrawer = ({
   onSelect = () => null,
   ...props
 }: AddressSelectDrawerProps) => {
-  const { Title } = Typography;
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const [messageApi] = useContext(MessageContext);
@@ -78,25 +77,12 @@ const AddressSelectDrawer = ({
   };
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer
+      title='Change Address'
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
       <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Change Address</Title>
-          </Col>
-        </Row>
         {loading
           ? SkeletonCard()
           : data.map((address) => (

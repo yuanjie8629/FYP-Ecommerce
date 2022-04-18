@@ -7,7 +7,6 @@ import { removeInvalidData, sortByOrder } from '@utils/arrayUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import {
   Col,
-  Drawer,
   DrawerProps,
   Form,
   Grid,
@@ -16,11 +15,10 @@ import {
   Select,
   Space,
   Switch,
-  Typography,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { useContext, useState } from 'react';
+import Drawer from '@components/Drawer';
 
 interface AddressAddEditProps extends DrawerProps {
   postcode?: any;
@@ -34,7 +32,6 @@ const AddressAddDrawer = ({
   onUpdate = () => null,
   ...props
 }: AddressAddEditProps) => {
-  const { Title } = Typography;
   const { TextArea } = Input;
   const { Option } = Select;
   const { useBreakpoint } = Grid;
@@ -72,186 +69,175 @@ const AddressAddDrawer = ({
   };
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
-      <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
+    <Drawer
+      title='Edit Account Information'
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
+      <SpinCircle spinning={loading}>
+        <Form
+          form={addressForm}
+          name='addressForm'
+          onFinish={handleAddAddress}
+          labelCol={{ span: 6 }}
+          labelAlign='left'
         >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Edit Account Information</Title>
-          </Col>
-        </Row>
-        <SpinCircle spinning={loading}>
-          <Form
-            form={addressForm}
-            name='addressForm'
-            onFinish={handleAddAddress}
-            labelCol={{ span: 6 }}
-            labelAlign='left'
-          >
-            <Space direction='vertical' className='full-width'>
-              <Form.Item
-                label='Contact Name'
-                name='contact_name'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter the contact name.',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+          <Space direction='vertical' className='full-width'>
+            <Form.Item
+              label='Contact Name'
+              name='contact_name'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the contact name.',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
 
-              <Form.Item
-                label='Contact Number'
-                name='contact_num'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter the contact number.',
-                  },
-                ]}
-              >
-                <Input placeholder='0123456789' />
-              </Form.Item>
+            <Form.Item
+              label='Contact Number'
+              name='contact_num'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter the contact number.',
+                },
+              ]}
+            >
+              <Input placeholder='0123456789' />
+            </Form.Item>
 
-              <Form.Item
-                label='State'
-                name='state'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select the state.',
-                  },
-                ]}
+            <Form.Item
+              label='State'
+              name='state'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select the state.',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                filterOption
+                placeholder='Please select the state'
+                onChange={(value: string) => {
+                  setState(value);
+                  addressForm.resetFields(['city', 'postcode']);
+                  setCity('');
+                }}
               >
-                <Select
-                  placeholder='Please select the state'
-                  onChange={(value: string) => {
-                    setState(value);
-                    addressForm.resetFields(['city', 'postcode']);
-                    setCity('');
+                {sortByOrder(getStates(postcode)).map((state: string) => (
+                  <Option key={state}>{state}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label='City'
+              name='city'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select the city.',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                filterOption
+                placeholder='Please select the city'
+                disabled={!state}
+                onChange={(value: string) => {
+                  setCity(value);
+                  addressForm.resetFields(['postcode']);
+                }}
+              >
+                {sortByOrder(getCities(postcode, state)).map((city: string) => (
+                  <Option key={city}>{city}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label='Postal Code'
+              name='postcode'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select the postal code.',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                filterOption
+                placeholder='Please select the postal code'
+                disabled={!state || !city}
+              >
+                {sortByOrder(getPostcodes(postcode, city)).map(
+                  (postcode: string) => (
+                    <Option value={postcode} key={postcode}>
+                      {postcode}
+                    </Option>
+                  )
+                )}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label='Address'
+              name='address'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your address.',
+                },
+              ]}
+            >
+              <TextArea
+                rows={4}
+                placeholder='Please enter your address'
+                showCount
+                maxLength={128}
+                autoSize={{ minRows: 4, maxRows: 12 }}
+              />
+            </Form.Item>
+            <Form.Item
+              label='Default Address'
+              name='default'
+              valuePropName='checked'
+              initialValue={false}
+            >
+              <Switch />
+            </Form.Item>
+
+            <Row gutter={10} justify='end'>
+              <Col>
+                <Button
+                  disabled={submitLoading}
+                  onClick={() => {
+                    props.onClose(null);
                   }}
                 >
-                  {sortByOrder(getStates(postcode)).map((state: string) => (
-                    <Option key={state}>{state}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label='City'
-                name='city'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select the city.',
-                  },
-                ]}
-              >
-                <Select
-                  placeholder='Please select the city'
-                  disabled={!state}
-                  onChange={(value: string) => {
-                    setCity(value);
-                    addressForm.resetFields(['postcode']);
-                  }}
+                  Cancel
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  type='primary'
+                  htmlType='submit'
+                  loading={submitLoading}
                 >
-                  {sortByOrder(getCities(postcode, state)).map(
-                    (city: string) => (
-                      <Option key={city}>{city}</Option>
-                    )
-                  )}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label='Postal Code'
-                name='postcode'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select the postal code.',
-                  },
-                ]}
-              >
-                <Select
-                  placeholder='Please select the postal code'
-                  disabled={!state || !city}
-                >
-                  {sortByOrder(getPostcodes(postcode, city)).map(
-                    (postcode: string) => (
-                      <Option value={postcode} key={postcode}>
-                        {postcode}
-                      </Option>
-                    )
-                  )}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label='Address'
-                name='address'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter your address.',
-                  },
-                ]}
-              >
-                <TextArea
-                  rows={4}
-                  placeholder='Please enter your address'
-                  showCount
-                  maxLength={128}
-                  autoSize={{ minRows: 4, maxRows: 12 }}
-                />
-              </Form.Item>
-              <Form.Item
-                label='Default Address'
-                name='default'
-                valuePropName='checked'
-                initialValue={false}
-              >
-                <Switch />
-              </Form.Item>
-
-              <Row gutter={10} justify='end'>
-                <Col>
-                  <Button
-                    disabled={submitLoading}
-                    onClick={() => {
-                      props.onClose(null);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Col>
-                <Col>
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                  >
-                    Add
-                  </Button>
-                </Col>
-              </Row>
-            </Space>
-          </Form>
-        </SpinCircle>
-      </Space>
+                  Add
+                </Button>
+              </Col>
+            </Row>
+          </Space>
+        </Form>
+      </SpinCircle>
     </Drawer>
   );
 };

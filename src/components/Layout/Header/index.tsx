@@ -7,7 +7,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import './Header.less';
-import Drawer from '@components/Drawer';
+import MenuDrawer from '@components/Drawer/MenuDrawer';
 import { useContext, useEffect, useState } from 'react';
 import {
   HiOutlineMenuAlt3,
@@ -194,7 +194,7 @@ const Header = ({ drawerOpen, onDrawerClose }: HeaderProps) => {
         viewOnly={cartViewOnly}
       />
 
-      <Drawer
+      <MenuDrawer
         visible={showDrawer}
         maskClosable
         onClose={() => {

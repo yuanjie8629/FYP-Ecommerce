@@ -7,7 +7,6 @@ import { removeInvalidData, sortByOrder } from '@utils/arrayUtils';
 import { serverErrMsg } from '@utils/messageUtils';
 import {
   Col,
-  Drawer,
   DrawerProps,
   Form,
   Grid,
@@ -16,11 +15,10 @@ import {
   Select,
   Space,
   Switch,
-  Typography,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { useContext, useEffect, useState } from 'react';
+import Drawer from '@components/Drawer';
 interface AddressAddEditProps extends DrawerProps {
   data?: any;
   postcode?: any;
@@ -35,7 +33,6 @@ const AddressEditDrawer = ({
   onUpdate = () => null,
   ...props
 }: AddressAddEditProps) => {
-  const { Title } = Typography;
   const { TextArea } = Input;
   const { Option } = Select;
   const [addressForm] = useForm();
@@ -97,25 +94,12 @@ const AddressEditDrawer = ({
   };
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer
+      title='Edit Address Information'
+      width={screens.md ? 500 : '100%'}
+      {...props}
+    >
       <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Edit Address Information</Title>
-          </Col>
-        </Row>
         <SpinCircle spinning={loading || submitLoading}>
           <Form
             form={addressForm}
@@ -165,6 +149,8 @@ const AddressEditDrawer = ({
                 initialValue={data?.postcode.state}
               >
                 <Select
+                  showSearch
+                  filterOption
                   placeholder='Please select the state'
                   onChange={(value: string) => {
                     setState(value);
@@ -192,6 +178,8 @@ const AddressEditDrawer = ({
                 initialValue={data?.postcode.city}
               >
                 <Select
+                  showSearch
+                  filterOption
                   placeholder='Please select the city'
                   disabled={!state}
                   onChange={(value: string) => {
@@ -219,6 +207,8 @@ const AddressEditDrawer = ({
                 initialValue={data?.postcode.postcode}
               >
                 <Select
+                  showSearch
+                  filterOption
                   placeholder='Please select the postal code'
                   disabled={!state || !city}
                 >

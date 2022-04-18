@@ -1,14 +1,5 @@
-import {
-  Col,
-  Drawer,
-  DrawerProps,
-  Grid,
-  List,
-  Row,
-  Space,
-  Typography,
-} from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { DrawerProps, Grid, List, Space, Typography } from 'antd';
+import Drawer from '.';
 
 interface AccountDrawerProps extends DrawerProps {
   onMenuClick?: (route?) => void;
@@ -30,56 +21,37 @@ const AccountDrawer = ({
   ];
 
   return (
-    <Drawer closable={false} width={screens.md ? 500 : '100%'} {...props}>
+    <Drawer title='My Account' width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>My Account</Title>
-          </Col>
-        </Row>
-        <Space direction='vertical' size={30} className='full-width'>
-          <List
-            rowKey='route'
-            dataSource={routes.map((route) => route)}
-            renderItem={(item) => (
-              <List.Item className='text-button-wrapper'>
-                {screens.sm ? (
-                  <Title
-                    level={5}
-                    className='text-button '
-                    onClick={() => {
-                      onMenuClick(item.route);
-                    }}
-                  >
-                    {item.label}
-                  </Title>
-                ) : (
-                  <Title
-                    level={5}
-                    className='text-button'
-                    onClick={() => {
-                      onMenuClick(item.route);
-                    }}
-                  >
-                    {item.label}
-                  </Title>
-                )}
-              </List.Item>
-            )}
-          />
-        </Space>
+        <List
+          rowKey='route'
+          dataSource={routes.map((route) => route)}
+          renderItem={(item) => (
+            <List.Item className='text-button-wrapper'>
+              {screens.sm ? (
+                <Title
+                  level={5}
+                  className='text-button '
+                  onClick={() => {
+                    onMenuClick(item.route);
+                  }}
+                >
+                  {item.label}
+                </Title>
+              ) : (
+                <Title
+                  level={5}
+                  className='text-button'
+                  onClick={() => {
+                    onMenuClick(item.route);
+                  }}
+                >
+                  {item.label}
+                </Title>
+              )}
+            </List.Item>
+          )}
+        />
       </Space>
     </Drawer>
   );

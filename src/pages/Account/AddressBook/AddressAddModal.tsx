@@ -118,6 +118,8 @@ const AddressAddModal = ({
               ]}
             >
               <Select
+                showSearch
+                filterOption
                 placeholder='Please select the state'
                 onChange={(value: string) => {
                   setState(value);
@@ -142,6 +144,8 @@ const AddressAddModal = ({
               ]}
             >
               <Select
+                showSearch
+                filterOption
                 placeholder='Please select the city'
                 disabled={!state}
                 onChange={(value: string) => {
@@ -166,6 +170,8 @@ const AddressAddModal = ({
               ]}
             >
               <Select
+                showSearch
+                filterOption
                 placeholder='Please select the postal code'
                 disabled={!state || !city}
               >

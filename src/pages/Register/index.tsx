@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import {
   Alert,
   Col,
-  Drawer,
   DrawerProps,
   Form,
   Grid,
@@ -12,7 +11,6 @@ import {
   Space,
   Typography,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 import Button from '@components/Button';
 import { useForm } from 'antd/lib/form/Form';
 import { registerAPI } from '@api/services/authAPI';
@@ -29,6 +27,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { findRoutePath } from '@utils/routingUtils';
 import { MessageContext } from '@contexts/MessageContext';
+import Drawer from '@components/Drawer';
 
 interface RegisterProps extends DrawerProps {}
 
@@ -134,29 +133,12 @@ const Register = (props: RegisterProps) => {
 
   return (
     <Drawer
+      title='Register'
       destroyOnClose
-      closable={false}
       width={screens.md ? 500 : '100%'}
       {...props}
     >
       <Space direction='vertical' size={30} className='full-width'>
-        <Row
-          align='top'
-          style={{ paddingBottom: 20, borderBottom: '1px solid #e5e7eb' }}
-        >
-          <Col span={1} style={{ position: 'absolute', zIndex: 5 }}>
-            <CloseOutlined
-              className='color-grey'
-              size={30}
-              onClick={() => {
-                props.onClose(null);
-              }}
-            />
-          </Col>
-          <Col span={24} style={{ textAlign: 'center' }}>
-            <Title level={5}>Register</Title>
-          </Col>
-        </Row>
         {success ? (
           <Result
             status='success'
