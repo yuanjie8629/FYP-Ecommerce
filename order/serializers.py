@@ -10,6 +10,7 @@ from shipment.serializers import PickupSerializer, ShipmentSerializer
 from shipment.utils import calculate_ship_fee
 from voucher.models import Voucher
 from django.db.models import Prefetch, Sum, F
+from django.db import transaction
 from voucher.utils import calculate_discount
 
 
@@ -78,146 +79,162 @@ class OrderWriteSerializer(serializers.ModelSerializer):
         exclude = ["created_at", "last_update", "is_deleted", "shipment"]
 
     def create(self, validated_data):
-        cust = validated_data.get("cust", None)
-        email = validated_data.get("email", None)
-        voucher = validated_data.get("voucher", None)
-        address = validated_data.get("address", None)
-        pickup = validated_data.get("pickup", None)
-
-        if address:
-            postcode = address.get("postcode")
-
-        shipping_fee = 0
-        discount = 0
-
-        if cust:
-            cart = (
-                Cart.objects.filter(cust=cust)
-                .prefetch_related("cart_item", Prefetch("cust__cust_type"))
-                .annotate(
-                    total_weight=Sum(F("cart_item__quantity") * F("items__weight"))
-                )
-                .first()
-            )
-            subtotal = float(cart.get_subtotal_price)
-            order_line = cart.cart_item.all()
-            if voucher:
-                discount = float(calculate_discount(subtotal, voucher, cust))
+        with transaction.atomic():
+            cust = validated_data.get("cust", None)
+            email = validated_data.get("email", None)
+            voucher = validated_data.get("voucher", None)
+            address = validated_data.get("address", None)
+            pickup = validated_data.get("pickup", None)
 
             if address:
-                shipping_fee = float(
-                    calculate_ship_fee(cart.total_weight, postcode.state.name)
-                )
-                shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
-                total_amt = subtotal + shipping_fee - discount
-            else:
-                shipment = Pickup.objects.create(**pickup)
-                total_amt = subtotal - discount
+                postcode = address.get("postcode")
 
-            order = Order.objects.create(
-                cust=cust,
-                voucher=voucher,
-                shipment=shipment,
-                total_amt=total_amt,
-                email=cust.email,
-                status="unpaid",
-            )
+            shipping_fee = 0
+            discount = 0
 
-            for ol in order_line:
-                cost_per_unit = 0
-                if Product.objects.filter(pk=ol.item.id).exists():
-                    cost_per_unit = ol.item.product.cost_per_unit
-                else:
-                    cost_per_unit = (
-                        PackageItem.objects.filter(pack=ol.item.package)
-                        .aggregate(
-                            cost_per_unit=Sum(F("quantity") * F("prod__cost_per_unit"))
-                        )
-                        .get("cost_per_unit")
+            if cust:
+                cart = (
+                    Cart.objects.filter(cust=cust)
+                    .prefetch_related("cart_item", Prefetch("cust__cust_type"))
+                    .annotate(
+                        total_weight=Sum(F("cart_item__quantity") * F("items__weight"))
                     )
-
-                order_item = OrderLine(
-                    order=order,
-                    item=ol.item,
-                    price=ol.item.price,
-                    special_price=ol.item.special_price,
-                    cost_per_unit=cost_per_unit,
-                    weight=ol.item.weight,
-                    quantity=ol.quantity,
+                    .first()
                 )
-                self.deduct_product_quantity(order_item)
-                order_item.save()
-            cart.delete()
-            return order
+                subtotal = float(cart.get_subtotal_price)
+                order_line = cart.cart_item.all()
 
-        else:
-            order_line = validated_data.get("order_line")
-            total_weight = 0
-            subtotal = 0
-            for ol in order_line:
-                item = ol.get("item")
-                quantity = ol.get("quantity")
-                total_weight += item.weight * quantity
-                if item.special_price:
-                    price = item.special_price * quantity
+                if voucher:
+                    discount = float(calculate_discount(subtotal, voucher, cust))
+
+                if address:
+                    shipping_fee = float(
+                        calculate_ship_fee(cart.total_weight, postcode.state.name)
+                    )
+                    shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
+                    total_amt = subtotal + shipping_fee - discount
                 else:
-                    price = item.price * quantity
-                subtotal += price
+                    shipment = Pickup.objects.create(**pickup)
+                    total_amt = subtotal - discount
 
-            if address:
-                shipping_fee = float(
-                    calculate_ship_fee(total_weight, postcode.state.name)
+                order = Order.objects.create(
+                    cust=cust,
+                    voucher=voucher,
+                    shipment=shipment,
+                    total_amt=total_amt,
+                    email=cust.email,
+                    status="unpaid",
                 )
-                shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
-                total_amt = float(subtotal) + shipping_fee
+
+                item_list = [ol.item.id for ol in order_line]
+                lock = Product.objects.select_for_update().filter(pk__in=item_list)
+                print(lock, "lock")
+                for ol in order_line:
+                    cost_per_unit = 0
+                    if Product.objects.filter(pk=ol.item.id).exists():
+                        cost_per_unit = ol.item.product.cost_per_unit
+                    else:
+                        cost_per_unit = (
+                            PackageItem.objects.filter(pack=ol.item.package)
+                            .aggregate(
+                                cost_per_unit=Sum(
+                                    F("quantity") * F("prod__cost_per_unit")
+                                )
+                            )
+                            .get("cost_per_unit")
+                        )
+
+                    order_item = OrderLine(
+                        order=order,
+                        item=ol.item,
+                        price=ol.item.price,
+                        special_price=ol.item.special_price,
+                        cost_per_unit=cost_per_unit,
+                        weight=ol.item.weight,
+                        quantity=ol.quantity,
+                    )
+                    self.deduct_product_quantity(order_item)
+                    order_item.save()
+                cart.delete()
+                return order
 
             else:
-                shipment = Pickup.objects.create(**pickup)
-                total_amt = float(subtotal)
+                order_line = validated_data.get("order_line")
+                item_list = []
+                total_weight = 0
+                subtotal = 0
+                for ol in order_line:
+                    item = ol.get("item")
+                    item_list.append(item.id)
+                    quantity = ol.get("quantity")
+                    total_weight += item.weight * quantity
+                    if item.special_price:
+                        price = item.special_price * quantity
+                    else:
+                        price = item.price * quantity
+                    subtotal += price
 
-            order = Order.objects.create(
-                shipment=shipment,
-                total_amt=total_amt,
-                email=email,
-                status="unpaid",
-            )
+                item_lock = Item.objects.select_for_update().filter(pk__in=item_list)
+                print(item_lock, "lock")
 
-            for ol in order_line:
-                item = ol.get("item")
-                quantity = ol.get("quantity")
-
-                cost_per_unit = 0
-
-                if isinstance(item.product, Product):
-                    cost_per_unit = item.product.cost_per_unit
-                else:
-                    cost_per_unit = (
-                        PackageItem.objects.filter(pack=item)
-                        .aggregate(
-                            cost_per_unit=Sum(F("quantity") * F("prod__cost_per_unit"))
-                        )
-                        .get("cost_per_unit")
+                if address:
+                    shipping_fee = float(
+                        calculate_ship_fee(total_weight, postcode.state.name)
                     )
+                    shipment = Shipment.objects.create(**address, ship_fee=shipping_fee)
+                    total_amt = float(subtotal) + shipping_fee
 
-                order_item = OrderLine(
-                    order=order,
-                    item=item,
-                    price=item.price,
-                    cost_per_unit=cost_per_unit,
-                    special_price=item.special_price,
-                    weight=item.weight,
-                    quantity=quantity,
+                else:
+                    shipment = Pickup.objects.create(**pickup)
+                    total_amt = float(subtotal)
+
+                order = Order.objects.create(
+                    shipment=shipment,
+                    total_amt=total_amt,
+                    email=email,
+                    status="unpaid",
                 )
-                self.deduct_product_quantity(order_item)
-                order_item.save()
 
-            return order
+                for ol in order_line:
+                    item = ol.get("item")
+                    quantity = ol.get("quantity")
+
+                    cost_per_unit = 0
+
+                    if isinstance(item.product, Product):
+                        cost_per_unit = item.product.cost_per_unit
+                    else:
+                        cost_per_unit = (
+                            PackageItem.objects.filter(pack=item)
+                            .aggregate(
+                                cost_per_unit=Sum(
+                                    F("quantity") * F("prod__cost_per_unit")
+                                )
+                            )
+                            .get("cost_per_unit")
+                        )
+
+                    order_item = OrderLine(
+                        order=order,
+                        item=item,
+                        price=item.price,
+                        cost_per_unit=cost_per_unit,
+                        special_price=item.special_price,
+                        weight=item.weight,
+                        quantity=quantity,
+                    )
+                    self.deduct_product_quantity(order_item)
+                    order_item.save()
+
+                return order
 
     def deduct_product_quantity(self, instance):
         item = instance.item
+        item.refresh_from_db()
         if item.stock <= 0 or instance.quantity > item.stock:
             raise serializers.ValidationError({"detail": "no_stock"})
         item.stock = item.stock - instance.quantity
+        print(item.stock)
         item.save()
 
 

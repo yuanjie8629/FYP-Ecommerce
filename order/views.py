@@ -21,7 +21,12 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Order.objects.all().prefetch_related("item").order_by("-created_at")
+    queryset = (
+        Order.objects.all()
+        .select_for_update()
+        .prefetch_related("item")
+        .order_by("-created_at")
+    )
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
 
