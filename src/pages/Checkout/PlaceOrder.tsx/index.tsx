@@ -3,12 +3,13 @@ import { createPaymentSessionAPI } from '@api/services/paymentAPI';
 import Button from '@components/Button';
 import { AddressInfo } from '@components/Card/AddressCard';
 import MainCard from '@components/Card/MainCard';
+import ErrorModal from '@components/Modal/ErrorModal';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';
 import { findRoutePath } from '@utils/routingUtils';
 import { clearCart } from '@utils/storageUtils';
 import { CardProps, Col, Row, Space, Typography } from 'antd';
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { paymentMethodType } from '../Payment';
 import { PickupInfo } from '../ShippingAddress';
@@ -44,6 +45,7 @@ const PlaceOrder = ({
   const { Text } = Typography;
   const [messageApi] = useContext(MessageContext);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [errCode, setErrCode] = useState('');
   const navigate = useNavigate();
 
   const handlePlaceOrder = () => {
@@ -59,6 +61,7 @@ const PlaceOrder = ({
     )
       .then(async (res) => {
         onPaymentRedirect(true);
+        setErrCode('');
         await createPaymentSessionAPI(
           parseFloat(res.data?.total_amt),
           paymentMethod,
@@ -80,7 +83,7 @@ const PlaceOrder = ({
             err.response?.status === 400 &&
             err.response?.data?.detail === 'no_stock'
           ) {
-            showNoStockMsg();
+            setErrCode('no_stock');
             setSubmitLoading(false);
             return;
           }
@@ -99,14 +102,6 @@ const PlaceOrder = ({
     messageApi.open(serverErrMsg);
   };
 
-  const showNoStockMsg = () => {
-    messageApi.open({
-      type: 'error',
-      content:
-        'Some items in your order are out of stock. Please refresh the page.',
-    });
-  };
-
   return (
     <MainCard bodyStyle={{ padding: 15 }} {...props}>
       <Row gutter={[10, 10]} justify='space-between' align='middle'>
@@ -114,7 +109,7 @@ const PlaceOrder = ({
           <Col>
             <Space direction='vertical'>
               {!(address || pickup) && (
-                <Text strong type='danger' >
+                <Text strong type='danger'>
                   Please confirm your shipping address.
                 </Text>
               )}
@@ -166,6 +161,25 @@ const PlaceOrder = ({
           </Button>
         </Col>
       </Row>
+      <ErrorModal
+        title={errCode === 'no_stock' ? 'Item Out of Stock...' : 'Error'}
+        subTitle={
+          errCode === 'no_stock'
+            ? 'Sorry, some items in your order are out of stock.'
+            : 'Some Error Occurs. Please refresh the page.'
+        }
+        visible={true}
+        extra={[
+          <Button
+            type='primary'
+            onClick={() => (window.location.href = '/home')}
+          >
+            Ok
+          </Button>,
+        ]}
+        bodyStyle={{ padding: 0 }}
+        style={{ padding: 15 }}
+      />
     </MainCard>
   );
 };

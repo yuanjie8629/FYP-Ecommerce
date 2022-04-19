@@ -140,7 +140,7 @@ const OrderSummary = ({
             />
           </Col>
         </Row>
-        {oos && (
+        {oos && !loading && (
           <Alert
             showIcon
             type='error'

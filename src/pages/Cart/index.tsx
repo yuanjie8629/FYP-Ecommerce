@@ -1,10 +1,6 @@
 import Button from '@components/Button';
 import { findRoutePath } from '@utils/routingUtils';
-import {
-  PlusOutlined,
-  MinusOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
   Alert,
   Col,
@@ -248,17 +244,19 @@ const Cart = ({
                       setCartValue({ id: item.id, value: value });
                     }}
                     onBlur={() => {
+                      let stock = cartValue?.value;
                       if (
                         cartValue?.id === item.id &&
                         cartValue?.value > item.stock
                       ) {
+                        stock = item.stock;
                         setCartValue({ id: item.id, value: item.stock });
                       }
                       if (
                         cartValue?.id === item.id &&
                         cartValue?.value !== undefined
                       ) {
-                        handleCartSet(item, cartValue?.value);
+                        handleCartSet(item, stock);
                       }
                     }}
                   />
@@ -291,11 +289,7 @@ const Cart = ({
   );
 
   return (
-    <Drawer
-      title='Shopping Cart'
-      width={screens.md ? 500 : '100%'}
-      {...props}
-    >
+    <Drawer title='Shopping Cart' width={screens.md ? 500 : '100%'} {...props}>
       <Space direction='vertical' className='full-width'>
         {!checkout && (
           <Alert
