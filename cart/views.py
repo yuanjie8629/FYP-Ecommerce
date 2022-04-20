@@ -61,7 +61,6 @@ class CartAddItemView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-
         if get_request_cust(request) == request.user.cust:
             item = get_object_or_404(Item, pk=request.data.get("item"))
 
@@ -235,7 +234,6 @@ def CartDetailsView(request):
         for data in data_list:
             if item.id == data.get("id"):
                 serializer = ItemSerializer(item)
-
                 quantity = (
                     data.get("quantity")
                     if data.get("quantity") <= item.stock or item.stock == 0

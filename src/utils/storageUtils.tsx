@@ -62,7 +62,7 @@ export const addItemToCart = (data) => {
         return { id: item.id, quantity: item.quantity };
       });
     if (matchedItem) {
-      if (data.stock < matchedItem.quantity) {
+      if (data.stock <= matchedItem.quantity) {
         return 'no_stock';
       }
       cart.push({ id: matchedItem.id, quantity: matchedItem.quantity + 1 });

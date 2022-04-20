@@ -95,7 +95,7 @@ const AddressEditModal = ({
     <Modal
       centered
       footer={null}
-      title={'Edit Address'}
+      title='Edit Address'
       destroyOnClose
       afterClose={() => {
         addressForm.resetFields();

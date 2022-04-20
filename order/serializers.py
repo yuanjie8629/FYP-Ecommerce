@@ -127,8 +127,9 @@ class OrderWriteSerializer(serializers.ModelSerializer):
                 )
 
                 item_list = [ol.item.id for ol in order_line]
-                lock = Product.objects.select_for_update().filter(pk__in=item_list)
+                lock = Item.objects.select_for_update().filter(pk__in=item_list)
                 print(lock, "lock")
+
                 for ol in order_line:
                     cost_per_unit = 0
                     if Product.objects.filter(pk=ol.item.id).exists():

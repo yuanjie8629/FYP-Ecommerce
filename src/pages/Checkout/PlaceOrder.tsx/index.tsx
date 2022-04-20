@@ -168,7 +168,7 @@ const PlaceOrder = ({
             ? 'Sorry, some items in your order are out of stock.'
             : 'Some Error Occurs. Please refresh the page.'
         }
-        visible={true}
+        visible={errCode !== ''}
         extra={[
           <Button
             type='primary'

@@ -202,7 +202,7 @@ const OrderSummary = ({
               </Col>
             </Row>
           )}
-          {discount > 0 && (
+          {discount > 0 && voucher && (
             <Row justify='space-between' style={{ margin: '15px 0' }}>
               <Col>
                 <Text className='text-lg'>

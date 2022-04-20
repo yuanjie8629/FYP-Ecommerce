@@ -95,7 +95,7 @@ const AddressEditDrawer = ({
 
   return (
     <Drawer
-      title='Edit Address Information'
+      title='Edit Address'
       width={screens.md ? 500 : '100%'}
       {...props}
     >
