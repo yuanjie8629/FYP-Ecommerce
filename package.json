@@ -48,7 +48,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build && ncp build/favicon.ico build/static/favicon.ico",
     "test": "craco test",
     "eject": "craco eject"
   },

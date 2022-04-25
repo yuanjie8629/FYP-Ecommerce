@@ -8,17 +8,17 @@
       "type": "image/x-icon"
     },
     {
-      "src": "shrf-logo192.png",
+      "src": "./shrf-logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "shrf-logo512.png",
+      "src": "./shrf-logo512.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "shrf-maskable_icon.png",
+      "src": "./shrf-maskable_icon.png",
       "sizes": "196x196",
       "type": "image/png",
       "purpose": "any maskable"
