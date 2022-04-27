@@ -3,7 +3,7 @@ import { posRegAPI } from '@api/services/custAPI';
 import Button from '@components/Button';
 import ColorCard from '@components/Card/ColorCard';
 import Layout from '@components/Layout';
-import SuccessModal from '@components/Modal/SuccessModal';
+import ResultModal from '@components/Modal/ResultModal';
 import SpinCircle from '@components/Spin/SpinCircle';
 import { MessageContext } from '@contexts/MessageContext';
 import { getCities, getPostcodes, getStates } from '@utils/addressUtils';
@@ -42,7 +42,9 @@ const PosReg = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const [successMsg, setSuccessMsg] = useState(false);
+  const [pendingMsg, setPendingMsg] = useState(false);
   const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,6 +96,8 @@ const PosReg = () => {
               message: err.response?.data?.error?.message,
             });
             showErrMsg(err.response?.data?.error?.message);
+          } else if (err.response?.data?.error?.code === 'pending') {
+            setPendingMsg(true);
           } else {
             showServerErrMsg();
           }
@@ -436,12 +440,21 @@ const PosReg = () => {
           </Form>
         </Space>
       </Row>
-      <SuccessModal
-        visible={successMsg}
-        title={<Title level={5}>We have received your application.</Title>}
+      <ResultModal
+        visible={successMsg || pendingMsg}
+        status={successMsg ? 'success' : 'info'}
+        title={
+          <Title level={5}>
+            {successMsg
+              ? 'We have received your application.'
+              : 'You have applied for the registration before.'}
+          </Title>
+        }
         subTitle={
           <Text type='secondary' className='text-sm'>
-            Our team will review your application and get back to you soon.
+            {successMsg
+              ? 'Our team will review your application and get back to you soon.'
+              : 'Our team are yet to review your application, we will get back to you soon once reviewed.'}
           </Text>
         }
         extra={[

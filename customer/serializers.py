@@ -102,7 +102,8 @@ class CustPosRegSerializer(serializers.ModelSerializer):
         exclude = ["created_at", "last_update", "is_deleted", "accept"]
 
     def create(self, validated_data):
-        self.check_email(validated_data.get('email'))
+        self.check_email(validated_data.get("email"))
+        self.check_reg(validated_data.get("email"))
         title = "New Registration"
         description = "<span style={}>{} has submitted registration for agent/dropshipper.<br/>Please review the registration form.</span>".format(
             "word-wrap:break-word", validated_data.get("name")
@@ -110,7 +111,7 @@ class CustPosRegSerializer(serializers.ModelSerializer):
         type = "customer"
         Notification.objects.create(title=title, description=description, type=type)
         return super().create(validated_data)
-    
+
     def check_email(self, value, *args, **kwargs):
         compare = kwargs.get("compare")
         check_query = Users.objects.filter(email=value)
@@ -125,4 +126,17 @@ class CustPosRegSerializer(serializers.ModelSerializer):
                         }
                     }
                 )
+        return value
+
+    def check_reg(self, value, *args, **kwargs):
+        check_query = CustPosReg.objects.filter(email=value)
+        if check_query.exists():
+            raise serializers.ValidationError(
+                detail={
+                    "error": {
+                        "code": "pending",
+                        "message": "Your previous registration is still pending.",
+                    }
+                }
+            )
         return value

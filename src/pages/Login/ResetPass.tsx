@@ -14,7 +14,7 @@ import {
   hasUpperCaseLetter,
 } from '@utils/strUtils';
 import { resetPassAPI, validateForgotPassTknAPI } from '@api/services/authAPI';
-import SuccessModal from '@components/Modal/SuccessModal';
+import SuccessModal from '@components/Modal/ResultModal';
 import PageLoad from '@components/Loading/PageLoad';
 import Layout from '@components/Layout';
 

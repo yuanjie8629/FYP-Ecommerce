@@ -24,7 +24,7 @@ import {
   hasUpperCaseLetter,
 } from '@utils/strUtils';
 import { changePassAPI } from '@api/services/custAPI';
-import SuccessModal from '@components/Modal/SuccessModal';
+import SuccessModal from '@components/Modal/ResultModal';
 import { removeInvalidData } from '@utils/arrayUtils';
 import { MessageContext } from '@contexts/MessageContext';
 import { serverErrMsg } from '@utils/messageUtils';

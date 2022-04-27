@@ -1,21 +1,24 @@
 import { Modal, ModalProps, Result } from 'antd';
+import { ResultStatusType } from 'antd/es/result';
 import { useState } from 'react';
 
-interface SuccessModalProps extends ModalProps {
+interface ResultModalProps extends ModalProps {
   title: React.ReactNode;
   subTitle?: React.ReactNode;
   extra?: React.ReactNode;
+  status?: ResultStatusType;
 }
 
-const SuccessModal = ({
+const ResultModal = ({
   title,
   subTitle,
   extra,
   visible,
+  status = 'success',
   onOk,
   onCancel,
   ...props
-}: SuccessModalProps) => {
+}: ResultModalProps) => {
   const [showModal, setShowModal] = useState(visible);
 
   const handleClose = () => {
@@ -32,14 +35,9 @@ const SuccessModal = ({
       centered
       {...props}
     >
-      <Result
-        status='success'
-        title={title}
-        subTitle={subTitle}
-        extra={extra}
-      />
+      <Result status={status} title={title} subTitle={subTitle} extra={extra} />
     </Modal>
   );
 };
 
-export default SuccessModal;
+export default ResultModal;
