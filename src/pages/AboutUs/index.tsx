@@ -50,7 +50,7 @@ const AboutUs = () => {
                 What we sell?
               </Title>
               <Text style={{ fontSize: 20 }}>
-                We have RTE packing available starting from our beloved Rendang,
+                We have ready-to-eat packing available starting from our beloved Rendang,
                 Sambal Sotong, Nasi Goreng and Nasi Biryani Gam series. Why cook
                 when you are in a rush? Just heat Sharifah RTE up in 3 minutes,
                 Voila! It is ready.
