@@ -16,7 +16,7 @@ class BaseModel(models.Model):
 
 class Users(AbstractUser):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=10, blank=True, null=True)
+    name = models.CharField(max_length=100)
     email = models.CharField(unique=True, max_length=255)
     password = models.CharField(max_length=255)
     username = models.CharField(unique=True, max_length=45)
@@ -35,7 +35,7 @@ class Users(AbstractUser):
 
     class Meta:
         db_table = "users"
-        managed = False
+        managed=False
 
 
 class SoftDeleteModel(BaseModel):
