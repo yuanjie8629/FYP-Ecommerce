@@ -42,6 +42,7 @@ const PosReg = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [messageApi] = useContext(MessageContext);
   const [successMsg, setSuccessMsg] = useState(false);
+  const [errMsg, setErrMsg] = useState({ type: undefined, message: undefined });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +71,10 @@ const PosReg = () => {
     messageApi.open(serverErrMsg);
   };
 
+  const showErrMsg = (errMsg?: string) => {
+    messageApi.open({ type: 'error', content: errMsg });
+  };
+
   const handleSubmit = (values) => {
     let { city, state, ...data } = values;
     data.birthdate = getDt(data.birthdate);
@@ -83,7 +88,15 @@ const PosReg = () => {
       .catch((err) => {
         if (err.response?.status !== 401) {
           setSubmitLoading(false);
-          showServerErrMsg();
+          if (err.response?.data?.error?.code === 'duplicate_email') {
+            setErrMsg({
+              type: 'duplicate_email',
+              message: err.response?.data?.error?.message,
+            });
+            showErrMsg(err.response?.data?.error?.message);
+          } else {
+            showServerErrMsg();
+          }
         }
       });
   };
@@ -194,14 +207,38 @@ const PosReg = () => {
                     <Form.Item
                       label='Email Address'
                       name='email'
+                      validateStatus={
+                        errMsg.type === 'duplicate_email' ? 'error' : undefined
+                      }
+                      help={
+                        errMsg.type === 'duplicate_email'
+                          ? errMsg.message
+                          : undefined
+                      }
                       rules={[
-                        {
-                          required: true,
-                          message: 'Please enter your email address.',
-                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value) {
+                              return Promise.reject(
+                                "Please enter customer's email address."
+                              );
+                            }
+                            if (errMsg.type === 'duplicate_email') {
+                              return Promise.reject(errMsg.message);
+                            }
+                            return Promise.resolve();
+                          },
+                        }),
                       ]}
+                      required
                     >
-                      <Input type='email' placeholder='e.g. xxxxx@gmail.com' />
+                      <Input
+                        type='email'
+                        placeholder='e.g. xxxxx@gmail.com'
+                        onChange={(e) => {
+                          setErrMsg({ type: undefined, message: undefined });
+                        }}
+                      />
                     </Form.Item>
                   </Space>
                 </Space>

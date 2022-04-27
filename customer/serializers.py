@@ -1,8 +1,8 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from core.models import Users
 from notification.models import Notification
-
 from postcode.models import Postcode
 from .models import Cust, CustPosReg, CustType
 
@@ -102,6 +102,7 @@ class CustPosRegSerializer(serializers.ModelSerializer):
         exclude = ["created_at", "last_update", "is_deleted", "accept"]
 
     def create(self, validated_data):
+        self.check_email(validated_data.get('email'))
         title = "New Registration"
         description = "<span style={}>{} has submitted registration for agent/dropshipper.<br/>Please review the registration form.</span>".format(
             "word-wrap:break-word", validated_data.get("name")
@@ -109,3 +110,19 @@ class CustPosRegSerializer(serializers.ModelSerializer):
         type = "customer"
         Notification.objects.create(title=title, description=description, type=type)
         return super().create(validated_data)
+    
+    def check_email(self, value, *args, **kwargs):
+        compare = kwargs.get("compare")
+        check_query = Users.objects.filter(email=value)
+        print(check_query)
+        if check_query.exists():
+            if not compare or compare != value:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "duplicate_email",
+                            "message": "Email already exists.",
+                        }
+                    }
+                )
+        return value
