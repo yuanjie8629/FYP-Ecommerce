@@ -37,7 +37,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "ordering_cost",
             "holding_cost",
             "max_lead_tm",
-            "avg_lead_tm"
+            "avg_lead_tm",
         ]
         extra_kwargs = {
             "sku": {"validators": []},
@@ -119,6 +119,7 @@ class PackagePrevSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "price",
+            "special_price",
             "sku",
             "stock",
             "thumbnail",
