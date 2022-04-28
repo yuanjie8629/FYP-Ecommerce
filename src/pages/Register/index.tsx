@@ -117,10 +117,7 @@ const Register = (props: RegisterProps) => {
             setSameEmailMsg(
               'The email already exists. Please log in with the email.'
             );
-          else if (err.response?.data?.error?.code === 'duplicate_email') {
-            setErrMsg(err.response?.data?.error?.message);
-            showErrMsg(err.response?.data?.error?.message);
-          } else if (err.response?.data?.password)
+          if (err.response?.data?.password)
             setErrMsg(err.response?.data?.password);
         } else {
           messageApi.open({
@@ -132,10 +129,6 @@ const Register = (props: RegisterProps) => {
       .finally(() => {
         setLoading(false);
       });
-  };
-
-  const showErrMsg = (errMsg?: string) => {
-    messageApi.open({ type: 'error', content: errMsg });
   };
 
   return (
