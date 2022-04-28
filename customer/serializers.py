@@ -79,7 +79,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return attrs
 
+    def check_email(self, value, *args, **kwargs):
+        compare = kwargs.get("compare")
+        check_query = Users.objects.filter(email=value)
+        print(check_query)
+        if check_query.exists():
+            if not compare or compare != value:
+                raise serializers.ValidationError(
+                    detail={
+                        "error": {
+                            "code": "duplicate_email",
+                            "message": "Email already exists.",
+                        }
+                    }
+                )
+        return value
+
     def create(self, validated_data):
+        self.check_email(validated_data["email"])
         user = Cust.objects.create(
             email=validated_data["email"], username=validated_data["email"]
         )
