@@ -18,7 +18,7 @@ const SearchItem = () => {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    itemPrevAPI(`?name=${searchParams.get('name')}`)
+    itemPrevAPI(`?${searchParams.toString()}`)
       .then((res) => {
         if (isMounted) {
           setList(res.data.results);

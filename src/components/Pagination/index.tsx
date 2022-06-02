@@ -13,6 +13,7 @@ const Pagination = ({ defaultCurrent = 1, ...props }: PaginationProps) => {
   return (
     <AntdPagination
       defaultCurrent={defaultCurrent}
+      defaultPageSize={12}
       onChange={(page) => {
         if (page > 1) {
           setSearchParams(
