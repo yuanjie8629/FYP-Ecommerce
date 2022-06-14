@@ -121,8 +121,12 @@ const Cart = ({
 
   const handleCartSet = async (item, value) => {
     setCartLoading(true);
+    let val = value;
+    if (val === undefined || val === null) {
+      val = 0;
+    }
     if (user) {
-      cartSetQuantityAPI(item.id, value)
+      cartSetQuantityAPI(item.id, val)
         .then((res) => {
           setCart(sortByKey(res.data?.items, 'name'));
           setCartPrice(res.data?.subtotal_price);
@@ -136,7 +140,7 @@ const Cart = ({
           }
         });
     } else {
-      let cart = setQuantityToCart(item, value);
+      let cart = setQuantityToCart(item, val);
       if (cart.length > 0) {
         await updateLocalCart(cart);
       } else {
