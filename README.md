@@ -168,6 +168,7 @@ https://fyp-shrf-ecommerce.herokuapp.com/
 10. Search Order <br> <img src="previews/SearchOrder.png"><br><br>
 11. Order Details <br> <img src="previews/OrderInfo.png"><br><br>
 12. Profile Management <br> <img src="previews/ProfileManagement.png"><br><br>
+13. PWA Installation <br> <img src="previews/PWA.png"><br><br>
 
 ## Documentation
 
