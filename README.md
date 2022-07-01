@@ -5,7 +5,7 @@
 
 ## Overview
 
-Sharifah Food is a food processing company that specialises in the ready meals market. Over the years, Sharifah Food had to manually take orders from its customer through WhatsApp and record the sales data in Excel sheets. Nevertheless, it was discovered that it became difficult to keep track of all sales, orders, and inventory as the company grew. Therefore, this project aims to implement an e-commerce platform to integrate with the [computerised inventory management system](https://github.com/yuanjie8629/FYP-InvMgmtSys) to further streamline the company's business.
+Sharifah Food is a food processing company that specialises in the ready meals market. Over the years, Sharifah Food had to manually take orders from its customer through WhatsApp and record the sales data in Excel sheets. Nevertheless, it was discovered that it became difficult to keep track of all sales, orders, and inventory as the company grew. Therefore, this project aims to implement a responsive e-commerce platform to integrate with the [computerised inventory management system](https://github.com/yuanjie8629/FYP-InvMgmtSys) to further streamline the company's business.
 
 #### Multi-level Marketing System
 
